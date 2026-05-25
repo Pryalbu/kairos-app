@@ -865,6 +865,31 @@ const SOS_DATA = [
 window.onload = async function() {
   updateClock();
   setInterval(updateClock, 30000);
+
+  // Captura retorno de confirmacao de e-mail (token na URL)
+  const hash = window.location.hash;
+  if (hash && (hash.includes('access_token') || hash.includes('type=signup'))) {
+    const { data } = await sb.auth.getSession();
+    if (data && data.session) {
+      currentUser = data.session.user;
+      window.history.replaceState(null, '', window.location.pathname);
+      await loadProfile();
+      return;
+    }
+  }
+
+  // Listener para mudancas de estado de autenticacao
+  sb.auth.onAuthStateChange(async (event, session) => {
+    if (event === 'SIGNED_IN' && session && !currentUser) {
+      currentUser = session.user;
+      await loadProfile();
+    } else if (event === 'SIGNED_OUT') {
+      currentUser = null;
+      currentProfile = null;
+      showScreen('auth');
+    }
+  });
+
   const { data: { session } } = await sb.auth.getSession();
   if (session) {
     currentUser = session.user;
