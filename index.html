@@ -1,0 +1,1486 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Kairós</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root {
+  --bg:       #070F18;
+  --surface:  #0D1B2A;
+  --surface2: #122234;
+  --surface3: #152639;
+  --border:   #1E3048;
+  --gold:     #B8965A;
+  --gold-dim: rgba(184,150,90,0.15);
+  --gold-faint: rgba(184,150,90,0.07);
+  --cream:    #F0E6D3;
+  --muted:    #7A8FA6;
+  --muted2:   #4A6070;
+  --danger:   #C0392B;
+  --success:  #27AE60;
+  --r:        14px;
+  --r-sm:     8px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--cream);}
+
+/* ── LAYOUT ── */
+#app{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:0;}
+.phone{
+  width:100%;max-width:430px;min-height:100vh;
+  background:var(--surface);
+  display:flex;flex-direction:column;
+  position:relative;overflow:hidden;
+}
+@media(min-width:500px){
+  .phone{
+    min-height:820px;max-height:900px;
+    border-radius:40px;border:1.5px solid var(--border);
+    box-shadow:0 0 0 6px #0A1520,0 0 0 7px var(--border),0 40px 80px rgba(0,0,0,.7);
+  }
+  #app{padding:32px 16px;}
+}
+
+/* ── STATUS BAR ── */
+.sbar{
+  background:var(--bg);padding:12px 22px 6px;
+  display:flex;justify-content:space-between;align-items:center;
+  flex-shrink:0;
+}
+.sbar-time{font-size:12px;font-weight:600;color:var(--cream);}
+.sbar-icons{display:flex;gap:5px;align-items:center;}
+.sbar-icons span{font-size:11px;color:var(--muted);}
+
+/* ── SCREENS ── */
+.screen{display:none;flex-direction:column;flex:1;min-height:0;overflow:hidden;}
+.screen.active{display:flex;}
+
+/* ── SCROLL AREA ── */
+.scroll{overflow-y:auto;flex:1;padding:16px 18px 24px;}
+.scroll::-webkit-scrollbar{width:2px;}
+.scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+
+/* ── BOTTOM NAV ── */
+.bnav{
+  background:var(--bg);
+  border-top:0.5px solid var(--border);
+  padding:8px 4px 16px;
+  display:flex;justify-content:space-around;
+  flex-shrink:0;
+}
+.bnav-item{
+  flex:1;display:flex;flex-direction:column;align-items:center;
+  gap:3px;cursor:pointer;padding:4px 2px;opacity:.45;
+  transition:opacity .2s;
+}
+.bnav-item.on{opacity:1;}
+.bnav-item svg{width:22px;height:22px;stroke:var(--gold);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.bnav-item span{font-size:9px;color:var(--gold);letter-spacing:.04em;font-weight:500;}
+
+/* ── HEADER ── */
+.hdr{padding:14px 18px 12px;border-bottom:0.5px solid var(--border);flex-shrink:0;}
+.hdr-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:2px;}
+.logo-pill{
+  display:flex;align-items:center;gap:7px;
+}
+.logo-k{
+  width:28px;height:28px;border-radius:50%;border:1.5px solid var(--gold);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Cormorant Garamond',serif;font-size:14px;font-weight:600;color:var(--gold);
+}
+.logo-name{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;color:var(--gold);letter-spacing:.12em;}
+.tag{font-size:9px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);opacity:.7;}
+.hdr-title{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:500;color:var(--cream);margin-top:4px;}
+
+/* ── CARDS ── */
+.card{background:var(--surface2);border:0.5px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:10px;}
+.card-title{font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;}
+
+/* ── BUTTONS ── */
+.btn{
+  width:100%;padding:14px;border:none;border-radius:var(--r);
+  font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;
+  cursor:pointer;transition:opacity .2s,transform .1s;
+  letter-spacing:.04em;
+}
+.btn:active{transform:scale(.98);}
+.btn-gold{background:var(--gold);color:var(--bg);}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--cream);}
+.btn-danger{background:transparent;border:1px solid var(--danger);color:var(--danger);}
+.btn:disabled{opacity:.4;cursor:not-allowed;}
+
+/* ── INPUTS ── */
+.inp-group{margin-bottom:14px;}
+.inp-label{font-size:11px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;display:block;}
+.inp{
+  width:100%;background:var(--surface3);border:0.5px solid var(--border);border-radius:var(--r-sm);
+  padding:12px 14px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--cream);outline:none;
+  transition:border-color .2s;
+}
+.inp:focus{border-color:var(--gold);}
+.inp::placeholder{color:var(--muted2);}
+
+/* ── TOAST ── */
+#toast{
+  position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--surface2);border:0.5px solid var(--gold);border-radius:20px;
+  padding:10px 20px;font-size:13px;color:var(--cream);
+  opacity:0;transition:all .3s;pointer-events:none;z-index:999;white-space:nowrap;
+}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ── LOADING ── */
+#loading{
+  position:fixed;inset:0;background:var(--bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:1000;
+}
+#loading .logo-big{font-family:'Cormorant Garamond',serif;font-size:48px;color:var(--gold);letter-spacing:.2em;}
+#loading .sub{font-size:12px;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;}
+.spinner{width:28px;height:28px;border:2px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ── AUTH SCREEN ── */
+#screen-auth{background:var(--bg);}
+.auth-wrap{padding:40px 28px 32px;display:flex;flex-direction:column;flex:1;}
+.auth-logo{
+  text-align:center;margin-bottom:48px;
+}
+.auth-logo-k{
+  width:60px;height:60px;border-radius:50%;border:2px solid var(--gold);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Cormorant Garamond',serif;font-size:28px;color:var(--gold);margin:0 auto 12px;
+}
+.auth-logo-name{font-family:'Cormorant Garamond',serif;font-size:32px;color:var(--gold);letter-spacing:.18em;}
+.auth-logo-sub{font-size:11px;color:var(--muted);letter-spacing:.15em;margin-top:4px;}
+.auth-tabs{display:flex;gap:0;margin-bottom:28px;border-bottom:0.5px solid var(--border);}
+.auth-tab{flex:1;text-align:center;padding:10px;font-size:13px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .2s;}
+.auth-tab.on{color:var(--gold);border-bottom-color:var(--gold);}
+.auth-err{background:#C0392B18;border:0.5px solid #C0392B44;border-radius:var(--r-sm);padding:10px 14px;font-size:12px;color:#E74C3C;margin-bottom:14px;display:none;}
+.auth-err.show{display:block;}
+
+/* ── LGPD CONSENT ── */
+#screen-consent{background:var(--bg);}
+.consent-wrap{padding:28px 22px;flex:1;overflow-y:auto;display:flex;flex-direction:column;}
+.consent-logo{text-align:center;margin-bottom:24px;}
+.consent-title{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--cream);text-align:center;margin-bottom:6px;}
+.consent-sub{font-size:12px;color:var(--muted);text-align:center;margin-bottom:20px;line-height:1.6;}
+.consent-box{
+  background:var(--surface2);border:0.5px solid var(--border);border-radius:var(--r);
+  padding:16px;margin-bottom:16px;flex:1;overflow-y:auto;max-height:300px;
+}
+.consent-box h3{font-size:12px;color:var(--gold);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;margin-top:14px;}
+.consent-box h3:first-child{margin-top:0;}
+.consent-box p{font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:8px;}
+.consent-box ul{padding-left:16px;margin-bottom:8px;}
+.consent-box li{font-size:12px;color:var(--muted);line-height:1.7;}
+.consent-check-row{display:flex;align-items:flex-start;gap:12px;margin-bottom:20px;}
+.consent-check{
+  width:20px;height:20px;border-radius:4px;border:1.5px solid var(--border);
+  background:var(--surface2);cursor:pointer;flex-shrink:0;margin-top:2px;
+  display:flex;align-items:center;justify-content:center;transition:all .2s;
+}
+.consent-check.on{background:var(--gold);border-color:var(--gold);}
+.consent-check-label{font-size:13px;color:var(--muted);line-height:1.6;cursor:pointer;}
+
+/* ── EXPIRED SCREEN ── */
+#screen-expired{background:var(--bg);}
+.expired-wrap{padding:40px 28px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;text-align:center;}
+
+/* ── INÍCIO ── */
+.greeting-line{font-size:12px;color:var(--muted);margin-bottom:2px;}
+.greeting-name{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--cream);margin-bottom:16px;}
+.progress-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.progress-label{font-size:11px;color:var(--muted);}
+.progress-pct{font-size:11px;color:var(--gold);font-weight:600;}
+.progress-bg{background:var(--surface3);height:5px;border-radius:3px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),#C9A96E);border-radius:3px;transition:width .5s ease;}
+
+/* Water cups */
+.cups-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;}
+.cup{
+  width:30px;height:38px;border:1.5px solid var(--border);border-radius:5px 5px 4px 4px;
+  cursor:pointer;display:flex;align-items:flex-end;overflow:hidden;position:relative;
+  transition:border-color .2s;
+}
+.cup::before{content:'';position:absolute;top:-2px;left:4px;right:4px;height:3px;border-radius:2px;background:var(--border);transition:background .2s;}
+.cup.filled{border-color:var(--gold);}
+.cup.filled::before{background:var(--gold);}
+.cup-fill{width:100%;height:0;background:linear-gradient(to top,var(--gold),rgba(184,150,90,.5));transition:height .3s ease;}
+.cup.filled .cup-fill{height:100%;}
+.water-total{font-size:11px;color:var(--muted);margin-top:4px;}
+.water-ml{color:var(--gold);font-weight:600;}
+
+/* Habit check */
+.habit-row{display:flex;align-items:center;gap:10px;padding:6px 0;}
+.habit-row+.habit-row{border-top:0.5px solid var(--border);}
+.h-check{
+  width:20px;height:20px;border-radius:5px;border:1.5px solid var(--border);
+  background:var(--surface3);cursor:pointer;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;transition:all .2s;
+}
+.h-check.on{background:var(--gold-dim);border-color:var(--gold);}
+.h-check svg{width:11px;height:11px;stroke:var(--gold);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;opacity:0;transition:opacity .2s;}
+.h-check.on svg{opacity:1;}
+.h-text{font-size:13px;color:var(--cream);}
+
+/* Notice */
+.notice{background:var(--gold-faint);border:0.5px solid rgba(184,150,90,.3);border-radius:var(--r-sm);padding:12px 14px;margin-bottom:8px;}
+.notice-title{font-size:11px;color:var(--gold);font-weight:600;margin-bottom:4px;letter-spacing:.06em;}
+.notice-body{font-size:12px;color:var(--muted);line-height:1.6;}
+
+/* ── PLANNER ── */
+.seg-tabs{display:flex;gap:6px;margin-bottom:16px;}
+.seg-tab{
+  flex:1;text-align:center;padding:8px 4px;border-radius:var(--r-sm);
+  font-size:11px;font-weight:500;color:var(--muted);
+  background:var(--surface3);border:0.5px solid var(--border);cursor:pointer;transition:all .2s;
+}
+.seg-tab.on{background:var(--gold-dim);border-color:var(--gold);color:var(--gold);}
+.section-label{font-size:9px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin:16px 0 8px;opacity:.8;}
+.section-label:first-of-type{margin-top:0;}
+
+/* ── SUBSTITUTOS ── */
+.taco-search{position:relative;margin-bottom:10px;}
+.taco-search .inp{padding-right:40px;}
+.taco-search-ico{position:absolute;right:14px;top:50%;transform:translateY(-50%);opacity:.4;}
+.taco-search-ico svg{width:18px;height:18px;stroke:var(--cream);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.qty-row{display:flex;gap:8px;margin-bottom:14px;}
+.qty-row .inp{flex:1;}
+.sub-result{background:var(--surface2);border:0.5px solid var(--border);border-radius:var(--r);overflow:hidden;}
+.sub-header{padding:10px 14px;background:var(--gold-faint);border-bottom:0.5px solid var(--border);}
+.sub-header-name{font-size:13px;font-weight:600;color:var(--cream);}
+.sub-header-cal{font-size:11px;color:var(--muted);}
+.sub-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:0.5px solid var(--border);}
+.sub-item:last-child{border-bottom:none;}
+.sub-emoji{width:36px;height:36px;border-radius:8px;background:var(--surface3);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.sub-info-name{font-size:13px;font-weight:500;color:var(--cream);}
+.sub-info-detail{font-size:11px;color:var(--muted);margin-top:1px;}
+.sub-badge{margin-left:auto;font-size:9px;padding:3px 8px;border-radius:20px;background:var(--gold-dim);border:0.5px solid var(--gold);color:var(--gold);white-space:nowrap;}
+
+/* ── EVOLUÇÃO ── */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px;}
+.stat-box{background:var(--surface2);border:0.5px solid var(--border);border-radius:var(--r-sm);padding:12px 8px;text-align:center;}
+.stat-val{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;color:var(--gold);display:block;}
+.stat-lbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:2px;}
+.chart-wrap{background:var(--surface2);border:0.5px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:12px;}
+.chart-title{font-size:10px;color:var(--gold);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px;}
+.mini-chart{display:flex;align-items:flex-end;gap:5px;height:50px;}
+.bar{flex:1;background:var(--surface3);border-radius:3px 3px 0 0;transition:height .5s ease;position:relative;}
+.bar.hi{background:var(--gold);}
+.bar-lbl{position:absolute;bottom:-16px;left:50%;transform:translateX(-50%);font-size:8px;color:var(--muted);white-space:nowrap;}
+.photo-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px;}
+.photo-slot{
+  aspect-ratio:1;border-radius:var(--r-sm);background:var(--surface2);
+  border:0.5px dashed var(--border);display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:4px;cursor:pointer;
+  transition:border-color .2s;overflow:hidden;
+}
+.photo-slot:hover{border-color:var(--gold);}
+.photo-slot svg{width:22px;height:22px;stroke:var(--muted2);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;}
+.photo-slot span{font-size:10px;color:var(--muted2);}
+.photo-slot img{width:100%;height:100%;object-fit:cover;}
+.evol-inp-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+
+/* ── MAIS MENU ── */
+.mais-item{
+  display:flex;align-items:center;gap:14px;padding:14px 16px;
+  background:var(--surface2);border:0.5px solid var(--border);border-radius:var(--r);
+  margin-bottom:8px;cursor:pointer;transition:border-color .2s;
+}
+.mais-item:hover{border-color:var(--gold);}
+.mais-ico{width:40px;height:40px;border-radius:10px;background:var(--gold-faint);border:0.5px solid var(--gold-dim);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.mais-ico svg{width:20px;height:20px;stroke:var(--gold);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.mais-label{font-size:14px;color:var(--cream);font-weight:500;}
+.mais-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+.mais-arrow{margin-left:auto;opacity:.4;}
+.mais-arrow svg{width:16px;height:16px;stroke:var(--muted);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+
+/* ── SUB-SCREENS ── */
+.subscreen{display:none;flex-direction:column;flex:1;min-height:0;overflow:hidden;}
+.subscreen.active{display:flex;}
+.back-btn{display:flex;align-items:center;gap:6px;cursor:pointer;padding:4px 0;margin-bottom:12px;}
+.back-btn svg{width:18px;height:18px;stroke:var(--gold);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.back-btn span{font-size:13px;color:var(--gold);}
+
+/* Recipe card */
+.recipe-card{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--surface2);border:0.5px solid var(--border);border-radius:var(--r);margin-bottom:8px;cursor:pointer;transition:border-color .2s;}
+.recipe-card:hover{border-color:var(--gold);}
+.recipe-thumb{width:44px;height:44px;border-radius:8px;background:var(--surface3);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.recipe-name{font-size:13px;font-weight:500;color:var(--cream);}
+.recipe-meta{font-size:11px;color:var(--muted);margin-top:2px;}
+.recipe-tag{display:inline-block;font-size:9px;padding:2px 7px;border-radius:20px;background:var(--gold-faint);border:0.5px solid var(--gold-dim);color:var(--gold);margin-top:4px;}
+
+/* Video card */
+.video-card{background:var(--surface2);border:0.5px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:10px;cursor:pointer;transition:border-color .2s;}
+.video-card:hover{border-color:var(--gold);}
+.video-thumb{height:80px;background:var(--surface3);display:flex;align-items:center;justify-content:center;}
+.play-btn{width:36px;height:36px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;}
+.play-btn svg{width:14px;height:14px;fill:var(--bg);stroke:none;margin-left:2px;}
+.video-info{padding:10px 14px;}
+.video-title{font-size:13px;font-weight:500;color:var(--cream);}
+.video-dur{font-size:11px;color:var(--muted);margin-top:2px;}
+
+/* SOS card */
+.sos-card{display:flex;align-items:center;gap:12px;padding:14px;background:var(--surface2);border:0.5px solid var(--border);border-radius:var(--r);margin-bottom:8px;cursor:pointer;transition:border-color .2s;}
+.sos-card:hover{border-color:var(--gold);}
+.sos-dot{width:10px;height:10px;border-radius:50%;background:var(--gold);flex-shrink:0;}
+.sos-text{flex:1;}
+.sos-title{font-size:13px;color:var(--cream);font-weight:500;}
+.sos-dur{font-size:11px;color:var(--muted);margin-top:2px;}
+
+/* ── CONTA ── */
+.account-avatar{
+  width:64px;height:64px;border-radius:50%;background:var(--gold-faint);
+  border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;
+  font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--gold);
+  margin:0 auto 10px;
+}
+.account-name{text-align:center;font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--cream);margin-bottom:4px;}
+.account-email{text-align:center;font-size:12px;color:var(--muted);margin-bottom:4px;}
+.plan-badge{
+  display:inline-block;padding:4px 14px;border-radius:20px;
+  background:var(--gold-dim);border:0.5px solid var(--gold);
+  font-size:11px;color:var(--gold);font-weight:600;letter-spacing:.06em;
+}
+.plan-expires{font-size:11px;color:var(--muted);margin-top:6px;}
+
+/* ── ADMIN ── */
+.admin-stat-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;}
+.admin-stat{background:var(--surface2);border:0.5px solid var(--border);border-radius:var(--r-sm);padding:14px;text-align:center;}
+.admin-stat-n{font-family:'Cormorant Garamond',serif;font-size:32px;color:var(--gold);}
+.admin-stat-l{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:2px;}
+.patient-row{background:var(--surface2);border:0.5px solid var(--border);border-radius:var(--r);padding:12px 14px;margin-bottom:8px;}
+.patient-name{font-size:14px;font-weight:500;color:var(--cream);}
+.patient-email{font-size:11px;color:var(--muted);margin-top:2px;}
+.patient-meta{display:flex;align-items:center;gap:8px;margin-top:8px;}
+.status-badge{font-size:9px;padding:3px 8px;border-radius:20px;font-weight:600;letter-spacing:.06em;}
+.status-pending{background:#F39C1218;border:0.5px solid #F39C12;color:#F39C12;}
+.status-active{background:#27AE6018;border:0.5px solid #27AE60;color:#27AE60;}
+.status-suspended{background:#E74C3C18;border:0.5px solid #E74C3C;color:#E74C3C;}
+.plan-select{background:var(--surface3);border:0.5px solid var(--border);border-radius:var(--r-sm);padding:5px 10px;color:var(--cream);font-size:12px;outline:none;cursor:pointer;}
+.activate-btn{margin-left:auto;padding:6px 14px;background:var(--gold);color:var(--bg);border:none;border-radius:var(--r-sm);font-size:12px;font-weight:600;cursor:pointer;transition:opacity .2s;}
+.activate-btn:hover{opacity:.85;}
+.suspend-btn{padding:5px 10px;background:transparent;border:0.5px solid var(--danger);color:var(--danger);border-radius:var(--r-sm);font-size:11px;cursor:pointer;}
+.divider{height:0.5px;background:var(--border);margin:16px 0;}
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div id="loading">
+  <div class="logo-big">K</div>
+  <div class="sub">Albuquerque Nutrição Avançada</div>
+  <div class="spinner"></div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<div id="app">
+<div class="phone">
+
+  <!-- STATUS BAR -->
+  <div class="sbar" id="sbar" style="display:none">
+    <span class="sbar-time" id="sbar-time">9:41</span>
+    <div class="sbar-icons">
+      <span>●●●</span>
+      <span>WiFi</span>
+      <span>🔋</span>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════ -->
+  <!-- SCREEN: AUTH                    -->
+  <!-- ════════════════════════════════ -->
+  <div class="screen" id="screen-auth">
+    <div class="auth-wrap">
+      <div class="auth-logo">
+        <div class="auth-logo-k">K</div>
+        <div class="auth-logo-name">KAIRÓS</div>
+        <div class="auth-logo-sub">Albuquerque Nutrição Avançada</div>
+      </div>
+      <div class="auth-tabs">
+        <div class="auth-tab on" id="tab-login" onclick="authTab('login')">Entrar</div>
+        <div class="auth-tab" id="tab-register" onclick="authTab('register')">Criar conta</div>
+      </div>
+      <div class="auth-err" id="auth-err"></div>
+
+      <!-- LOGIN -->
+      <div id="form-login">
+        <div class="inp-group">
+          <label class="inp-label">E-mail</label>
+          <input class="inp" type="email" id="login-email" placeholder="seu@email.com" autocomplete="email">
+        </div>
+        <div class="inp-group">
+          <label class="inp-label">Senha</label>
+          <input class="inp" type="password" id="login-pw" placeholder="••••••••" autocomplete="current-password">
+        </div>
+        <button class="btn btn-gold" onclick="doLogin()" id="btn-login">Entrar</button>
+      </div>
+
+      <!-- REGISTER -->
+      <div id="form-register" style="display:none">
+        <div class="inp-group">
+          <label class="inp-label">Nome completo</label>
+          <input class="inp" type="text" id="reg-name" placeholder="Seu nome completo">
+        </div>
+        <div class="inp-group">
+          <label class="inp-label">E-mail</label>
+          <input class="inp" type="email" id="reg-email" placeholder="seu@email.com" autocomplete="email">
+        </div>
+        <div class="inp-group">
+          <label class="inp-label">Senha</label>
+          <input class="inp" type="password" id="reg-pw" placeholder="Mínimo 8 caracteres" autocomplete="new-password">
+        </div>
+        <button class="btn btn-gold" onclick="doRegister()" id="btn-register">Criar conta</button>
+        <p style="text-align:center;font-size:11px;color:var(--muted);margin-top:14px;line-height:1.6;">
+          Ao criar sua conta você concorda com nossa<br>
+          <span style="color:var(--gold);cursor:pointer">Política de Privacidade</span> e <span style="color:var(--gold);cursor:pointer">Termos de Uso</span>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════ -->
+  <!-- SCREEN: LGPD CONSENT            -->
+  <!-- ════════════════════════════════ -->
+  <div class="screen" id="screen-consent">
+    <div class="consent-wrap">
+      <div class="consent-logo">
+        <div class="auth-logo-k" style="margin:0 auto 8px;">K</div>
+      </div>
+      <div class="consent-title">Antes de continuar</div>
+      <div class="consent-sub">Leia e aceite nossa Política de Privacidade e Termos de Uso para acessar o Kairós.</div>
+      <div class="consent-box">
+        <h3>O que coletamos</h3>
+        <p>Nome, e-mail, dados de saúde (peso, medidas, fotos corporais), registros de hábitos e anotações pessoais.</p>
+        <h3>Como usamos seus dados</h3>
+        <p>Exclusivamente para prestação dos serviços de acompanhamento nutricional contratados. Seus dados nunca são vendidos ou compartilhados para fins publicitários.</p>
+        <h3>Seus direitos (LGPD)</h3>
+        <ul>
+          <li>Acessar, corrigir ou excluir seus dados a qualquer momento</li>
+          <li>Revogar o consentimento pelo e-mail privacidade@kairos.com.br</li>
+          <li>Solicitar portabilidade dos dados</li>
+        </ul>
+        <h3>Segurança</h3>
+        <p>Todos os dados são criptografados. Fotos e registros de saúde são acessíveis somente por você e pelo nutricionista responsável.</p>
+        <h3>Controlador dos dados</h3>
+        <p>Roberto da Silva Cabral Albuquerque Ltda — CNPJ 55.081.700/0001-40 — Albuquerque Nutrição Avançada.</p>
+      </div>
+      <div class="consent-check-row" onclick="toggleConsent()">
+        <div class="consent-check" id="consent-check">
+          <svg viewBox="0 0 12 12" style="width:12px;height:12px;stroke:var(--bg);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;"><polyline points="2,6 5,9 10,3"/></svg>
+        </div>
+        <div class="consent-check-label">Li e aceito a Política de Privacidade e os Termos de Uso. Consinto com o tratamento dos meus dados de saúde pela Albuquerque Nutrição Avançada.</div>
+      </div>
+      <button class="btn btn-gold" id="btn-consent" onclick="doConsent()" disabled>Continuar</button>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════ -->
+  <!-- SCREEN: PLANO EXPIRADO          -->
+  <!-- ════════════════════════════════ -->
+  <div class="screen" id="screen-expired">
+    <div class="expired-wrap">
+      <div style="font-size:48px;margin-bottom:16px;">⏳</div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--cream);margin-bottom:8px;">Acesso encerrado</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:32px;">Seu plano expirou ou ainda não foi ativado. Entre em contato com o consultório para renovar.</div>
+      <a href="https://wa.me/55XXXXXXXXXXX" style="text-decoration:none;width:100%">
+        <button class="btn btn-gold">Falar com o consultório</button>
+      </a>
+      <button class="btn btn-outline" style="margin-top:10px;" onclick="doLogout()">Sair</button>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════ -->
+  <!-- SCREEN: APP PRINCIPAL           -->
+  <!-- ════════════════════════════════ -->
+  <div class="screen" id="screen-app">
+
+    <!-- ── INÍCIO ── -->
+    <div class="subscreen active" id="tab-inicio">
+      <div class="hdr">
+        <div class="hdr-row">
+          <div class="logo-pill">
+            <div class="logo-k">K</div>
+            <span class="logo-name">Kairós</span>
+          </div>
+          <div style="width:32px;height:32px;border-radius:50%;background:var(--gold-faint);border:1px solid var(--gold-dim);display:flex;align-items:center;justify-content:center;cursor:pointer;" onclick="showMais()">
+            <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:var(--gold);fill:none;stroke-width:2;stroke-linecap:round;"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+          </div>
+        </div>
+        <div class="greeting-line" id="greeting-tag">Bom dia</div>
+        <div class="greeting-name" id="greeting-name">—</div>
+      </div>
+      <div class="scroll">
+        <!-- Progresso semanal -->
+        <div class="card">
+          <div class="card-title">Progresso semanal</div>
+          <div class="progress-row">
+            <span class="progress-label" id="week-label">Semana 1</span>
+            <span class="progress-pct" id="week-pct">0%</span>
+          </div>
+          <div class="progress-bg"><div class="progress-fill" id="week-bar" style="width:0%"></div></div>
+        </div>
+
+        <!-- Água -->
+        <div class="card">
+          <div class="card-title">Hidratação</div>
+          <div class="cups-row" id="cups-row"></div>
+          <div class="water-total">Total: <span class="water-ml" id="water-total-ml">0 ml</span> de 2.000 ml</div>
+        </div>
+
+        <!-- Hábitos rápidos -->
+        <div class="card">
+          <div class="card-title">Hábitos de hoje</div>
+          <div id="quick-habits"></div>
+        </div>
+
+        <!-- Avisos -->
+        <div id="notices-wrap"></div>
+      </div>
+    </div>
+
+    <!-- ── PLANNER ── -->
+    <div class="subscreen" id="tab-planner">
+      <div class="hdr">
+        <div class="tag">Planner</div>
+        <div class="hdr-title">Hábitos do dia</div>
+      </div>
+      <div class="scroll">
+        <div class="seg-tabs">
+          <div class="seg-tab on" onclick="setGoal('emagrecer',this)">Emagrecer</div>
+          <div class="seg-tab" onclick="setGoal('ganhar_massa',this)">Ganhar massa</div>
+          <div class="seg-tab" onclick="setGoal('saude',this)">Saúde</div>
+        </div>
+        <div id="planner-content"></div>
+      </div>
+    </div>
+
+    <!-- ── SUBSTITUTOS ── -->
+    <div class="subscreen" id="tab-substitutos">
+      <div class="hdr">
+        <div class="tag">Calculadora</div>
+        <div class="hdr-title">Substitutos TACO</div>
+      </div>
+      <div class="scroll">
+        <div class="taco-search">
+          <input class="inp" type="text" id="food-search" placeholder="Ex: Arroz branco" oninput="filterFoods()">
+          <div class="taco-search-ico"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+        </div>
+        <div id="food-list" style="margin-bottom:14px;max-height:180px;overflow-y:auto;"></div>
+        <div class="qty-row" id="qty-row" style="display:none">
+          <input class="inp" type="number" id="food-qty" placeholder="Quantidade (g)" value="100">
+          <button class="btn btn-gold" style="width:auto;padding:12px 20px;" onclick="calcSubstitutos()">Calcular</button>
+        </div>
+        <div id="sub-result-wrap"></div>
+      </div>
+    </div>
+
+    <!-- ── EVOLUÇÃO ── */
+    <div class="subscreen" id="tab-evolucao">
+      <div class="hdr">
+        <div class="tag">Evolução</div>
+        <div class="hdr-title">Minha evolução</div>
+      </div>
+      <div class="scroll">
+        <div class="stat-grid" id="evol-stats"></div>
+        <div class="chart-wrap">
+          <div class="chart-title">Peso — últimas semanas</div>
+          <div class="mini-chart" id="weight-chart" style="margin-bottom:20px;"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Registrar hoje</div>
+          <div class="evol-inp-row">
+            <div class="inp-group"><label class="inp-label">Peso (kg)</label><input class="inp" type="number" id="inp-weight" placeholder="Ex: 72.5" step="0.1"></div>
+            <div class="inp-group"><label class="inp-label">Cintura (cm)</label><input class="inp" type="number" id="inp-waist" placeholder="Ex: 80"></div>
+            <div class="inp-group"><label class="inp-label">Quadril (cm)</label><input class="inp" type="number" id="inp-hip" placeholder="Ex: 95"></div>
+            <div class="inp-group"><label class="inp-label">Braço (cm)</label><input class="inp" type="number" id="inp-arm" placeholder="Ex: 30"></div>
+          </div>
+          <div class="inp-group" style="margin-top:4px;"><label class="inp-label">Observações</label><input class="inp" type="text" id="inp-notes" placeholder="Como você está se sentindo?"></div>
+          <button class="btn btn-gold" onclick="saveBodyRecord()">Salvar registro</button>
+        </div>
+        <div class="card">
+          <div class="card-title">Fotos de acompanhamento</div>
+          <div class="photo-grid" id="photo-grid">
+            <div class="photo-slot" onclick="triggerPhoto('front')">
+              <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="12" r="4"/></svg>
+              <span>Frente</span>
+            </div>
+            <div class="photo-slot" onclick="triggerPhoto('side')">
+              <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="12" r="4"/></svg>
+              <span>Lado</span>
+            </div>
+            <div class="photo-slot" onclick="triggerPhoto('back')">
+              <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="12" r="4"/></svg>
+              <span>Costas</span>
+            </div>
+          </div>
+          <p style="font-size:11px;color:var(--muted);text-align:center;margin-top:8px;">🔒 Fotos visíveis somente para você</p>
+          <input type="file" id="photo-input" accept="image/*" style="display:none" onchange="uploadPhoto(this)">
+        </div>
+      </div>
+    </div>
+
+    <!-- ── MAIS ── -->
+    <div class="subscreen" id="tab-mais">
+      <div class="hdr">
+        <div class="tag">Menu</div>
+        <div class="hdr-title">Mais</div>
+      </div>
+      <div class="scroll" id="mais-main">
+        <div class="mais-item" onclick="showSub('receitas')">
+          <div class="mais-ico"><svg viewBox="0 0 24 24"><path d="M3 2l1.5 5M20.5 7H3.5M6 7l1.5 14h9L18 7"/><path d="M10 11v6M14 11v6"/></svg></div>
+          <div><div class="mais-label">Receitas</div><div class="mais-sub">Banco de receitas do Dr. Roberto</div></div>
+          <div class="mais-arrow"><svg viewBox="0 0 24 24"><polyline points="9,18 15,12 9,6"/></svg></div>
+        </div>
+        <div class="mais-item" onclick="showSub('conteudo')">
+          <div class="mais-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10,8 16,12 10,16"/></svg></div>
+          <div><div class="mais-label">Conteúdo</div><div class="mais-sub">Vídeos e materiais do Dr. Roberto</div></div>
+          <div class="mais-arrow"><svg viewBox="0 0 24 24"><polyline points="9,18 15,12 9,6"/></svg></div>
+        </div>
+        <div class="mais-item" onclick="showSub('sos')">
+          <div class="mais-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+          <div><div class="mais-label">SOS Nutricional</div><div class="mais-sub">Leituras de apoio rápido</div></div>
+          <div class="mais-arrow"><svg viewBox="0 0 24 24"><polyline points="9,18 15,12 9,6"/></svg></div>
+        </div>
+        <div class="mais-item" onclick="showSub('conta')">
+          <div class="mais-ico"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          <div><div class="mais-label">Minha conta</div><div class="mais-sub">Dados, plano e configurações</div></div>
+          <div class="mais-arrow"><svg viewBox="0 0 24 24"><polyline points="9,18 15,12 9,6"/></svg></div>
+        </div>
+        <div id="admin-btn-wrap" style="display:none">
+          <div class="divider"></div>
+          <div class="mais-item" onclick="showSub('admin')" style="border-color:var(--gold);">
+            <div class="mais-ico" style="background:var(--gold-dim);"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+            <div><div class="mais-label" style="color:var(--gold);">Painel Admin</div><div class="mais-sub">Gerenciar pacientes e conteúdo</div></div>
+            <div class="mais-arrow"><svg viewBox="0 0 24 24"><polyline points="9,18 15,12 9,6"/></svg></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sub: Receitas -->
+      <div class="scroll" id="sub-receitas" style="display:none;padding-top:14px;">
+        <div class="back-btn" onclick="hideSub()"><svg viewBox="0 0 24 24"><polyline points="15,18 9,12 15,6"/></svg><span>Voltar</span></div>
+        <div class="tag" style="margin-bottom:4px;">Receitas</div>
+        <div class="hdr-title" style="font-size:20px;margin-bottom:14px;">Banco de receitas</div>
+        <div id="recipes-list"><div style="text-align:center;padding:40px;color:var(--muted);font-size:13px;">Carregando receitas...</div></div>
+      </div>
+
+      <!-- Sub: Conteudo -->
+      <div class="scroll" id="sub-conteudo" style="display:none;padding-top:14px;">
+        <div class="back-btn" onclick="hideSub()"><svg viewBox="0 0 24 24"><polyline points="15,18 9,12 15,6"/></svg><span>Voltar</span></div>
+        <div class="tag" style="margin-bottom:4px;">Conteúdo</div>
+        <div class="hdr-title" style="font-size:20px;margin-bottom:14px;">Vídeos e materiais</div>
+        <div id="content-list"><div style="text-align:center;padding:40px;color:var(--muted);font-size:13px;">Carregando conteúdo...</div></div>
+      </div>
+
+      <!-- Sub: SOS -->
+      <div class="scroll" id="sub-sos" style="display:none;padding-top:14px;">
+        <div class="back-btn" onclick="hideSub()"><svg viewBox="0 0 24 24"><polyline points="15,18 9,12 15,6"/></svg><span>Voltar</span></div>
+        <div class="tag" style="margin-bottom:4px;">SOS</div>
+        <div class="hdr-title" style="font-size:20px;margin-bottom:14px;">SOS Nutricional</div>
+        <div id="sos-list"></div>
+      </div>
+
+      <!-- Sub: Conta -->
+      <div class="scroll" id="sub-conta" style="display:none;padding-top:14px;">
+        <div class="back-btn" onclick="hideSub()"><svg viewBox="0 0 24 24"><polyline points="15,18 9,12 15,6"/></svg><span>Voltar</span></div>
+        <div style="text-align:center;margin-bottom:20px;">
+          <div class="account-avatar" id="acc-avatar">?</div>
+          <div class="account-name" id="acc-name">—</div>
+          <div class="account-email" id="acc-email">—</div>
+          <div style="margin-top:10px;">
+            <span class="plan-badge" id="acc-plan">—</span>
+          </div>
+          <div class="plan-expires" id="acc-expires">—</div>
+        </div>
+        <div class="card">
+          <div class="card-title">Dados pessoais</div>
+          <div class="inp-group"><label class="inp-label">Nome</label><input class="inp" type="text" id="acc-inp-name" placeholder="Seu nome"></div>
+          <div class="inp-group"><label class="inp-label">Objetivo</label>
+            <select class="inp" id="acc-inp-goal">
+              <option value="">Selecionar</option>
+              <option value="emagrecer">Emagrecer</option>
+              <option value="ganhar_massa">Ganhar massa</option>
+              <option value="saude">Saúde e bem-estar</option>
+            </select>
+          </div>
+          <div class="inp-group"><label class="inp-label">Altura (cm)</label><input class="inp" type="number" id="acc-inp-height" placeholder="Ex: 165"></div>
+          <button class="btn btn-gold" onclick="saveProfile()">Salvar alterações</button>
+        </div>
+        <div class="divider"></div>
+        <button class="btn btn-outline" onclick="doLogout()" style="margin-bottom:10px;">Sair da conta</button>
+        <button class="btn btn-danger" onclick="requestDelete()">Solicitar exclusão de dados</button>
+        <p style="font-size:11px;color:var(--muted);text-align:center;margin-top:12px;line-height:1.6;">
+          Controlador: Roberto da Silva Cabral Albuquerque Ltda<br>
+          CNPJ 55.081.700/0001-40<br>
+          privacidade@kairos.com.br
+        </p>
+      </div>
+
+      <!-- Sub: Admin -->
+      <div class="scroll" id="sub-admin" style="display:none;padding-top:14px;">
+        <div class="back-btn" onclick="hideSub()"><svg viewBox="0 0 24 24"><polyline points="15,18 9,12 15,6"/></svg><span>Voltar</span></div>
+        <div class="tag" style="margin-bottom:4px;">Admin</div>
+        <div class="hdr-title" style="font-size:20px;margin-bottom:14px;">Painel Admin</div>
+        <div class="admin-stat-row" id="admin-stats"></div>
+        <div class="card-title" style="margin-bottom:8px;">Pendentes de ativação</div>
+        <div id="admin-pending"></div>
+        <div class="divider"></div>
+        <div class="card-title" style="margin-bottom:8px;">Pacientes ativos</div>
+        <div id="admin-active"></div>
+      </div>
+
+    </div>
+
+    <!-- BOTTOM NAV -->
+    <div class="bnav" id="bnav">
+      <div class="bnav-item on" id="nav-inicio" onclick="switchTab('inicio')">
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
+        <span>Início</span>
+      </div>
+      <div class="bnav-item" id="nav-planner" onclick="switchTab('planner')">
+        <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        <span>Planner</span>
+      </div>
+      <div class="bnav-item" id="nav-substitutos" onclick="switchTab('substitutos')">
+        <svg viewBox="0 0 24 24"><polyline points="17,1 21,5 17,9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7,23 3,19 7,15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+        <span>Substitutos</span>
+      </div>
+      <div class="bnav-item" id="nav-evolucao" onclick="switchTab('evolucao')">
+        <svg viewBox="0 0 24 24"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/></svg>
+        <span>Evolução</span>
+      </div>
+      <div class="bnav-item" id="nav-mais" onclick="switchTab('mais')">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+        <span>Mais</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+// ── SUPABASE ──────────────────────────────────────────────
+const { createClient } = supabase;
+const sb = createClient(
+  'https://qgyuvbnieyjprxbozotk.supabase.co',
+  'sb_publishable_p_gvQ85WAG5RXVtW301cWQ_DmvTpR5j'
+);
+
+// ── STATE ─────────────────────────────────────────────────
+let currentUser = null;
+let currentProfile = null;
+let todayLog = null;
+let habitLogs = [];
+let currentGoal = 'emagrecer';
+let currentPhotoSlot = null;
+let tacoData = [];
+let selectedFood = null;
+const TODAY = new Date().toISOString().slice(0,10);
+
+// ── HÁBITOS POR OBJETIVO ─────────────────────────────────
+const HABITS = {
+  emagrecer: [
+    { key:'cafe_sem_acucar', label:'Café sem açúcar', cat:'Alimentação' },
+    { key:'proteina_almoco', label:'Proteína no almoço', cat:'Alimentação' },
+    { key:'sem_ultraprocessados', label:'Evitar ultraprocessados', cat:'Alimentação' },
+    { key:'jantar_leve', label:'Jantar leve', cat:'Alimentação' },
+    { key:'agua_2l', label:'2L de água', cat:'Hidratação' },
+    { key:'sem_refrigerante', label:'Sem refrigerante', cat:'Hidratação' },
+    { key:'comer_devagar', label:'Comer devagar', cat:'Comportamento' },
+    { key:'sem_tela_almoco', label:'Sem tela no almoço', cat:'Comportamento' },
+  ],
+  ganhar_massa: [
+    { key:'cafe_proteico', label:'Café da manhã proteico', cat:'Alimentação' },
+    { key:'pre_treino', label:'Refeição pré-treino', cat:'Alimentação' },
+    { key:'pos_treino', label:'Refeição pós-treino', cat:'Alimentação' },
+    { key:'meta_calorica', label:'Atingir meta calórica', cat:'Alimentação' },
+    { key:'agua_3l', label:'3L de água', cat:'Hidratação' },
+    { key:'treino_feito', label:'Treino realizado', cat:'Atividade' },
+    { key:'sono_8h', label:'Dormir 8 horas', cat:'Recuperação' },
+  ],
+  saude: [
+    { key:'frutas_legumes', label:'Frutas e legumes', cat:'Alimentação' },
+    { key:'menos_sal', label:'Reduzir sal', cat:'Alimentação' },
+    { key:'sem_acucar_refinado', label:'Sem açúcar refinado', cat:'Alimentação' },
+    { key:'agua_2l', label:'2L de água', cat:'Hidratação' },
+    { key:'atividade_20min', label:'20 min de atividade', cat:'Atividade' },
+    { key:'relaxamento', label:'Momento de relaxamento', cat:'Bem-estar' },
+    { key:'sono_qualidade', label:'Sono de qualidade', cat:'Bem-estar' },
+  ]
+};
+
+// ── TABELA TACO (amostra representativa) ─────────────────
+const TACO_DB = [
+  { id:1, name:'Arroz branco cozido', emoji:'🍚', kcal_100:128, prot:2.5, carb:28.1, fat:0.2, group:'Cereais' },
+  { id:2, name:'Arroz integral cozido', emoji:'🍚', kcal_100:124, prot:2.6, carb:25.8, fat:1.0, group:'Cereais' },
+  { id:3, name:'Feijão carioca cozido', emoji:'🫘', kcal_100:76, prot:4.8, carb:13.6, fat:0.5, group:'Leguminosas' },
+  { id:4, name:'Feijão preto cozido', emoji:'🫘', kcal_100:77, prot:4.5, carb:14.0, fat:0.5, group:'Leguminosas' },
+  { id:5, name:'Batata doce cozida', emoji:'🍠', kcal_100:77, prot:0.6, carb:18.4, fat:0.1, group:'Tubérculos' },
+  { id:6, name:'Batata inglesa cozida', emoji:'🥔', kcal_100:52, prot:1.2, carb:11.9, fat:0.1, group:'Tubérculos' },
+  { id:7, name:'Mandioca cozida', emoji:'🥕', kcal_100:125, prot:0.6, carb:30.1, fat:0.3, group:'Tubérculos' },
+  { id:8, name:'Macarrão cozido', emoji:'🍝', kcal_100:111, prot:3.8, carb:22.7, fat:0.5, group:'Cereais' },
+  { id:9, name:'Pão francês', emoji:'🍞', kcal_100:300, prot:8.0, carb:58.6, fat:3.1, group:'Panificados' },
+  { id:10, name:'Aveia em flocos', emoji:'🌾', kcal_100:394, prot:13.9, carb:66.6, fat:8.5, group:'Cereais' },
+  { id:11, name:'Frango grelhado', emoji:'🍗', kcal_100:159, prot:32.0, carb:0.0, fat:3.0, group:'Carnes' },
+  { id:12, name:'Carne bovina patinho', emoji:'🥩', kcal_100:219, prot:21.5, carb:0.0, fat:14.1, group:'Carnes' },
+  { id:13, name:'Ovo de galinha', emoji:'🥚', kcal_100:146, prot:13.3, carb:0.6, fat:9.5, group:'Ovos' },
+  { id:14, name:'Atum enlatado', emoji:'🐟', kcal_100:119, prot:26.0, carb:0.0, fat:0.8, group:'Pescados' },
+  { id:15, name:'Sardinha enlatada', emoji:'🐟', kcal_100:185, prot:23.0, carb:0.0, fat:10.3, group:'Pescados' },
+  { id:16, name:'Leite integral', emoji:'🥛', kcal_100:61, prot:3.2, carb:4.7, fat:3.2, group:'Laticínios' },
+  { id:17, name:'Iogurte natural', emoji:'🥛', kcal_100:51, prot:4.1, carb:5.9, fat:1.2, group:'Laticínios' },
+  { id:18, name:'Queijo minas frescal', emoji:'🧀', kcal_100:264, prot:17.4, carb:3.2, fat:20.2, group:'Laticínios' },
+  { id:19, name:'Banana prata', emoji:'🍌', kcal_100:98, prot:1.3, carb:26.0, fat:0.1, group:'Frutas' },
+  { id:20, name:'Maçã', emoji:'🍎', kcal_100:56, prot:0.3, carb:15.2, fat:0.1, group:'Frutas' },
+  { id:21, name:'Mamão papaia', emoji:'🍈', kcal_100:45, prot:0.5, carb:11.6, fat:0.1, group:'Frutas' },
+  { id:22, name:'Laranja pêra', emoji:'🍊', kcal_100:37, prot:1.0, carb:8.9, fat:0.1, group:'Frutas' },
+  { id:23, name:'Brócolis cozido', emoji:'🥦', kcal_100:25, prot:2.6, carb:3.5, fat:0.4, group:'Hortaliças' },
+  { id:24, name:'Cenoura crua', emoji:'🥕', kcal_100:34, prot:1.3, carb:7.7, fat:0.2, group:'Hortaliças' },
+  { id:25, name:'Azeite de oliva', emoji:'🫒', kcal_100:884, prot:0.0, carb:0.0, fat:100.0, group:'Gorduras' },
+  { id:26, name:'Amendoim torrado', emoji:'🥜', kcal_100:581, prot:26.0, carb:17.6, fat:47.5, group:'Oleaginosas' },
+  { id:27, name:'Quinoa cozida', emoji:'🌾', kcal_100:120, prot:4.4, carb:21.3, fat:1.9, group:'Cereais' },
+  { id:28, name:'Lentilha cozida', emoji:'🫘', kcal_100:93, prot:6.3, carb:16.3, fat:0.5, group:'Leguminosas' },
+  { id:29, name:'Milho cozido', emoji:'🌽', kcal_100:91, prot:2.5, carb:20.0, fat:0.9, group:'Vegetais' },
+  { id:30, name:'Tapioca hidratada', emoji:'🫓', kcal_100:130, prot:0.2, carb:32.0, fat:0.0, group:'Cereais' },
+];
+
+// SOS Data
+const SOS_DATA = [
+  { t:'Como lidar com a fome fora de hora', d:'4 min de leitura' },
+  { t:'Refeições rápidas fora de casa', d:'3 min de leitura' },
+  { t:'Voltando aos trilhos após um deslize', d:'5 min de leitura' },
+  { t:'Como lidar com a fome noturna', d:'3 min de leitura' },
+  { t:'Gerenciando estresse sem comida', d:'6 min de leitura' },
+  { t:'O que fazer no fim de semana', d:'4 min de leitura' },
+  { t:'Hidratação: por que é tão importante', d:'3 min de leitura' },
+];
+
+// ── INIT ──────────────────────────────────────────────────
+window.onload = async function() {
+  updateClock();
+  setInterval(updateClock, 30000);
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) {
+    currentUser = session.user;
+    await loadProfile();
+  } else {
+    showScreen('auth');
+  }
+};
+
+function updateClock() {
+  const now = new Date();
+  const h = now.getHours().toString().padStart(2,'0');
+  const m = now.getMinutes().toString().padStart(2,'0');
+  const el = document.getElementById('sbar-time');
+  if(el) el.textContent = h + ':' + m;
+}
+
+// ── PROFILE & ROUTING ─────────────────────────────────────
+async function loadProfile() {
+  const { data, error } = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
+  if (error || !data) { showScreen('auth'); return; }
+  currentProfile = data;
+
+  if (!data.consent_accepted) { showScreen('consent'); return; }
+
+  const now = new Date();
+  const expires = data.subscription_expires_at ? new Date(data.subscription_expires_at) : null;
+  if (data.status !== 'active' || !expires || expires < now) {
+    showScreen('expired'); return;
+  }
+
+  showScreen('app');
+  initApp();
+}
+
+async function initApp() {
+  const h = new Date().getHours();
+  const greet = h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite';
+  document.getElementById('greeting-tag').textContent = greet + ',';
+  document.getElementById('greeting-name').textContent = currentProfile.full_name || 'bem-vindo(a)!';
+
+  if (currentProfile.goal) {
+    currentGoal = currentProfile.goal;
+    document.querySelectorAll('.seg-tab').forEach((t,i) => {
+      const goals = ['emagrecer','ganhar_massa','saude'];
+      t.classList.toggle('on', goals[i] === currentGoal);
+    });
+  }
+
+  if (currentProfile.role === 'admin') {
+    document.getElementById('admin-btn-wrap').style.display = 'block';
+  }
+
+  await Promise.all([loadTodayLog(), loadHabitLogs(), loadNotices()]);
+  renderCups();
+  renderQuickHabits();
+  renderPlanner();
+  renderSOS();
+  loadEvolution();
+  populateFoodList();
+  loadAccount();
+}
+
+// ── AUTH ──────────────────────────────────────────────────
+function authTab(tab) {
+  document.getElementById('form-login').style.display = tab === 'login' ? 'block' : 'none';
+  document.getElementById('form-register').style.display = tab === 'register' ? 'block' : 'none';
+  document.getElementById('tab-login').classList.toggle('on', tab === 'login');
+  document.getElementById('tab-register').classList.toggle('on', tab === 'register');
+  document.getElementById('auth-err').classList.remove('show');
+}
+
+async function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const pw = document.getElementById('login-pw').value;
+  const btn = document.getElementById('btn-login');
+  if (!email || !pw) { showAuthErr('Preencha e-mail e senha.'); return; }
+  btn.disabled = true; btn.textContent = 'Entrando...';
+  const { data, error } = await sb.auth.signInWithPassword({ email, password: pw });
+  if (error) { showAuthErr('E-mail ou senha incorretos.'); btn.disabled = false; btn.textContent = 'Entrar'; return; }
+  currentUser = data.user;
+  await loadProfile();
+}
+
+async function doRegister() {
+  const name = document.getElementById('reg-name').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const pw = document.getElementById('reg-pw').value;
+  const btn = document.getElementById('btn-register');
+  if (!name || !email || !pw) { showAuthErr('Preencha todos os campos.'); return; }
+  if (pw.length < 8) { showAuthErr('Senha deve ter no mínimo 8 caracteres.'); return; }
+  btn.disabled = true; btn.textContent = 'Criando conta...';
+  const { data, error } = await sb.auth.signUp({ email, password: pw, options: { data: { full_name: name } } });
+  if (error) { showAuthErr(error.message); btn.disabled = false; btn.textContent = 'Criar conta'; return; }
+  currentUser = data.user;
+  await loadProfile();
+}
+
+function showAuthErr(msg) {
+  const el = document.getElementById('auth-err');
+  el.textContent = msg; el.classList.add('show');
+}
+
+async function doLogout() {
+  await sb.auth.signOut();
+  currentUser = null; currentProfile = null;
+  showScreen('auth');
+}
+
+// ── LGPD CONSENT ──────────────────────────────────────────
+let consentChecked = false;
+function toggleConsent() {
+  consentChecked = !consentChecked;
+  document.getElementById('consent-check').classList.toggle('on', consentChecked);
+  document.getElementById('btn-consent').disabled = !consentChecked;
+}
+
+async function doConsent() {
+  const btn = document.getElementById('btn-consent');
+  btn.disabled = true; btn.textContent = 'Salvando...';
+  const now = new Date().toISOString();
+  const { error: e1 } = await sb.from('profiles').update({
+    consent_accepted: true, consent_date: now, consent_version: '1.0'
+  }).eq('id', currentUser.id);
+  const { error: e2 } = await sb.from('consent_log').insert({
+    user_id: currentUser.id, consent_version: '1.0', accepted_at: now
+  });
+  if (e1 || e2) { toast('Erro ao salvar. Tente novamente.'); btn.disabled = false; btn.textContent = 'Continuar'; return; }
+  currentProfile.consent_accepted = true;
+  await loadProfile();
+}
+
+// ── TODAY LOG ─────────────────────────────────────────────
+async function loadTodayLog() {
+  const { data } = await sb.from('daily_logs').select('*').eq('user_id', currentUser.id).eq('log_date', TODAY).maybeSingle();
+  todayLog = data;
+}
+
+async function ensureTodayLog() {
+  if (todayLog) return;
+  const { data } = await sb.from('daily_logs').insert({ user_id: currentUser.id, log_date: TODAY, water_ml: 0 }).select().single();
+  todayLog = data;
+}
+
+// ── ÁGUA ──────────────────────────────────────────────────
+function renderCups() {
+  const ml = todayLog ? todayLog.water_ml : 0;
+  const filled = Math.round(ml / 250);
+  const wrap = document.getElementById('cups-row');
+  wrap.innerHTML = '';
+  for (let i = 0; i < 8; i++) {
+    const c = document.createElement('div');
+    c.className = 'cup' + (i < filled ? ' filled' : '');
+    c.innerHTML = '<div class="cup-fill"></div>';
+    c.onclick = () => toggleCup(i);
+    wrap.appendChild(c);
+  }
+  document.getElementById('water-total-ml').textContent = ml + ' ml';
+}
+
+async function toggleCup(i) {
+  await ensureTodayLog();
+  const currentFilled = Math.round((todayLog.water_ml || 0) / 250);
+  const newFilled = i < currentFilled ? i : i + 1;
+  const newMl = newFilled * 250;
+  const { error } = await sb.from('daily_logs').update({ water_ml: newMl }).eq('id', todayLog.id);
+  if (!error) { todayLog.water_ml = newMl; renderCups(); updateWeekProgress(); }
+}
+
+// ── HABIT LOGS ────────────────────────────────────────────
+async function loadHabitLogs() {
+  const { data } = await sb.from('habit_logs').select('*').eq('user_id', currentUser.id).eq('log_date', TODAY);
+  habitLogs = data || [];
+}
+
+function isHabitDone(key) { return habitLogs.some(h => h.habit_key === key && h.done); }
+
+async function toggleHabit(key) {
+  const done = isHabitDone(key);
+  if (done) {
+    await sb.from('habit_logs').delete().eq('user_id', currentUser.id).eq('log_date', TODAY).eq('habit_key', key);
+    habitLogs = habitLogs.filter(h => h.habit_key !== key);
+  } else {
+    const { data } = await sb.from('habit_logs').upsert({ user_id: currentUser.id, log_date: TODAY, habit_key: key, done: true }, { onConflict: 'user_id,log_date,habit_key' }).select().single();
+    if (data) habitLogs = [...habitLogs.filter(h => h.habit_key !== key), data];
+  }
+  renderQuickHabits();
+  renderPlanner();
+  updateWeekProgress();
+}
+
+function renderQuickHabits() {
+  const habits = HABITS[currentGoal].slice(0, 4);
+  const wrap = document.getElementById('quick-habits');
+  wrap.innerHTML = habits.map(h => `
+    <div class="habit-row" onclick="toggleHabit('${h.key}')">
+      <div class="h-check ${isHabitDone(h.key) ? 'on' : ''}">
+        <svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg>
+      </div>
+      <span class="h-text">${h.label}</span>
+    </div>
+  `).join('');
+}
+
+function updateWeekProgress() {
+  const habits = HABITS[currentGoal];
+  const done = habits.filter(h => isHabitDone(h.key)).length;
+  const pct = Math.round((done / habits.length) * 100);
+  document.getElementById('week-pct').textContent = pct + '%';
+  document.getElementById('week-bar').style.width = pct + '%';
+}
+
+// ── PLANNER ───────────────────────────────────────────────
+function setGoal(goal, el) {
+  currentGoal = goal;
+  document.querySelectorAll('.seg-tab').forEach(t => t.classList.remove('on'));
+  el.classList.add('on');
+  renderPlanner();
+  renderQuickHabits();
+  updateWeekProgress();
+}
+
+function renderPlanner() {
+  const habits = HABITS[currentGoal];
+  const cats = [...new Set(habits.map(h => h.cat))];
+  document.getElementById('planner-content').innerHTML = cats.map(cat => `
+    <div class="section-label">${cat}</div>
+    ${habits.filter(h => h.cat === cat).map(h => `
+      <div class="habit-row" onclick="toggleHabit('${h.key}')">
+        <div class="h-check ${isHabitDone(h.key) ? 'on' : ''}">
+          <svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg>
+        </div>
+        <span class="h-text">${h.label}</span>
+      </div>
+    `).join('')}
+  `).join('');
+  updateWeekProgress();
+}
+
+// ── NOTICES ───────────────────────────────────────────────
+async function loadNotices() {
+  const { data } = await sb.from('notices').select('*').eq('published', true).order('created_at', { ascending: false }).limit(3);
+  const wrap = document.getElementById('notices-wrap');
+  if (!data || data.length === 0) { wrap.innerHTML = ''; return; }
+  wrap.innerHTML = data.map(n => `
+    <div class="notice">
+      <div class="notice-title">📌 ${n.title}</div>
+      <div class="notice-body">${n.body}</div>
+    </div>
+  `).join('');
+}
+
+// ── SUBSTITUTOS TACO ──────────────────────────────────────
+function populateFoodList() { tacoData = TACO_DB; renderFoodList(tacoData); }
+
+function filterFoods() {
+  const q = document.getElementById('food-search').value.trim().toLowerCase();
+  if (!q) { document.getElementById('food-list').innerHTML = ''; document.getElementById('qty-row').style.display = 'none'; return; }
+  const filtered = tacoData.filter(f => f.name.toLowerCase().includes(q));
+  renderFoodList(filtered);
+}
+
+function renderFoodList(foods) {
+  const el = document.getElementById('food-list');
+  if (foods.length === 0) { el.innerHTML = '<p style="font-size:12px;color:var(--muted);padding:10px;">Nenhum alimento encontrado.</p>'; return; }
+  el.innerHTML = foods.slice(0,8).map(f => `
+    <div onclick="selectFood(${f.id})" style="padding:10px 12px;cursor:pointer;border-radius:8px;display:flex;align-items:center;gap:10px;transition:background .15s;" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background='transparent'">
+      <span style="font-size:20px;">${f.emoji}</span>
+      <div>
+        <div style="font-size:13px;color:var(--cream);">${f.name}</div>
+        <div style="font-size:11px;color:var(--muted);">${f.kcal_100} kcal/100g · ${f.group}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function selectFood(id) {
+  selectedFood = tacoData.find(f => f.id === id);
+  document.getElementById('food-search').value = selectedFood.name;
+  document.getElementById('food-list').innerHTML = '';
+  document.getElementById('qty-row').style.display = 'flex';
+  document.getElementById('sub-result-wrap').innerHTML = '';
+}
+
+function calcSubstitutos() {
+  if (!selectedFood) return;
+  const qty = parseFloat(document.getElementById('food-qty').value) || 100;
+  const kcalTarget = (selectedFood.kcal_100 / 100) * qty;
+
+  const candidates = tacoData.filter(f => f.id !== selectedFood.id && f.group !== selectedFood.group);
+  const subs = candidates.map(f => ({
+    ...f,
+    qty_needed: Math.round((kcalTarget / f.kcal_100) * 100),
+    kcal: Math.round(kcalTarget)
+  })).sort((a,b) => Math.abs(a.kcal - kcalTarget) - Math.abs(b.kcal - kcalTarget)).slice(0,5);
+
+  document.getElementById('sub-result-wrap').innerHTML = `
+    <div class="sub-result">
+      <div class="sub-header">
+        <div class="sub-header-name">${selectedFood.name} · ${qty}g</div>
+        <div class="sub-header-cal">${Math.round(kcalTarget)} kcal · ${Math.round(selectedFood.prot*qty/100)}g prot</div>
+      </div>
+      ${subs.map(s => `
+        <div class="sub-item">
+          <div class="sub-emoji">${s.emoji}</div>
+          <div>
+            <div class="sub-info-name">${s.name}</div>
+            <div class="sub-info-detail">${s.qty_needed}g · ${Math.round(kcalTarget)} kcal · ${Math.round(s.prot*s.qty_needed/100)}g prot</div>
+          </div>
+          <div class="sub-badge">${s.group}</div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+// ── EVOLUÇÃO ──────────────────────────────────────────────
+async function loadEvolution() {
+  const { data } = await sb.from('body_records').select('*').eq('user_id', currentUser.id).order('record_date', { ascending: false }).limit(10);
+  const records = data || [];
+
+  let statsHtml = '';
+  if (records.length > 0) {
+    const latest = records[0];
+    const first = records[records.length - 1];
+    const diff = latest.weight_kg && first.weight_kg ? (latest.weight_kg - first.weight_kg).toFixed(1) : null;
+    statsHtml = `
+      <div class="stat-box"><span class="stat-val">${latest.weight_kg || '—'}</span><span class="stat-lbl">kg atual</span></div>
+      <div class="stat-box"><span class="stat-val" style="color:${diff < 0 ? '#27AE60' : 'var(--gold)'}">${diff !== null ? (diff > 0 ? '+' : '') + diff : '—'}</span><span class="stat-lbl">variação</span></div>
+      <div class="stat-box"><span class="stat-val">${records.length}</span><span class="stat-lbl">registros</span></div>
+    `;
+  } else {
+    statsHtml = `
+      <div class="stat-box"><span class="stat-val">—</span><span class="stat-lbl">kg atual</span></div>
+      <div class="stat-box"><span class="stat-val">—</span><span class="stat-lbl">variação</span></div>
+      <div class="stat-box"><span class="stat-val">0</span><span class="stat-lbl">registros</span></div>
+    `;
+  }
+  document.getElementById('evol-stats').innerHTML = statsHtml;
+
+  // Mini chart
+  const chartData = records.slice().reverse().slice(-7);
+  const maxW = Math.max(...chartData.map(r => r.weight_kg || 0)) || 1;
+  const minW = Math.min(...chartData.map(r => r.weight_kg || 0)) || 0;
+  const range = maxW - minW || 1;
+  const chartEl = document.getElementById('weight-chart');
+  if (chartData.length > 0) {
+    chartEl.innerHTML = chartData.map((r, i) => {
+      const h = Math.round(((r.weight_kg - minW) / range) * 40 + 10);
+      const isLast = i === chartData.length - 1;
+      return `<div class="bar ${isLast ? 'hi' : ''}" style="height:${h}px"><span class="bar-lbl">${r.record_date.slice(5)}</span></div>`;
+    }).join('');
+  } else {
+    chartEl.innerHTML = '<p style="font-size:12px;color:var(--muted);text-align:center;width:100%;padding:10px 0;">Registre seu primeiro peso para ver o gráfico.</p>';
+  }
+}
+
+async function saveBodyRecord() {
+  const weight = parseFloat(document.getElementById('inp-weight').value) || null;
+  const waist = parseFloat(document.getElementById('inp-waist').value) || null;
+  const hip = parseFloat(document.getElementById('inp-hip').value) || null;
+  const arm = parseFloat(document.getElementById('inp-arm').value) || null;
+  const notes = document.getElementById('inp-notes').value.trim() || null;
+
+  if (!weight && !waist && !hip) { toast('Preencha ao menos o peso ou uma medida.'); return; }
+
+  const { error } = await sb.from('body_records').upsert({
+    user_id: currentUser.id, record_date: TODAY,
+    weight_kg: weight, waist_cm: waist, hip_cm: hip, arm_cm: arm, notes
+  }, { onConflict: 'user_id,record_date' });
+
+  if (error) { toast('Erro ao salvar. Tente novamente.'); return; }
+  toast('Registro salvo! ✓');
+  document.getElementById('inp-weight').value = '';
+  document.getElementById('inp-waist').value = '';
+  document.getElementById('inp-hip').value = '';
+  document.getElementById('inp-arm').value = '';
+  document.getElementById('inp-notes').value = '';
+  await loadEvolution();
+}
+
+// ── FOTOS ─────────────────────────────────────────────────
+function triggerPhoto(slot) {
+  currentPhotoSlot = slot;
+  document.getElementById('photo-input').click();
+}
+
+async function uploadPhoto(input) {
+  const file = input.files[0];
+  if (!file) return;
+  toast('Enviando foto...');
+  const ext = file.name.split('.').pop();
+  const path = `${currentUser.id}/${currentPhotoSlot}_${TODAY}.${ext}`;
+  const { error: upErr } = await sb.storage.from('body-photos').upload(path, file, { upsert: true });
+  if (upErr) { toast('Erro ao enviar foto.'); return; }
+  const { data: urlData } = sb.storage.from('body-photos').getPublicUrl(path);
+  const colMap = { front: 'photo_front_url', side: 'photo_side_url', back: 'photo_back_url' };
+  await sb.from('body_records').upsert({ user_id: currentUser.id, record_date: TODAY, [colMap[currentPhotoSlot]]: urlData.publicUrl }, { onConflict: 'user_id,record_date' });
+  toast('Foto salva! ✓');
+  input.value = '';
+}
+
+// ── RECEITAS ──────────────────────────────────────────────
+async function loadRecipes() {
+  const { data } = await sb.from('recipes').select('*').eq('published', true).order('created_at', { ascending: false });
+  const el = document.getElementById('recipes-list');
+  if (!data || data.length === 0) {
+    el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);font-size:13px;">Em breve novas receitas do Dr. Roberto!</div>';
+    return;
+  }
+  const emojis = { cafe:'☕', almoco:'🍽️', lanche:'🥗', jantar:'🌙', sobremesa:'🍮' };
+  el.innerHTML = data.map(r => `
+    <div class="recipe-card">
+      <div class="recipe-thumb">${emojis[r.meal_type] || '🍴'}</div>
+      <div>
+        <div class="recipe-name">${r.title}</div>
+        <div class="recipe-meta">${r.calories || '—'} kcal · ${r.protein_g || '—'}g prot</div>
+        <span class="recipe-tag">${r.meal_type}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ── CONTEÚDO ──────────────────────────────────────────────
+async function loadContent() {
+  const { data } = await sb.from('content_items').select('*').eq('published', true).neq('type','sos').order('created_at', { ascending: false });
+  const el = document.getElementById('content-list');
+  if (!data || data.length === 0) {
+    el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);font-size:13px;">Em breve novos conteúdos do Dr. Roberto!</div>';
+    return;
+  }
+  el.innerHTML = data.map(v => `
+    <div class="video-card" onclick="window.open('${v.youtube_url}','_blank')">
+      <div class="video-thumb"><div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+      <div class="video-info">
+        <div class="video-title">${v.title}</div>
+        <div class="video-dur">${v.duration_min ? v.duration_min + ' min' : ''} · ${v.description || ''}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ── SOS ───────────────────────────────────────────────────
+function renderSOS() {
+  document.getElementById('sos-list').innerHTML = SOS_DATA.map(s => `
+    <div class="sos-card" onclick="toast('Conteúdo em breve!')">
+      <div class="sos-dot"></div>
+      <div class="sos-text">
+        <div class="sos-title">${s.t}</div>
+        <div class="sos-dur">${s.d}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ── CONTA ─────────────────────────────────────────────────
+function loadAccount() {
+  const p = currentProfile;
+  const initials = (p.full_name || '?').split(' ').map(w => w[0]).slice(0,2).join('').toUpperCase();
+  document.getElementById('acc-avatar').textContent = initials;
+  document.getElementById('acc-name').textContent = p.full_name || '—';
+  document.getElementById('acc-email').textContent = p.email || '';
+  const planLabels = { trimestral:'Plano Trimestral', semestral:'Plano Semestral', anual:'Plano Anual' };
+  document.getElementById('acc-plan').textContent = planLabels[p.plan] || 'Plano —';
+  if (p.subscription_expires_at) {
+    const d = new Date(p.subscription_expires_at);
+    document.getElementById('acc-expires').textContent = 'Válido até ' + d.toLocaleDateString('pt-BR');
+  }
+  document.getElementById('acc-inp-name').value = p.full_name || '';
+  document.getElementById('acc-inp-goal').value = p.goal || '';
+  document.getElementById('acc-inp-height').value = p.height_cm || '';
+}
+
+async function saveProfile() {
+  const name = document.getElementById('acc-inp-name').value.trim();
+  const goal = document.getElementById('acc-inp-goal').value;
+  const height = parseFloat(document.getElementById('acc-inp-height').value) || null;
+  const { error } = await sb.from('profiles').update({ full_name: name, goal, height_cm: height }).eq('id', currentUser.id);
+  if (error) { toast('Erro ao salvar.'); return; }
+  currentProfile.full_name = name; currentProfile.goal = goal; currentProfile.height_cm = height;
+  if (goal) { currentGoal = goal; }
+  toast('Perfil atualizado! ✓');
+  loadAccount();
+  document.getElementById('greeting-name').textContent = name;
+}
+
+function requestDelete() {
+  toast('Envie um e-mail para privacidade@kairos.com.br');
+}
+
+// ── ADMIN ─────────────────────────────────────────────────
+async function loadAdmin() {
+  const { data: all } = await sb.from('profiles').select('*').neq('role','admin').order('created_at', { ascending: false });
+  if (!all) return;
+  const pending = all.filter(p => p.status === 'pending');
+  const active = all.filter(p => p.status === 'active');
+  const suspended = all.filter(p => p.status === 'suspended');
+
+  document.getElementById('admin-stats').innerHTML = `
+    <div class="admin-stat"><div class="admin-stat-n">${pending.length}</div><div class="admin-stat-l">Pendentes</div></div>
+    <div class="admin-stat"><div class="admin-stat-n">${active.length}</div><div class="admin-stat-l">Ativos</div></div>
+  `;
+
+  const pendingEl = document.getElementById('admin-pending');
+  if (pending.length === 0) {
+    pendingEl.innerHTML = '<p style="font-size:12px;color:var(--muted);padding:8px 0;">Nenhum cadastro pendente.</p>';
+  } else {
+    pendingEl.innerHTML = pending.map(p => `
+      <div class="patient-row">
+        <div class="patient-name">${p.full_name || '(sem nome)'}</div>
+        <div class="patient-email">${p.email}</div>
+        <div class="patient-meta">
+          <span class="status-badge status-pending">Pendente</span>
+          <select class="plan-select" id="plan-${p.id}">
+            <option value="">Plano</option>
+            <option value="trimestral">Trimestral (90d)</option>
+            <option value="semestral">Semestral (180d)</option>
+            <option value="anual">Anual (365d)</option>
+          </select>
+          <button class="activate-btn" onclick="activatePatient('${p.id}')">Ativar</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  const activeEl = document.getElementById('admin-active');
+  if (active.length === 0) {
+    activeEl.innerHTML = '<p style="font-size:12px;color:var(--muted);padding:8px 0;">Nenhum paciente ativo.</p>';
+  } else {
+    activeEl.innerHTML = active.map(p => {
+      const expires = p.subscription_expires_at ? new Date(p.subscription_expires_at).toLocaleDateString('pt-BR') : '—';
+      return `
+        <div class="patient-row">
+          <div class="patient-name">${p.full_name || '(sem nome)'}</div>
+          <div class="patient-email">${p.email}</div>
+          <div class="patient-meta">
+            <span class="status-badge status-active">Ativo</span>
+            <span style="font-size:11px;color:var(--muted);">até ${expires}</span>
+            <button class="suspend-btn" onclick="suspendPatient('${p.id}')">Suspender</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+}
+
+async function activatePatient(id) {
+  const plan = document.getElementById('plan-' + id).value;
+  if (!plan) { toast('Selecione um plano primeiro.'); return; }
+  const days = { trimestral: 90, semestral: 180, anual: 365 };
+  const expires = new Date();
+  expires.setDate(expires.getDate() + days[plan]);
+  const { error } = await sb.from('profiles').update({
+    status: 'active', plan,
+    subscription_starts_at: new Date().toISOString(),
+    subscription_expires_at: expires.toISOString()
+  }).eq('id', id);
+  if (error) { toast('Erro ao ativar.'); return; }
+  toast('Paciente ativado! ✓');
+  await loadAdmin();
+}
+
+async function suspendPatient(id) {
+  const { error } = await sb.from('profiles').update({ status: 'suspended' }).eq('id', id);
+  if (error) { toast('Erro ao suspender.'); return; }
+  toast('Acesso suspenso.');
+  await loadAdmin();
+}
+
+// ── NAVIGATION ────────────────────────────────────────────
+function switchTab(tab) {
+  document.querySelectorAll('.subscreen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.bnav-item').forEach(n => n.classList.remove('on'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  document.getElementById('nav-' + tab).classList.add('on');
+  hideSub();
+}
+
+function showMais() { switchTab('mais'); }
+
+function showSub(name) {
+  document.getElementById('mais-main').style.display = 'none';
+  ['receitas','conteudo','sos','conta','admin'].forEach(s => {
+    document.getElementById('sub-'+s).style.display = 'none';
+  });
+  document.getElementById('sub-' + name).style.display = 'block';
+  if (name === 'receitas') loadRecipes();
+  if (name === 'conteudo') loadContent();
+  if (name === 'admin') loadAdmin();
+}
+
+function hideSub() {
+  document.getElementById('mais-main').style.display = 'block';
+  ['receitas','conteudo','sos','conta','admin'].forEach(s => {
+    document.getElementById('sub-'+s).style.display = 'none';
+  });
+}
+
+// ── SCREEN MANAGER ────────────────────────────────────────
+function showScreen(name) {
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('sbar').style.display = name === 'app' ? 'flex' : 'none';
+  document.getElementById('screen-auth').classList.toggle('active', name === 'auth');
+  document.getElementById('screen-consent').classList.toggle('active', name === 'consent');
+  document.getElementById('screen-expired').classList.toggle('active', name === 'expired');
+  document.getElementById('screen-app').classList.toggle('active', name === 'app');
+}
+
+// ── TOAST ─────────────────────────────────────────────────
+let toastTimer;
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2500);
+}
+</script>
+</body>
+</html>
