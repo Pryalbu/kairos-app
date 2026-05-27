@@ -909,8 +909,13 @@ function updateClock() {
 
 // ── PROFILE & ROUTING ─────────────────────────────────────
 async function loadProfile() {
+  console.log('[Kairós] loadProfile - user id:', currentUser.id);
   const { data, error } = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
-  if (error || !data) { showScreen('auth'); return; }
+  console.log('[Kairós] profiles result - data:', JSON.stringify(data), '| error:', JSON.stringify(error));
+  if (error || !data) { 
+    console.log('[Kairós] erro no perfil, voltando para auth');
+    showScreen('auth'); return; 
+  }
   currentProfile = data;
 
   if (!data.consent_accepted) { showScreen('consent'); return; }
