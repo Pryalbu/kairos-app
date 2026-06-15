@@ -488,7 +488,8 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
       <div style="font-size:48px;margin-bottom:16px;">⏳</div>
       <div style="font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--cream);margin-bottom:8px;">Acesso encerrado</div>
       <div style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:32px;">Seu plano expirou ou ainda não foi ativado. Entre em contato com o consultório para renovar.</div>
-      <a href="https://wa.me/55XXXXXXXXXXX" style="text-decoration:none;width:100%">
+      <!-- FIX: número real do WhatsApp -->
+      <a href="https://wa.me/5521985921309" style="text-decoration:none;width:100%">
         <button class="btn btn-gold">Falar com o consultório</button>
       </a>
       <button class="btn btn-outline" style="margin-top:10px;" onclick="doLogout()">Sair</button>
@@ -580,7 +581,7 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
       </div>
     </div>
 
-    <!-- ── EVOLUÇÃO ── */
+    <!-- ── EVOLUÇÃO ── -->
     <div class="subscreen" id="tab-evolucao">
       <div class="hdr">
         <div class="tag">Evolução</div>
@@ -784,7 +785,30 @@ let tacoData = [];
 let selectedFood = null;
 const TODAY = new Date().toISOString().slice(0,10);
 
+// ── SEGURANÇA: sanitiza strings antes de inserir no DOM ──
+// FIX: previne XSS em dados vindos do banco de dados
+function sanitize(str) {
+  if (str == null) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;');
+}
+
+// ── SEGURANÇA: valida URLs antes de abrir ─────────────────
+// FIX: garante que só URLs https:// validas são abertas
+function safeUrl(url) {
+  if (!url) return null;
+  try {
+    const u = new URL(url);
+    return (u.protocol === 'https:') ? url : null;
+  } catch { return null; }
+}
+
 // ── HÁBITOS POR OBJETIVO ─────────────────────────────────
+
 const HABITS = {
   emagrecer: [
     { key:'cafe_sem_acucar', label:'Café sem açúcar', cat:'Alimentação' },
@@ -793,16 +817,18 @@ const HABITS = {
     { key:'jantar_leve', label:'Jantar leve', cat:'Alimentação' },
     { key:'agua_2l', label:'2L de água', cat:'Hidratação' },
     { key:'sem_refrigerante', label:'Sem refrigerante', cat:'Hidratação' },
+    { key:'caminhada', label:'Caminhada ou atividade', cat:'Atividade' },
+    { key:'sono_7h', label:'Dormir 7+ horas', cat:'Bem-estar' },
     { key:'comer_devagar', label:'Comer devagar', cat:'Comportamento' },
     { key:'sem_tela_almoco', label:'Sem tela no almoço', cat:'Comportamento' },
   ],
   ganhar_massa: [
     { key:'cafe_proteico', label:'Café da manhã proteico', cat:'Alimentação' },
-    { key:'pre_treino', label:'Refeição pré-treino', cat:'Alimentação' },
+    { key:'pre_treino', label:'Refeição prë-treino', cat:'Alimentação' },
     { key:'pos_treino', label:'Refeição pós-treino', cat:'Alimentação' },
     { key:'meta_calorica', label:'Atingir meta calórica', cat:'Alimentação' },
     { key:'agua_3l', label:'3L de água', cat:'Hidratação' },
-    { key:'treino_feito', label:'Treino realizado', cat:'Atividade' },
+    { key:'treino feito', label:'Treino realizado', cat:'Atividade' },
     { key:'sono_8h', label:'Dormir 8 horas', cat:'Recuperação' },
   ],
   saude: [
@@ -866,7 +892,6 @@ window.onload = async function() {
   updateClock();
   setInterval(updateClock, 30000);
 
-  // Captura retorno de confirmacao de e-mail (token na URL)
   const hash = window.location.hash;
   if (hash && (hash.includes('access_token') || hash.includes('type=signup'))) {
     const { data } = await sb.auth.getSession();
@@ -878,7 +903,6 @@ window.onload = async function() {
     }
   }
 
-  // Listener para mudancas de estado de autenticacao
   sb.auth.onAuthStateChange(async (event, session) => {
     if (event === 'SIGNED_IN' && session && !currentUser) {
       currentUser = session.user;
@@ -909,13 +933,8 @@ function updateClock() {
 
 // ── PROFILE & ROUTING ─────────────────────────────────────
 async function loadProfile() {
-  console.log('[Kairós] loadProfile - user id:', currentUser.id);
   const { data, error } = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
-  console.log('[Kairós] profiles result - data:', JSON.stringify(data), '| error:', JSON.stringify(error));
-  if (error || !data) { 
-    console.log('[Kairós] erro no perfil, voltando para auth');
-    showScreen('auth'); return; 
-  }
+  if (error || !data) { showScreen('auth'); return; }
   currentProfile = data;
 
   if (!data.consent_accepted) { showScreen('consent'); return; }
@@ -1135,16 +1154,25 @@ function renderPlanner() {
 }
 
 // ── NOTICES ───────────────────────────────────────────────
+// FIX: substituído innerHTML com dados do banco por criação segura de DOM
 async function loadNotices() {
   const { data } = await sb.from('notices').select('*').eq('published', true).order('created_at', { ascending: false }).limit(3);
   const wrap = document.getElementById('notices-wrap');
-  if (!data || data.length === 0) { wrap.innerHTML = ''; return; }
-  wrap.innerHTML = data.map(n => `
-    <div class="notice">
-      <div class="notice-title">📌 ${n.title}</div>
-      <div class="notice-body">${n.body}</div>
-    </div>
-  `).join('');
+  wrap.innerHTML = '';
+  if (!data || data.length === 0) return;
+  data.forEach(n => {
+    const div = document.createElement('div');
+    div.className = 'notice';
+    const titleEl = document.createElement('div');
+    titleEl.className = 'notice-title';
+    titleEl.textContent = '📌 ' + (n.title || '');
+    const bodyEl = document.createElement('div');
+    bodyEl.className = 'notice-body';
+    bodyEl.textContent = n.body || '';
+    div.appendChild(titleEl);
+    div.appendChild(bodyEl);
+    wrap.appendChild(div);
+  });
 }
 
 // ── SUBSTITUTOS TACO ──────────────────────────────────────
@@ -1235,7 +1263,6 @@ async function loadEvolution() {
   }
   document.getElementById('evol-stats').innerHTML = statsHtml;
 
-  // Mini chart
   const chartData = records.slice().reverse().slice(-7);
   const maxW = Math.max(...chartData.map(r => r.weight_kg || 0)) || 1;
   const minW = Math.min(...chartData.map(r => r.weight_kg || 0)) || 0;
@@ -1282,22 +1309,30 @@ function triggerPhoto(slot) {
   document.getElementById('photo-input').click();
 }
 
+// FIX: salva o path do storage (não a URL pública) para permitir signed URLs futuramente.
+// FIX: valida extensão do arquivo antes de fazer upload.
 async function uploadPhoto(input) {
   const file = input.files[0];
   if (!file) return;
+  const ext = file.name.split('.').pop().toLowerCase();
+  const allowedExts = ['jpg', 'jpeg', 'png', 'webp'];
+  if (!allowedExts.includes(ext)) { toast('Formato inválido. Use JPG ou PNG.'); input.value = ''; return; }
   toast('Enviando foto...');
-  const ext = file.name.split('.').pop();
   const path = `${currentUser.id}/${currentPhotoSlot}_${TODAY}.${ext}`;
   const { error: upErr } = await sb.storage.from('body-photos').upload(path, file, { upsert: true });
   if (upErr) { toast('Erro ao enviar foto.'); return; }
-  const { data: urlData } = sb.storage.from('body-photos').getPublicUrl(path);
+  // Salva o PATH do storage (não a URL pública) — bucket deve ser privado no Supabase
   const colMap = { front: 'photo_front_url', side: 'photo_side_url', back: 'photo_back_url' };
-  await sb.from('body_records').upsert({ user_id: currentUser.id, record_date: TODAY, [colMap[currentPhotoSlot]]: urlData.publicUrl }, { onConflict: 'user_id,record_date' });
+  await sb.from('body_records').upsert({
+    user_id: currentUser.id, record_date: TODAY,
+    [colMap[currentPhotoSlot]]: path
+  }, { onConflict: 'user_id,record_date' });
   toast('Foto salva! ✓');
   input.value = '';
 }
 
 // ── RECEITAS ──────────────────────────────────────────────
+// FIX: substituído innerHTML com dados do banco por criação segura de DOM
 async function loadRecipes() {
   const { data } = await sb.from('recipes').select('*').eq('published', true).order('created_at', { ascending: false });
   const el = document.getElementById('recipes-list');
@@ -1306,19 +1341,35 @@ async function loadRecipes() {
     return;
   }
   const emojis = { cafe:'☕', almoco:'🍽️', lanche:'🥗', jantar:'🌙', sobremesa:'🍮' };
-  el.innerHTML = data.map(r => `
-    <div class="recipe-card">
-      <div class="recipe-thumb">${emojis[r.meal_type] || '🍴'}</div>
-      <div>
-        <div class="recipe-name">${r.title}</div>
-        <div class="recipe-meta">${r.calories || '—'} kcal · ${r.protein_g || '—'}g prot</div>
-        <span class="recipe-tag">${r.meal_type}</span>
-      </div>
-    </div>
-  `).join('');
+  el.innerHTML = '';
+  data.forEach(r => {
+    const card = document.createElement('div');
+    card.className = 'recipe-card';
+    const thumb = document.createElement('div');
+    thumb.className = 'recipe-thumb';
+    thumb.textContent = emojis[r.meal_type] || '🍴';
+    const info = document.createElement('div');
+    const name = document.createElement('div');
+    name.className = 'recipe-name';
+    name.textContent = r.title || '';
+    const meta = document.createElement('div');
+    meta.className = 'recipe-meta';
+    meta.textContent = (r.calories || '—') + ' kcal · ' + (r.protein_g || '—') + 'g prot';
+    const tag = document.createElement('span');
+    tag.className = 'recipe-tag';
+    tag.textContent = r.meal_type || '';
+    info.appendChild(name);
+    info.appendChild(meta);
+    info.appendChild(tag);
+    card.appendChild(thumb);
+    card.appendChild(info);
+    el.appendChild(card);
+  });
 }
 
 // ── CONTEÚDO ──────────────────────────────────────────────
+// FIX: substituído innerHTML com dados do banco por criação segura de DOM.
+// FIX: youtube_url validada antes de abrir (previne javascript: injection).
 async function loadContent() {
   const { data } = await sb.from('content_items').select('*').eq('published', true).neq('type','sos').order('created_at', { ascending: false });
   const el = document.getElementById('content-list');
@@ -1326,15 +1377,32 @@ async function loadContent() {
     el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);font-size:13px;">Em breve novos conteúdos do Dr. Roberto!</div>';
     return;
   }
-  el.innerHTML = data.map(v => `
-    <div class="video-card" onclick="window.open('${v.youtube_url}','_blank')">
-      <div class="video-thumb"><div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
-      <div class="video-info">
-        <div class="video-title">${v.title}</div>
-        <div class="video-dur">${v.duration_min ? v.duration_min + ' min' : ''} · ${v.description || ''}</div>
-      </div>
-    </div>
-  `).join('');
+  el.innerHTML = '';
+  data.forEach(v => {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    const url = safeUrl(v.youtube_url);
+    if (url) card.onclick = () => window.open(url, '_blank', 'noopener,noreferrer');
+
+    const thumb = document.createElement('div');
+    thumb.className = 'video-thumb';
+    thumb.innerHTML = '<div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div>';
+
+    const info = document.createElement('div');
+    info.className = 'video-info';
+    const title = document.createElement('div');
+    title.className = 'video-title';
+    title.textContent = v.title || '';
+    const dur = document.createElement('div');
+    dur.className = 'video-dur';
+    dur.textContent = (v.duration_min ? v.duration_min + ' min' : '') + (v.description ? ' · ' + v.description : '');
+
+    info.appendChild(title);
+    info.appendChild(dur);
+    card.appendChild(thumb);
+    card.appendChild(info);
+    el.appendChild(card);
+  });
 }
 
 // ── SOS ───────────────────────────────────────────────────
@@ -1386,63 +1454,111 @@ function requestDelete() {
 }
 
 // ── ADMIN ─────────────────────────────────────────────────
+// FIX: dados de pacientes renderizados com textContent (não innerHTML).
+// FIX: botões usam data attributes + onclick via closure (sem injeção de id em string).
 async function loadAdmin() {
+  // Verifica admin no client (RLS no Supabase faz a verificação real no servidor)
+  if (!currentProfile || currentProfile.role !== 'admin') return;
+
   const { data: all } = await sb.from('profiles').select('*').neq('role','admin').order('created_at', { ascending: false });
   if (!all) return;
   const pending = all.filter(p => p.status === 'pending');
   const active = all.filter(p => p.status === 'active');
-  const suspended = all.filter(p => p.status === 'suspended');
 
-  document.getElementById('admin-stats').innerHTML = `
-    <div class="admin-stat"><div class="admin-stat-n">${pending.length}</div><div class="admin-stat-l">Pendentes</div></div>
-    <div class="admin-stat"><div class="admin-stat-n">${active.length}</div><div class="admin-stat-l">Ativos</div></div>
-  `;
+  // Stats
+  const statsEl = document.getElementById('admin-stats');
+  statsEl.innerHTML = '';
+  const mkStat = (n, label) => {
+    const div = document.createElement('div');
+    div.className = 'admin-stat';
+    div.innerHTML = `<div class="admin-stat-n">${n}</div><div class="admin-stat-l">${label}</div>`;
+    return div;
+  };
+  statsEl.appendChild(mkStat(pending.length, 'Pendentes'));
+  statsEl.appendChild(mkStat(active.length, 'Ativos'));
 
+  // Pending patients
   const pendingEl = document.getElementById('admin-pending');
+  pendingEl.innerHTML = '';
   if (pending.length === 0) {
-    pendingEl.innerHTML = '<p style="font-size:12px;color:var(--muted);padding:8px 0;">Nenhum cadastro pendente.</p>';
+    const p = document.createElement('p');
+    p.style.cssText = 'font-size:12px;color:var(--muted);padding:8px 0;';
+    p.textContent = 'Nenhum cadastro pendente.';
+    pendingEl.appendChild(p);
   } else {
-    pendingEl.innerHTML = pending.map(p => `
-      <div class="patient-row">
-        <div class="patient-name">${p.full_name || '(sem nome)'}</div>
-        <div class="patient-email">${p.email}</div>
-        <div class="patient-meta">
-          <span class="status-badge status-pending">Pendente</span>
-          <select class="plan-select" id="plan-${p.id}">
-            <option value="">Plano</option>
-            <option value="trimestral">Trimestral (90d)</option>
-            <option value="semestral">Semestral (180d)</option>
-            <option value="anual">Anual (365d)</option>
-          </select>
-          <button class="activate-btn" onclick="activatePatient('${p.id}')">Ativar</button>
-        </div>
-      </div>
-    `).join('');
+    pending.forEach(pat => {
+      const row = document.createElement('div');
+      row.className = 'patient-row';
+      const nameEl = document.createElement('div');
+      nameEl.className = 'patient-name';
+      nameEl.textContent = pat.full_name || '(sem nome)';
+      const emailEl = document.createElement('div');
+      emailEl.className = 'patient-email';
+      emailEl.textContent = pat.email || '';
+      const meta = document.createElement('div');
+      meta.className = 'patient-meta';
+      const badge = document.createElement('span');
+      badge.className = 'status-badge status-pending';
+      badge.textContent = 'Pendente';
+      const sel = document.createElement('select');
+      sel.className = 'plan-select';
+      sel.id = 'plan-' + pat.id;
+      [['', 'Plano'], ['trimestral', 'Trimestral (90d)'], ['semestral', 'Semestral (180d)'], ['anual', 'Anual (365d)']].forEach(([val, txt]) => {
+        const opt = document.createElement('option');
+        opt.value = val; opt.textContent = txt;
+        sel.appendChild(opt);
+      });
+      const btn = document.createElement('button');
+      btn.className = 'activate-btn';
+      btn.textContent = 'Ativar';
+      btn.onclick = () => activatePatient(pat.id);
+      meta.appendChild(badge); meta.appendChild(sel); meta.appendChild(btn);
+      row.appendChild(nameEl); row.appendChild(emailEl); row.appendChild(meta);
+      pendingEl.appendChild(row);
+    });
   }
 
+  // Active patients
   const activeEl = document.getElementById('admin-active');
+  activeEl.innerHTML = '';
   if (active.length === 0) {
-    activeEl.innerHTML = '<p style="font-size:12px;color:var(--muted);padding:8px 0;">Nenhum paciente ativo.</p>';
+    const p = document.createElement('p');
+    p.style.cssText = 'font-size:12px;color:var(--muted);padding:8px 0;';
+    p.textContent = 'Nenhum paciente ativo.';
+    activeEl.appendChild(p);
   } else {
-    activeEl.innerHTML = active.map(p => {
-      const expires = p.subscription_expires_at ? new Date(p.subscription_expires_at).toLocaleDateString('pt-BR') : '—';
-      return `
-        <div class="patient-row">
-          <div class="patient-name">${p.full_name || '(sem nome)'}</div>
-          <div class="patient-email">${p.email}</div>
-          <div class="patient-meta">
-            <span class="status-badge status-active">Ativo</span>
-            <span style="font-size:11px;color:var(--muted);">até ${expires}</span>
-            <button class="suspend-btn" onclick="suspendPatient('${p.id}')">Suspender</button>
-          </div>
-        </div>
-      `;
-    }).join('');
+    active.forEach(pat => {
+      const expires = pat.subscription_expires_at ? new Date(pat.subscription_expires_at).toLocaleDateString('pt-BR') : '—';
+      const row = document.createElement('div');
+      row.className = 'patient-row';
+      const nameEl = document.createElement('div');
+      nameEl.className = 'patient-name';
+      nameEl.textContent = pat.full_name || '(sem nome)';
+      const emailEl = document.createElement('div');
+      emailEl.className = 'patient-email';
+      emailEl.textContent = pat.email || '';
+      const meta = document.createElement('div');
+      meta.className = 'patient-meta';
+      const badge = document.createElement('span');
+      badge.className = 'status-badge status-active';
+      badge.textContent = 'Ativo';
+      const expEl = document.createElement('span');
+      expEl.style.cssText = 'font-size:11px;color:var(--muted);';
+      expEl.textContent = 'até ' + expires;
+      const suspBtn = document.createElement('button');
+      suspBtn.className = 'suspend-btn';
+      suspBtn.textContent = 'Suspender';
+      suspBtn.onclick = () => suspendPatient(pat.id);
+      meta.appendChild(badge); meta.appendChild(expEl); meta.appendChild(suspBtn);
+      row.appendChild(nameEl); row.appendChild(emailEl); row.appendChild(meta);
+      activeEl.appendChild(row);
+    });
   }
 }
 
 async function activatePatient(id) {
-  const plan = document.getElementById('plan-' + id).value;
+  const sel = document.getElementById('plan-' + id);
+  const plan = sel ? sel.value : '';
   if (!plan) { toast('Selecione um plano primeiro.'); return; }
   const days = { trimestral: 90, semestral: 180, anual: 365 };
   const expires = new Date();
