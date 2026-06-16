@@ -284,6 +284,60 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
 .photo-slot img{width:100%;height:100%;object-fit:cover;}
 .evol-inp-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 
+/* ── CHECK-IN ── */
+.checkin-status-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.checkin-status-label{font-size:12px;color:var(--muted);}
+.checkin-pct{font-size:12px;color:var(--gold);font-weight:600;}
+.checkin-card{cursor:pointer;transition:border-color .2s;}
+.checkin-card:active{opacity:.85;}
+.checkin-row{display:flex;align-items:center;gap:12px;}
+.checkin-ico{font-size:22px;flex-shrink:0;width:36px;text-align:center;}
+.checkin-info{flex:1;}
+.checkin-name{font-size:14px;font-weight:500;color:var(--cream);}
+.checkin-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+.checkin-toggle{
+  width:44px;height:26px;border-radius:13px;
+  background:var(--surface3);border:1.5px solid var(--border);
+  position:relative;transition:all .25s;flex-shrink:0;
+}
+.checkin-toggle::after{
+  content:'';position:absolute;top:3px;left:3px;
+  width:18px;height:18px;border-radius:50%;
+  background:var(--muted2);transition:all .25s;
+}
+.checkin-toggle.on{background:var(--gold-dim);border-color:var(--gold);}
+.checkin-toggle.on::after{left:19px;background:var(--gold);}
+
+/* Cardio input */
+.cardio-input-row{display:flex;align-items:center;justify-content:center;gap:16px;}
+.cardio-btn{
+  width:40px;height:40px;border-radius:50%;border:1.5px solid var(--border);
+  background:var(--surface3);color:var(--gold);font-size:22px;font-weight:300;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:all .15s;line-height:1;
+}
+.cardio-btn:active{background:var(--gold-dim);border-color:var(--gold);transform:scale(.93);}
+.cardio-display{text-align:center;min-width:70px;}
+.cardio-val{font-family:'Cormorant Garamond',serif;font-size:36px;color:var(--gold);font-weight:600;}
+.cardio-unit{font-size:12px;color:var(--muted);margin-left:3px;}
+
+/* ── PERFORMANCE SEMANAL ── */
+.perf-grid{display:flex;flex-direction:column;gap:10px;}
+.perf-item{display:flex;align-items:center;gap:10px;}
+.perf-ico{font-size:16px;width:24px;text-align:center;flex-shrink:0;}
+.perf-label{font-size:12px;color:var(--muted);flex:1;}
+.perf-bar-wrap{flex:1;background:var(--surface3);height:6px;border-radius:3px;overflow:hidden;}
+.perf-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold),#C9A96E);border-radius:3px;transition:width .5s ease;}
+.perf-val{font-size:11px;color:var(--gold);font-weight:600;min-width:38px;text-align:right;}
+
+/* Histórico semanas */
+.perf-week-row{margin-bottom:12px;}
+.perf-week-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;}
+.perf-week-bars{display:flex;gap:4px;align-items:flex-end;height:36px;}
+.perf-week-bar{flex:1;border-radius:2px 2px 0 0;background:var(--surface3);position:relative;min-height:3px;transition:height .4s ease;}
+.perf-week-bar.filled{background:var(--gold);}
+.perf-week-bar-lbl{position:absolute;bottom:-14px;left:50%;transform:translateX(-50%);font-size:7px;color:var(--muted);white-space:nowrap;}
+
 /* ── MAIS MENU ── */
 .mais-item{
   display:flex;align-items:center;gap:14px;padding:14px 16px;
@@ -545,19 +599,109 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
       </div>
     </div>
 
-    <!-- ── PLANNER ── -->
+    <!-- ── CHECK-IN ── -->
     <div class="subscreen" id="tab-planner">
       <div class="hdr">
-        <div class="tag">Planner</div>
-        <div class="hdr-title">Hábitos do dia</div>
+        <div class="tag">Check-in</div>
+        <div class="hdr-title" id="checkin-date-title">Hoje</div>
       </div>
       <div class="scroll">
-        <div class="seg-tabs">
-          <div class="seg-tab on" onclick="setGoal('emagrecer',this)">Emagrecer</div>
-          <div class="seg-tab" onclick="setGoal('ganhar_massa',this)">Ganhar massa</div>
-          <div class="seg-tab" onclick="setGoal('saude',this)">Saúde</div>
+
+        <!-- Status do dia -->
+        <div class="card" id="checkin-status-card">
+          <div class="checkin-status-row">
+            <span class="checkin-status-label" id="checkin-status-label">0 de 6 hábitos registrados</span>
+            <span class="checkin-pct" id="checkin-pct">0%</span>
+          </div>
+          <div class="progress-bg"><div class="progress-fill" id="checkin-bar" style="width:0%"></div></div>
         </div>
-        <div id="planner-content"></div>
+
+        <!-- Treino -->
+        <div class="card checkin-card" id="ci-treino-card" onclick="toggleCheckin('treino')">
+          <div class="checkin-row">
+            <div class="checkin-ico">🏋️</div>
+            <div class="checkin-info">
+              <div class="checkin-name">Treino</div>
+              <div class="checkin-sub">Musculação, funcional ou similar</div>
+            </div>
+            <div class="checkin-toggle" id="ci-treino-toggle"></div>
+          </div>
+        </div>
+
+        <!-- Cardio -->
+        <div class="card">
+          <div class="checkin-row" style="margin-bottom:10px;">
+            <div class="checkin-ico">🏃</div>
+            <div class="checkin-info">
+              <div class="checkin-name">Cardio</div>
+              <div class="checkin-sub">Corrida, caminhada, bike...</div>
+            </div>
+            <div class="checkin-toggle on" id="ci-cardio-toggle" style="pointer-events:none;opacity:0;"></div>
+          </div>
+          <div class="cardio-input-row">
+            <button class="cardio-btn" onclick="adjustCardio(-5)">−</button>
+            <div class="cardio-display">
+              <span class="cardio-val" id="ci-cardio-val">0</span>
+              <span class="cardio-unit">min</span>
+            </div>
+            <button class="cardio-btn" onclick="adjustCardio(+5)">+</button>
+          </div>
+          <div style="font-size:10px;color:var(--muted);text-align:center;margin-top:6px;">Toque +/− para ajustar em 5 min</div>
+        </div>
+
+        <!-- Plano alimentar -->
+        <div class="card checkin-card" id="ci-plano-card" onclick="toggleCheckin('plano')">
+          <div class="checkin-row">
+            <div class="checkin-ico">🥗</div>
+            <div class="checkin-info">
+              <div class="checkin-name">Plano alimentar</div>
+              <div class="checkin-sub">Seguiu o plano hoje?</div>
+            </div>
+            <div class="checkin-toggle" id="ci-plano-toggle"></div>
+          </div>
+        </div>
+
+        <!-- Água -->
+        <div class="card">
+          <div class="checkin-row">
+            <div class="checkin-ico">💧</div>
+            <div class="checkin-info">
+              <div class="checkin-name">Hidratação</div>
+              <div class="checkin-sub">Registre na aba Início</div>
+            </div>
+            <div class="checkin-toggle" id="ci-agua-toggle" style="pointer-events:none;"></div>
+          </div>
+          <div style="margin-top:8px;">
+            <div class="cups-row" id="checkin-cups-row"></div>
+            <div class="water-total">Total: <span class="water-ml" id="checkin-water-ml">0 ml</span> de 2.000 ml</div>
+          </div>
+        </div>
+
+        <!-- Sono -->
+        <div class="card checkin-card" id="ci-sono-card" onclick="toggleCheckin('sono')">
+          <div class="checkin-row">
+            <div class="checkin-ico">😴</div>
+            <div class="checkin-info">
+              <div class="checkin-name">Higiene do sono</div>
+              <div class="checkin-sub">Dormiu bem e suficiente?</div>
+            </div>
+            <div class="checkin-toggle" id="ci-sono-toggle"></div>
+          </div>
+        </div>
+
+        <!-- Mente/Fé -->
+        <div class="card checkin-card" id="ci-mente-card" onclick="toggleCheckin('mente')">
+          <div class="checkin-row">
+            <div class="checkin-ico">🙏</div>
+            <div class="checkin-info">
+              <div class="checkin-name">Mente &amp; Fé</div>
+              <div class="checkin-sub">Momento de espiritualidade ou mentalidade</div>
+            </div>
+            <div class="checkin-toggle" id="ci-mente-toggle"></div>
+          </div>
+        </div>
+
+        <div style="height:8px;"></div>
       </div>
     </div>
 
@@ -588,6 +732,19 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
         <div class="hdr-title">Minha evolução</div>
       </div>
       <div class="scroll">
+
+        <!-- Minha Semana -->
+        <div class="card">
+          <div class="card-title">Minha semana</div>
+          <div class="perf-grid" id="perf-grid"></div>
+        </div>
+
+        <!-- Histórico de performance -->
+        <div class="card">
+          <div class="card-title">Histórico — últimas 4 semanas</div>
+          <div id="perf-history"></div>
+        </div>
+
         <div class="stat-grid" id="evol-stats"></div>
         <div class="chart-wrap">
           <div class="chart-title">Peso — últimas semanas</div>
@@ -746,7 +903,7 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
       </div>
       <div class="bnav-item" id="nav-planner" onclick="switchTab('planner')">
         <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-        <span>Planner</span>
+        <span>Check-in</span>
       </div>
       <div class="bnav-item" id="nav-substitutos" onclick="switchTab('substitutos')">
         <svg viewBox="0 0 24 24"><polyline points="17,1 21,5 17,9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7,23 3,19 7,15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
@@ -955,24 +1112,16 @@ async function initApp() {
   document.getElementById('greeting-tag').textContent = greet + ',';
   document.getElementById('greeting-name').textContent = currentProfile.full_name || 'bem-vindo(a)!';
 
-  if (currentProfile.goal) {
-    currentGoal = currentProfile.goal;
-    document.querySelectorAll('.seg-tab').forEach((t,i) => {
-      const goals = ['emagrecer','ganhar_massa','saude'];
-      t.classList.toggle('on', goals[i] === currentGoal);
-    });
-  }
-
   if (currentProfile.role === 'admin') {
     document.getElementById('admin-btn-wrap').style.display = 'block';
   }
 
-  await Promise.all([loadTodayLog(), loadHabitLogs(), loadNotices()]);
+  await Promise.all([loadTodayLog(), loadNotices()]);
   renderCups();
-  renderQuickHabits();
-  renderPlanner();
+  renderCheckin();
   renderSOS();
   loadEvolution();
+  loadPerformance();
   populateFoodList();
   loadAccount();
 }
@@ -1083,74 +1232,230 @@ async function toggleCup(i) {
   if (!error) { todayLog.water_ml = newMl; renderCups(); updateWeekProgress(); }
 }
 
-// ── HABIT LOGS ────────────────────────────────────────────
-async function loadHabitLogs() {
-  const { data } = await sb.from('habit_logs').select('*').eq('user_id', currentUser.id).eq('log_date', TODAY);
-  habitLogs = data || [];
+// ── CHECK-IN ───────────────────────────────────────────────
+// Estado local do check-in do dia
+let checkinState = { treino: false, cardio_min: 0, plano: false, sono: false, mente: false };
+
+async function loadCheckin() {
+  await loadTodayLog();
+  if (todayLog) {
+    checkinState.treino    = !!todayLog.treino_done;
+    checkinState.cardio_min = todayLog.cardio_min || 0;
+    checkinState.plano     = !!todayLog.plano_done;
+    checkinState.sono      = !!todayLog.sono_done;
+    checkinState.mente     = !!todayLog.mente_done;
+  } else {
+    checkinState = { treino: false, cardio_min: 0, plano: false, sono: false, mente: false };
+  }
+  renderCheckin();
 }
 
-function isHabitDone(key) { return habitLogs.some(h => h.habit_key === key && h.done); }
+function renderCheckin() {
+  // Data no título
+  const now = new Date();
+  const dias = ['domingo','segunda','terça','quarta','quinta','sexta','sábado'];
+  document.getElementById('checkin-date-title').textContent =
+    dias[now.getDay()] + ', ' + now.getDate() + '/' + (now.getMonth()+1);
 
-async function toggleHabit(key) {
-  const done = isHabitDone(key);
-  if (done) {
-    await sb.from('habit_logs').delete().eq('user_id', currentUser.id).eq('log_date', TODAY).eq('habit_key', key);
-    habitLogs = habitLogs.filter(h => h.habit_key !== key);
-  } else {
-    const { data } = await sb.from('habit_logs').upsert({ user_id: currentUser.id, log_date: TODAY, habit_key: key, done: true }, { onConflict: 'user_id,log_date,habit_key' }).select().single();
-    if (data) habitLogs = [...habitLogs.filter(h => h.habit_key !== key), data];
+  // Toggles
+  setToggle('ci-treino-toggle', checkinState.treino);
+  setToggle('ci-plano-toggle',  checkinState.plano);
+  setToggle('ci-sono-toggle',   checkinState.sono);
+  setToggle('ci-mente-toggle',  checkinState.mente);
+
+  // Cardio
+  document.getElementById('ci-cardio-val').textContent = checkinState.cardio_min;
+  const cardioToggle = document.getElementById('ci-cardio-toggle');
+  cardioToggle.classList.toggle('on', checkinState.cardio_min > 0);
+
+  // Água — espelha os copos da tela Início
+  const ml = todayLog ? (todayLog.water_ml || 0) : 0;
+  const filled = Math.round(ml / 250);
+  const cupsRow = document.getElementById('checkin-cups-row');
+  if (cupsRow) {
+    cupsRow.innerHTML = '';
+    for (let i = 0; i < 8; i++) {
+      const c = document.createElement('div');
+      c.className = 'cup' + (i < filled ? ' filled' : '');
+      c.innerHTML = '<div class="cup-fill"></div>';
+      c.onclick = () => toggleCup(i);
+      cupsRow.appendChild(c);
+    }
+    document.getElementById('checkin-water-ml').textContent = ml + ' ml';
   }
-  renderQuickHabits();
-  renderPlanner();
+  const aguaOk = ml >= 2000;
+  setToggle('ci-agua-toggle', aguaOk);
+
+  // Barra de progresso (6 itens: treino, cardio, plano, água, sono, mente)
+  const items = [checkinState.treino, checkinState.cardio_min > 0, checkinState.plano, aguaOk, checkinState.sono, checkinState.mente];
+  const done = items.filter(Boolean).length;
+  const pct = Math.round((done / 6) * 100);
+  document.getElementById('checkin-status-label').textContent = done + ' de 6 hábitos registrados';
+  document.getElementById('checkin-pct').textContent = pct + '%';
+  document.getElementById('checkin-bar').style.width = pct + '%';
+
+  // Atualiza também o progresso na tela Início
   updateWeekProgress();
 }
 
-function renderQuickHabits() {
-  const habits = HABITS[currentGoal].slice(0, 4);
-  const wrap = document.getElementById('quick-habits');
-  wrap.innerHTML = habits.map(h => `
-    <div class="habit-row" onclick="toggleHabit('${h.key}')">
-      <div class="h-check ${isHabitDone(h.key) ? 'on' : ''}">
-        <svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg>
-      </div>
-      <span class="h-text">${h.label}</span>
-    </div>
-  `).join('');
+function setToggle(id, on) {
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle('on', on);
 }
+
+async function toggleCheckin(key) {
+  checkinState[key] = !checkinState[key];
+  await saveCheckin();
+  renderCheckin();
+}
+
+async function adjustCardio(delta) {
+  checkinState.cardio_min = Math.max(0, checkinState.cardio_min + delta);
+  await saveCheckin();
+  renderCheckin();
+}
+
+async function saveCheckin() {
+  await ensureTodayLog();
+  const payload = {
+    treino_done:  checkinState.treino,
+    cardio_min:   checkinState.cardio_min,
+    plano_done:   checkinState.plano,
+    sono_done:    checkinState.sono,
+    mente_done:   checkinState.mente
+  };
+  const { error } = await sb.from('daily_logs').update(payload).eq('id', todayLog.id);
+  if (!error) Object.assign(todayLog, { treino_done: payload.treino_done, cardio_min: payload.cardio_min, plano_done: payload.plano_done, sono_done: payload.sono_done, mente_done: payload.mente_done });
+}
+
+// Mantida para compatibilidade (chamada em toggleCup)
+function renderQuickHabits() { renderCheckin(); }
 
 function updateWeekProgress() {
-  const habits = HABITS[currentGoal];
-  const done = habits.filter(h => isHabitDone(h.key)).length;
-  const pct = Math.round((done / habits.length) * 100);
-  document.getElementById('week-pct').textContent = pct + '%';
-  document.getElementById('week-bar').style.width = pct + '%';
+  const ml = todayLog ? (todayLog.water_ml || 0) : 0;
+  const items = [checkinState.treino, checkinState.cardio_min > 0, checkinState.plano, ml >= 2000, checkinState.sono, checkinState.mente];
+  const done = items.filter(Boolean).length;
+  const pct = Math.round((done / 6) * 100);
+  const pctEl = document.getElementById('week-pct');
+  const barEl = document.getElementById('week-bar');
+  if (pctEl) pctEl.textContent = pct + '%';
+  if (barEl) barEl.style.width = pct + '%';
 }
 
-// ── PLANNER ───────────────────────────────────────────────
-function setGoal(goal, el) {
-  currentGoal = goal;
-  document.querySelectorAll('.seg-tab').forEach(t => t.classList.remove('on'));
-  el.classList.add('on');
-  renderPlanner();
-  renderQuickHabits();
-  updateWeekProgress();
+// ── PERFORMANCE SEMANAL ────────────────────────────────────
+async function loadPerformance() {
+  // Busca últimas 4 semanas de daily_logs
+  const from = new Date();
+  from.setDate(from.getDate() - 27);
+  const fromStr = from.toISOString().slice(0, 10);
+
+  const { data } = await sb.from('daily_logs')
+    .select('log_date,treino_done,cardio_min,plano_done,water_ml,sono_done,mente_done')
+    .eq('user_id', currentUser.id)
+    .gte('log_date', fromStr)
+    .order('log_date', { ascending: true });
+
+  const logs = data || [];
+
+  // Semana atual (últimos 7 dias)
+  const semanaStart = new Date();
+  semanaStart.setDate(semanaStart.getDate() - 6);
+  const semanaLogs = logs.filter(l => l.log_date >= semanaStart.toISOString().slice(0,10));
+
+  const metricas = [
+    { ico:'🏋️', label:'Treino',         key:'treino_done',  tipo:'bool',    total:7 },
+    { ico:'🏃', label:'Cardio (min)',    key:'cardio_min',   tipo:'minutos', total:null },
+    { ico:'🥗', label:'Plano alimentar', key:'plano_done',   tipo:'bool',    total:7 },
+    { ico:'💧', label:'Hidratação 2L',   key:'water_ml',     tipo:'agua',    total:7 },
+    { ico:'😴', label:'Sono',            key:'sono_done',    tipo:'bool',    total:7 },
+    { ico:'🙏', label:'Mente & Fé',      key:'mente_done',   tipo:'bool',    total:7 },
+  ];
+
+  const grid = document.getElementById('perf-grid');
+  grid.innerHTML = '';
+
+  metricas.forEach(m => {
+    let valor, texto, pct;
+    if (m.tipo === 'bool') {
+      valor = semanaLogs.filter(l => l[m.key]).length;
+      texto = valor + '/7 dias';
+      pct = (valor / 7) * 100;
+    } else if (m.tipo === 'agua') {
+      valor = semanaLogs.filter(l => (l[m.key] || 0) >= 2000).length;
+      texto = valor + '/7 dias';
+      pct = (valor / 7) * 100;
+    } else if (m.tipo === 'minutos') {
+      valor = semanaLogs.reduce((s, l) => s + (l[m.key] || 0), 0);
+      texto = valor + ' min';
+      pct = Math.min((valor / 150) * 100, 100); // 150 min/semana = 100%
+    }
+
+    const item = document.createElement('div');
+    item.className = 'perf-item';
+    item.innerHTML = `
+      <span class="perf-ico">${m.ico}</span>
+      <span class="perf-label">${m.label}</span>
+      <div class="perf-bar-wrap"><div class="perf-bar-fill" style="width:${pct.toFixed(0)}%"></div></div>
+      <span class="perf-val">${texto}</span>
+    `;
+    grid.appendChild(item);
+  });
+
+  // Histórico 4 semanas
+  renderPerfHistory(logs);
 }
 
-function renderPlanner() {
-  const habits = HABITS[currentGoal];
-  const cats = [...new Set(habits.map(h => h.cat))];
-  document.getElementById('planner-content').innerHTML = cats.map(cat => `
-    <div class="section-label">${cat}</div>
-    ${habits.filter(h => h.cat === cat).map(h => `
-      <div class="habit-row" onclick="toggleHabit('${h.key}')">
-        <div class="h-check ${isHabitDone(h.key) ? 'on' : ''}">
-          <svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg>
-        </div>
-        <span class="h-text">${h.label}</span>
-      </div>
-    `).join('')}
-  `).join('');
-  updateWeekProgress();
+function renderPerfHistory(logs) {
+  const wrap = document.getElementById('perf-history');
+  wrap.innerHTML = '';
+
+  // Divide em semanas (da mais antiga para a mais recente)
+  for (let w = 3; w >= 0; w--) {
+    const wStart = new Date();
+    wStart.setDate(wStart.getDate() - (w * 7) - 6);
+    const wEnd = new Date();
+    wEnd.setDate(wEnd.getDate() - (w * 7));
+    const wStartStr = wStart.toISOString().slice(0,10);
+    const wEndStr = wEnd.toISOString().slice(0,10);
+    const wLogs = logs.filter(l => l.log_date >= wStartStr && l.log_date <= wEndStr);
+
+    const label = w === 0 ? 'Esta semana' : `Semana -${w}`;
+
+    // % médio dos 5 hábitos booleanos por dia
+    const pcts = [];
+    for (let d = 0; d <= 6; d++) {
+      const dd = new Date(wStart);
+      dd.setDate(dd.getDate() + d);
+      const ddStr = dd.toISOString().slice(0,10);
+      const log = wLogs.find(l => l.log_date === ddStr);
+      if (log) {
+        const done = [log.treino_done, (log.cardio_min||0)>0, log.plano_done, (log.water_ml||0)>=2000, log.sono_done, log.mente_done].filter(Boolean).length;
+        pcts.push(Math.round((done/6)*100));
+      } else {
+        pcts.push(0);
+      }
+    }
+
+    const maxPct = Math.max(...pcts) || 1;
+    const dias = ['D','S','T','Q','Q','S','S'];
+
+    const rowEl = document.createElement('div');
+    rowEl.className = 'perf-week-row';
+    rowEl.innerHTML = `<div class="perf-week-label">${label}</div>`;
+
+    const barsEl = document.createElement('div');
+    barsEl.className = 'perf-week-bars';
+    pcts.forEach((p, i) => {
+      const h = Math.round((p / 100) * 36);
+      const bar = document.createElement('div');
+      bar.className = 'perf-week-bar' + (p > 0 ? ' filled' : '');
+      bar.style.height = Math.max(h, 3) + 'px';
+      bar.innerHTML = `<span class="perf-week-bar-lbl">${dias[i]}</span>`;
+      barsEl.appendChild(bar);
+    });
+    rowEl.appendChild(barsEl);
+    wrap.appendChild(rowEl);
+  }
 }
 
 // ── NOTICES ───────────────────────────────────────────────
@@ -1587,6 +1892,8 @@ function switchTab(tab) {
   document.getElementById('tab-' + tab).classList.add('active');
   document.getElementById('nav-' + tab).classList.add('on');
   hideSub();
+  if (tab === 'planner') loadCheckin();
+  if (tab === 'evolucao') { loadEvolution(); loadPerformance(); }
 }
 
 function showMais() { switchTab('mais'); }
