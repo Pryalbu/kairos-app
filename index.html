@@ -284,6 +284,62 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
 .photo-slot img{width:100%;height:100%;object-fit:cover;}
 .evol-inp-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 
+/* ── INÍCIO NOVO ── */
+.card-title-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.hoje-data{font-size:11px;color:var(--muted);}
+
+/* Quinzenal */
+.quinzenal-card{
+  display:flex;align-items:center;gap:12px;
+  background:linear-gradient(135deg,rgba(184,150,90,.15),rgba(184,150,90,.05));
+  border:1px solid var(--gold);border-radius:var(--r);
+  padding:14px 16px;margin-bottom:10px;cursor:pointer;
+}
+.quinzenal-ico{font-size:22px;flex-shrink:0;}
+.quinzenal-info{flex:1;}
+.quinzenal-title{font-size:13px;font-weight:600;color:var(--gold);}
+.quinzenal-sub{font-size:11px;color:var(--muted);margin-top:2px;line-height:1.5;}
+
+/* Hábitos de hoje */
+.hoje-habitos{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
+.hoje-hab{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  padding:10px 6px;border-radius:var(--r-sm);
+  background:var(--surface3);border:0.5px solid var(--border);
+  transition:all .2s;
+}
+.hoje-hab.done{background:rgba(39,174,96,.1);border-color:rgba(39,174,96,.4);}
+.hoje-hab.partial{background:var(--gold-faint);border-color:var(--gold-dim);}
+.hoje-hab-ico{font-size:18px;}
+.hoje-hab-lbl{font-size:9px;color:var(--muted);text-align:center;line-height:1.3;}
+.hoje-hab.done .hoje-hab-lbl{color:#27AE60;}
+.hoje-hab.partial .hoje-hab-lbl{color:var(--gold);}
+
+/* CTA check-in */
+.btn-checkin-cta{
+  width:100%;padding:12px;border:none;border-radius:var(--r-sm);
+  background:var(--gold);color:var(--bg);font-size:13px;font-weight:600;
+  cursor:pointer;transition:opacity .2s;letter-spacing:.03em;
+}
+.btn-checkin-cta:hover{opacity:.88;}
+.btn-checkin-cta.done{background:rgba(39,174,96,.15);color:#27AE60;border:0.5px solid rgba(39,174,96,.4);}
+
+/* Calendário */
+.cal-legenda{display:flex;align-items:center;font-size:10px;color:var(--muted);gap:4px;}
+.cal-dot{display:inline-block;width:8px;height:8px;border-radius:50%;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
+.cal-day-label{font-size:9px;color:var(--muted);text-align:center;padding:2px 0;font-weight:500;}
+.cal-day{
+  aspect-ratio:1;border-radius:6px;display:flex;align-items:center;justify-content:center;
+  font-size:11px;color:var(--muted);background:var(--surface3);
+  border:0.5px solid transparent;position:relative;transition:all .2s;
+}
+.cal-day.today{border-color:var(--gold);color:var(--gold);font-weight:700;}
+.cal-day.done{background:rgba(39,174,96,.2);border-color:rgba(39,174,96,.4);color:#27AE60;font-weight:600;}
+.cal-day.partial{background:var(--gold-faint);border-color:var(--gold-dim);color:var(--gold);font-weight:600;}
+.cal-day.empty{background:transparent;border-color:transparent;}
+.cal-day.future{opacity:.35;}
+
 /* ── CHECK-IN ── */
 .checkin-status-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
 .checkin-status-label{font-size:12px;color:var(--muted);}
@@ -571,31 +627,42 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
         <div class="greeting-name" id="greeting-name">—</div>
       </div>
       <div class="scroll">
-        <!-- Progresso semanal -->
-        <div class="card">
-          <div class="card-title">Progresso semanal</div>
-          <div class="progress-row">
-            <span class="progress-label" id="week-label">Semana 1</span>
-            <span class="progress-pct" id="week-pct">0%</span>
+
+        <!-- Lembrete check-in quinzenal -->
+        <div id="quinzenal-wrap" style="display:none;">
+          <div class="quinzenal-card" onclick="switchTab('mais')">
+            <div class="quinzenal-ico">📋</div>
+            <div class="quinzenal-info">
+              <div class="quinzenal-title">Check-in quinzenal disponível</div>
+              <div class="quinzenal-sub">Responda para o Dr. Roberto acompanhar sua evolução</div>
+            </div>
+            <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:var(--gold);fill:none;stroke-width:2;stroke-linecap:round;flex-shrink:0;"><polyline points="9,18 15,12 9,6"/></svg>
           </div>
-          <div class="progress-bg"><div class="progress-fill" id="week-bar" style="width:0%"></div></div>
         </div>
 
-        <!-- Água -->
-        <div class="card">
-          <div class="card-title">Hidratação</div>
-          <div class="cups-row" id="cups-row"></div>
-          <div class="water-total">Total: <span class="water-ml" id="water-total-ml">0 ml</span> de 2.000 ml</div>
+        <!-- Card do dia -->
+        <div class="card" id="hoje-card">
+          <div class="card-title-row">
+            <span class="card-title">Hoje</span>
+            <span class="hoje-data" id="hoje-data"></span>
+          </div>
+          <div class="hoje-habitos" id="hoje-habitos"></div>
+          <button class="btn-checkin-cta" id="btn-checkin-cta" onclick="switchTab('planner')">Fazer check-in de hoje →</button>
         </div>
 
-        <!-- Hábitos rápidos -->
+        <!-- Calendário mensal -->
         <div class="card">
-          <div class="card-title">Hábitos de hoje</div>
-          <div id="quick-habits"></div>
+          <div class="card-title-row">
+            <span class="card-title">Meu mês</span>
+            <span class="cal-legenda"><span class="cal-dot" style="background:#27AE60"></span>completo <span class="cal-dot" style="background:var(--gold);margin-left:6px;"></span>parcial</span>
+          </div>
+          <div class="cal-grid" id="cal-grid"></div>
         </div>
 
         <!-- Avisos -->
         <div id="notices-wrap"></div>
+
+        <div style="height:8px;"></div>
       </div>
     </div>
 
@@ -1117,8 +1184,9 @@ async function initApp() {
   }
 
   await Promise.all([loadTodayLog(), loadNotices()]);
-  renderCups();
+  renderHome();
   renderCheckin();
+  checkQuinzenal();
   renderSOS();
   loadEvolution();
   loadPerformance();
@@ -1232,7 +1300,126 @@ async function toggleCup(i) {
   if (!error) { todayLog.water_ml = newMl; renderCups(); updateWeekProgress(); }
 }
 
-// ── CHECK-IN ───────────────────────────────────────────────
+// ── TELA INÍCIO ───────────────────────────────────────────
+async function renderHome() {
+  // Data de hoje
+  const now = new Date();
+  const meses = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+  const dias = ['domingo','segunda','terça','quarta','quinta','sexta','sábado'];
+  const dataEl = document.getElementById('hoje-data');
+  if (dataEl) dataEl.textContent = dias[now.getDay()] + ', ' + now.getDate() + ' de ' + meses[now.getMonth()];
+
+  // Card do dia — 6 hábitos
+  const ml = todayLog ? (todayLog.water_ml || 0) : 0;
+  const habitos = [
+    { ico:'🏋️', lbl:'Treino',   done: todayLog?.treino_done },
+    { ico:'🏃', lbl:'Cardio',   done: (todayLog?.cardio_min||0) > 0 },
+    { ico:'🥗', lbl:'Plano',    done: todayLog?.plano_done },
+    { ico:'💧', lbl:'Água',     done: ml >= 2000 },
+    { ico:'😴', lbl:'Sono',     done: todayLog?.sono_done },
+    { ico:'🙏', lbl:'Mente',    done: todayLog?.mente_done },
+  ];
+  const doneCt = habitos.filter(h => h.done).length;
+  const habitosEl = document.getElementById('hoje-habitos');
+  if (habitosEl) {
+    habitosEl.innerHTML = habitos.map(h => `
+      <div class="hoje-hab ${h.done ? 'done' : ''}">
+        <span class="hoje-hab-ico">${h.ico}</span>
+        <span class="hoje-hab-lbl">${h.lbl}${h.done ? ' ✓' : ''}</span>
+      </div>
+    `).join('');
+  }
+
+  // Botão CTA
+  const cta = document.getElementById('btn-checkin-cta');
+  if (cta) {
+    if (doneCt === 6) {
+      cta.textContent = '✓ Check-in completo hoje!';
+      cta.classList.add('done');
+    } else if (doneCt > 0) {
+      cta.textContent = `Continuar check-in (${doneCt}/6) →`;
+      cta.classList.remove('done');
+    } else {
+      cta.textContent = 'Fazer check-in de hoje →';
+      cta.classList.remove('done');
+    }
+  }
+
+  // Calendário
+  await renderCalendar();
+}
+
+async function renderCalendar() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+  const today = now.getDate();
+
+  // Busca todos os logs do mês
+  const monthStart = `${year}-${String(month+1).padStart(2,'0')}-01`;
+  const monthEnd   = `${year}-${String(month+1).padStart(2,'0')}-${String(new Date(year,month+1,0).getDate()).padStart(2,'0')}`;
+  const { data } = await sb.from('daily_logs')
+    .select('log_date,treino_done,cardio_min,plano_done,water_ml,sono_done,mente_done')
+    .eq('user_id', currentUser.id)
+    .gte('log_date', monthStart)
+    .lte('log_date', monthEnd);
+
+  const logs = data || [];
+
+  // Mapa data → status
+  const statusMap = {};
+  logs.forEach(l => {
+    const done = [l.treino_done, (l.cardio_min||0)>0, l.plano_done, (l.water_ml||0)>=2000, l.sono_done, l.mente_done].filter(Boolean).length;
+    statusMap[l.log_date] = done === 6 ? 'done' : done > 0 ? 'partial' : 'none';
+  });
+
+  const grid = document.getElementById('cal-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+
+  // Labels dias da semana
+  ['D','S','T','Q','Q','S','S'].forEach(d => {
+    const lbl = document.createElement('div');
+    lbl.className = 'cal-day-label';
+    lbl.textContent = d;
+    grid.appendChild(lbl);
+  });
+
+  // Dia 1 do mês — qual dia da semana?
+  const firstDow = new Date(year, month, 1).getDay();
+  for (let i = 0; i < firstDow; i++) {
+    const empty = document.createElement('div');
+    empty.className = 'cal-day empty';
+    grid.appendChild(empty);
+  }
+
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const status = statusMap[dateStr] || 'none';
+    const isToday = d === today;
+    const isFuture = d > today;
+
+    const el = document.createElement('div');
+    el.className = 'cal-day' +
+      (isToday ? ' today' : '') +
+      (status === 'done' ? ' done' : '') +
+      (status === 'partial' ? ' partial' : '') +
+      (isFuture ? ' future' : '');
+    el.textContent = d;
+    grid.appendChild(el);
+  }
+}
+
+// ── QUINZENAL ─────────────────────────────────────────────
+function checkQuinzenal() {
+  // Lógica futura: comparar data atual com último check-in quinzenal
+  // Por ora, oculto — será ativado quando implementarmos o check-in quinzenal
+  const wrap = document.getElementById('quinzenal-wrap');
+  if (wrap) wrap.style.display = 'none';
+}
+
+
 // Estado local do check-in do dia
 let checkinState = { treino: false, cardio_min: 0, plano: false, sono: false, mente: false };
 
@@ -1325,7 +1512,39 @@ async function saveCheckin() {
     mente_done:   checkinState.mente
   };
   const { error } = await sb.from('daily_logs').update(payload).eq('id', todayLog.id);
-  if (!error) Object.assign(todayLog, { treino_done: payload.treino_done, cardio_min: payload.cardio_min, plano_done: payload.plano_done, sono_done: payload.sono_done, mente_done: payload.mente_done });
+  if (!error) {
+    Object.assign(todayLog, { treino_done: payload.treino_done, cardio_min: payload.cardio_min, plano_done: payload.plano_done, sono_done: payload.sono_done, mente_done: payload.mente_done });
+    // Atualiza card do dia na tela Início sem recarregar o calendário
+    renderHomeDayCard();
+  }
+}
+
+function renderHomeDayCard() {
+  const ml = todayLog ? (todayLog.water_ml || 0) : 0;
+  const habitos = [
+    { ico:'🏋️', lbl:'Treino', done: todayLog?.treino_done },
+    { ico:'🏃', lbl:'Cardio', done: (todayLog?.cardio_min||0) > 0 },
+    { ico:'🥗', lbl:'Plano',  done: todayLog?.plano_done },
+    { ico:'💧', lbl:'Água',   done: ml >= 2000 },
+    { ico:'😴', lbl:'Sono',   done: todayLog?.sono_done },
+    { ico:'🙏', lbl:'Mente',  done: todayLog?.mente_done },
+  ];
+  const doneCt = habitos.filter(h => h.done).length;
+  const habitosEl = document.getElementById('hoje-habitos');
+  if (habitosEl) {
+    habitosEl.innerHTML = habitos.map(h => `
+      <div class="hoje-hab ${h.done ? 'done' : ''}">
+        <span class="hoje-hab-ico">${h.ico}</span>
+        <span class="hoje-hab-lbl">${h.lbl}${h.done ? ' ✓' : ''}</span>
+      </div>
+    `).join('');
+  }
+  const cta = document.getElementById('btn-checkin-cta');
+  if (cta) {
+    if (doneCt === 6) { cta.textContent = '✓ Check-in completo hoje!'; cta.classList.add('done'); }
+    else if (doneCt > 0) { cta.textContent = `Continuar check-in (${doneCt}/6) →`; cta.classList.remove('done'); }
+    else { cta.textContent = 'Fazer check-in de hoje →'; cta.classList.remove('done'); }
+  }
 }
 
 // Mantida para compatibilidade (chamada em toggleCup)
@@ -1892,6 +2111,7 @@ function switchTab(tab) {
   document.getElementById('tab-' + tab).classList.add('active');
   document.getElementById('nav-' + tab).classList.add('on');
   hideSub();
+  if (tab === 'inicio') renderHome();
   if (tab === 'planner') loadCheckin();
   if (tab === 'evolucao') { loadEvolution(); loadPerformance(); }
 }
