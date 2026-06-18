@@ -86,11 +86,7 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
 .logo-pill{
   display:flex;align-items:center;gap:7px;
 }
-.logo-k{
-  width:28px;height:28px;border-radius:50%;border:1.5px solid var(--gold);
-  display:flex;align-items:center;justify-content:center;
-  font-family:'Cormorant Garamond',serif;font-size:14px;font-weight:600;color:var(--gold);
-}
+.logo-k{display:flex;}
 .logo-name{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;color:var(--gold);letter-spacing:.12em;}
 .tag{font-size:9px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);opacity:.7;}
 .hdr-title{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:500;color:var(--cream);margin-top:4px;}
@@ -137,7 +133,7 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
   position:fixed;inset:0;background:var(--bg);
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:1000;
 }
-#loading .logo-big{font-family:'Cormorant Garamond',serif;font-size:48px;color:var(--gold);letter-spacing:.2em;}
+#loading .logo-big{display:flex;}
 #loading .sub{font-size:12px;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;}
 .spinner{width:28px;height:28px;border:2px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
@@ -148,11 +144,7 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
 .auth-logo{
   text-align:center;margin-bottom:48px;
 }
-.auth-logo-k{
-  width:60px;height:60px;border-radius:50%;border:2px solid var(--gold);
-  display:flex;align-items:center;justify-content:center;
-  font-family:'Cormorant Garamond',serif;font-size:28px;color:var(--gold);margin:0 auto 12px;
-}
+.auth-logo-k{margin:0 auto 12px;display:flex;}
 .auth-logo-name{font-family:'Cormorant Garamond',serif;font-size:32px;color:var(--gold);letter-spacing:.18em;}
 .auth-logo-sub{font-size:11px;color:var(--muted);letter-spacing:.15em;margin-top:4px;}
 .auth-tabs{display:flex;gap:0;margin-bottom:28px;border-bottom:0.5px solid var(--border);}
@@ -435,7 +427,7 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
 
 <!-- LOADING -->
 <div id="loading">
-  <div class="logo-big">K</div>
+  <div class="logo-big"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" style="width:80px;height:80px;"><circle cx="50" cy="50" r="47" fill="#070F18" stroke="#B8965A" stroke-width="3"/><line x1="6.6" y1="68" x2="93.4" y2="68" stroke="#B8965A" stroke-width="2.5" stroke-linecap="round"/><text x="50" y="64" font-family="Cormorant Garamond,Georgia,serif" font-size="46" fill="#B8965A" text-anchor="middle">K</text><line x1="50" y1="3" x2="50" y2="13" stroke="#B8965A" stroke-width="3" stroke-linecap="round"/><line x1="73.5" y1="9.3" x2="68.5" y2="17.9" stroke="#B8965A" stroke-width="3" stroke-linecap="round"/><line x1="90.7" y1="26.5" x2="82" y2="31.5" stroke="#B8965A" stroke-width="3" stroke-linecap="round"/><line x1="97" y1="50" x2="87" y2="50" stroke="#B8965A" stroke-width="3" stroke-linecap="round"/><line x1="90.7" y1="73.5" x2="82" y2="68.5" stroke="#B8965A" stroke-width="3" stroke-linecap="round"/><line x1="26.5" y1="9.3" x2="31.5" y2="17.9" stroke="#B8965A" stroke-width="3" stroke-linecap="round"/><line x1="9.3" y1="26.5" x2="18" y2="31.5" stroke="#B8965A" stroke-width="3" stroke-linecap="round"/><line x1="3" y1="50" x2="13" y2="50" stroke="#B8965A" stroke-width="3" stroke-linecap="round"/><line x1="9.3" y1="73.5" x2="18" y2="68.5" stroke="#B8965A" stroke-width="3" stroke-linecap="round"/></svg></div>
   <div class="sub">Albuquerque Nutrição Avançada</div>
   <div class="spinner"></div>
 </div>
@@ -462,7 +454,7 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
   <div class="screen" id="screen-auth">
     <div class="auth-wrap">
       <div class="auth-logo">
-        <div class="auth-logo-k">K</div>
+        <div class="auth-logo-k"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" style="width:72px;height:72px;"><circle cx="50" cy="50" r="47" fill="#070F18" stroke="#B8965A" stroke-width="3"/><line x1="6.6" y1="68" x2="93.4" y2="68" stroke="#B8965A" stroke-width="2.5" stroke-linecap="round"/><text x="50" y="64" font-family="Cormorant Garamond,Georgia,serif" font-size="46" fill="#B8965A" text-anchor="middle">K</text><line x1="50" y1="3" x2="50" y2="13" stroke="#B8965A" stroke-width="3" stroke-linecap="round"/><line x1="73.5" y1="9.3" x2="68.5" y2="17.9" stroke="#B8965A" stroke-width="3" stroke-linecap="round"/><line x1="90.7" y1="26.5" x2="82" y2="31.5" stroke="#B8965A" stroke-width="3" stroke-linecap="round"/><line x1="97" y1="50" x2="87" y2="50" stroke="#B8965A" stroke-width="3" stroke-linecap="round"/><line x1="90.7" y1="73.5" x2="82" y2="68.5" stroke="#B8965A" stroke-width="3" stroke-linecap="round"/><line x1="26.5" y1="9.3" x2="31.5" y2="17.9" stroke="#B8965A" stroke-width="3" stroke-linecap="round"/><line x1="9.3" y1="26.5" x2="18" y2="31.5" stroke="#B8965A" stroke-width="3" stroke-linecap="round"/><line x1="3" y1="50" x2="13" y2="50" stroke="#B8965A" stroke-width="3" stroke-linecap="round"/><line x1="9.3" y1="73.5" x2="18" y2="68.5" stroke="#B8965A" stroke-width="3" stroke-linecap="round"/></svg></div>
         <div class="auth-logo-name">KAIRÓS</div>
         <div class="auth-logo-sub">Albuquerque Nutrição Avançada</div>
       </div>
@@ -514,7 +506,7 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
   <div class="screen" id="screen-consent">
     <div class="consent-wrap">
       <div class="consent-logo">
-        <div class="auth-logo-k" style="margin:0 auto 8px;">K</div>
+        <div class="auth-logo-k" style="margin:0 auto 8px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" style="width:60px;height:60px;"><circle cx="50" cy="50" r="47" fill="#070F18" stroke="#B8965A" stroke-width="3"/><line x1="6.6" y1="68" x2="93.4" y2="68" stroke="#B8965A" stroke-width="2.5" stroke-linecap="round"/><text x="50" y="64" font-family="Cormorant Garamond,Georgia,serif" font-size="46" fill="#B8965A" text-anchor="middle">K</text><line x1="50" y1="3" x2="50" y2="13" stroke="#B8965A" stroke-width="3" stroke-linecap="round"/><line x1="73.5" y1="9.3" x2="68.5" y2="17.9" stroke="#B8965A" stroke-width="3" stroke-linecap="round"/><line x1="90.7" y1="26.5" x2="82" y2="31.5" stroke="#B8965A" stroke-width="3" stroke-linecap="round"/><line x1="97" y1="50" x2="87" y2="50" stroke="#B8965A" stroke-width="3" stroke-linecap="round"/><line x1="90.7" y1="73.5" x2="82" y2="68.5" stroke="#B8965A" stroke-width="3" stroke-linecap="round"/><line x1="26.5" y1="9.3" x2="31.5" y2="17.9" stroke="#B8965A" stroke-width="3" stroke-linecap="round"/><line x1="9.3" y1="26.5" x2="18" y2="31.5" stroke="#B8965A" stroke-width="3" stroke-linecap="round"/><line x1="3" y1="50" x2="13" y2="50" stroke="#B8965A" stroke-width="3" stroke-linecap="round"/><line x1="9.3" y1="73.5" x2="18" y2="68.5" stroke="#B8965A" stroke-width="3" stroke-linecap="round"/></svg></div>
       </div>
       <div class="consent-title">Antes de continuar</div>
       <div class="consent-sub">Leia e aceite nossa Política de Privacidade e Termos de Uso para acessar o Kairós.</div>
@@ -569,7 +561,7 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
       <div class="hdr">
         <div class="hdr-row">
           <div class="logo-pill">
-            <div class="logo-k">K</div>
+            <div class="logo-k"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" style="width:28px;height:28px;"><circle cx="50" cy="50" r="47" fill="#070F18" stroke="#B8965A" stroke-width="3"/><line x1="6.6" y1="68" x2="93.4" y2="68" stroke="#B8965A" stroke-width="2.5" stroke-linecap="round"/><text x="50" y="64" font-family="Cormorant Garamond,Georgia,serif" font-size="46" fill="#B8965A" text-anchor="middle">K</text><line x1="50" y1="3" x2="50" y2="13" stroke="#B8965A" stroke-width="3" stroke-linecap="round"/><line x1="73.5" y1="9.3" x2="68.5" y2="17.9" stroke="#B8965A" stroke-width="3" stroke-linecap="round"/><line x1="90.7" y1="26.5" x2="82" y2="31.5" stroke="#B8965A" stroke-width="3" stroke-linecap="round"/><line x1="97" y1="50" x2="87" y2="50" stroke="#B8965A" stroke-width="3" stroke-linecap="round"/><line x1="90.7" y1="73.5" x2="82" y2="68.5" stroke="#B8965A" stroke-width="3" stroke-linecap="round"/><line x1="26.5" y1="9.3" x2="31.5" y2="17.9" stroke="#B8965A" stroke-width="3" stroke-linecap="round"/><line x1="9.3" y1="26.5" x2="18" y2="31.5" stroke="#B8965A" stroke-width="3" stroke-linecap="round"/><line x1="3" y1="50" x2="13" y2="50" stroke="#B8965A" stroke-width="3" stroke-linecap="round"/><line x1="9.3" y1="73.5" x2="18" y2="68.5" stroke="#B8965A" stroke-width="3" stroke-linecap="round"/></svg></div>
             <span class="logo-name">Kairós</span>
           </div>
           <div style="width:32px;height:32px;border-radius:50%;background:var(--gold-faint);border:1px solid var(--gold-dim);display:flex;align-items:center;justify-content:center;cursor:pointer;" onclick="showMais()">
