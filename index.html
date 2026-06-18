@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>KairÃ³s</title>
+<title>Kairós</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.106.2"></script>
 <style>
@@ -27,7 +27,7 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--cream);}
 
-/* ââ LAYOUT ââ */
+/* ── LAYOUT ── */
 #app{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:0;}
 .phone{
   width:100%;max-width:430px;min-height:100vh;
@@ -44,7 +44,7 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
   #app{padding:32px 16px;}
 }
 
-/* ââ STATUS BAR ââ */
+/* ── STATUS BAR ── */
 .sbar{
   background:var(--bg);padding:12px 22px 6px;
   display:flex;justify-content:space-between;align-items:center;
@@ -54,16 +54,16 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
 .sbar-icons{display:flex;gap:5px;align-items:center;}
 .sbar-icons span{font-size:11px;color:var(--muted);}
 
-/* ââ SCREENS ââ */
+/* ── SCREENS ── */
 .screen{display:none;flex-direction:column;flex:1;min-height:0;overflow:hidden;}
 .screen.active{display:flex;}
 
-/* ââ SCROLL AREA ââ */
+/* ── SCROLL AREA ── */
 .scroll{overflow-y:auto;flex:1;padding:16px 18px 24px;}
 .scroll::-webkit-scrollbar{width:2px;}
 .scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
 
-/* ââ BOTTOM NAV ââ */
+/* ── BOTTOM NAV ── */
 .bnav{
   background:var(--bg);
   border-top:0.5px solid var(--border);
@@ -80,7 +80,7 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
 .bnav-item svg{width:22px;height:22px;stroke:var(--gold);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
 .bnav-item span{font-size:9px;color:var(--gold);letter-spacing:.04em;font-weight:500;}
 
-/* ââ HEADER ââ */
+/* ── HEADER ── */
 .hdr{padding:14px 18px 12px;border-bottom:0.5px solid var(--border);flex-shrink:0;}
 .hdr-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:2px;}
 .logo-pill{
@@ -95,11 +95,11 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
 .tag{font-size:9px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);opacity:.7;}
 .hdr-title{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:500;color:var(--cream);margin-top:4px;}
 
-/* ââ CARDS ââ */
+/* ── CARDS ── */
 .card{background:var(--surface2);border:0.5px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:10px;}
 .card-title{font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;}
 
-/* ââ BUTTONS ââ */
+/* ── BUTTONS ── */
 .btn{
   width:100%;padding:14px;border:none;border-radius:var(--r);
   font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;
@@ -112,7 +112,7 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
 .btn-danger{background:transparent;border:1px solid var(--danger);color:var(--danger);}
 .btn:disabled{opacity:.4;cursor:not-allowed;}
 
-/* ââ INPUTS ââ */
+/* ── INPUTS ── */
 .inp-group{margin-bottom:14px;}
 .inp-label{font-size:11px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;display:block;}
 .inp{
@@ -123,7 +123,7 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
 .inp:focus{border-color:var(--gold);}
 .inp::placeholder{color:var(--muted2);}
 
-/* ââ TOAST ââ */
+/* ── TOAST ── */
 #toast{
   position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);
   background:var(--surface2);border:0.5px solid var(--gold);border-radius:20px;
@@ -132,7 +132,7 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
 }
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
-/* ââ LOADING ââ */
+/* ── LOADING ── */
 #loading{
   position:fixed;inset:0;background:var(--bg);
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:1000;
@@ -142,7 +142,7 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
 .spinner{width:28px;height:28px;border:2px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
 
-/* ââ AUTH SCREEN ââ */
+/* ── AUTH SCREEN ── */
 #screen-auth{background:var(--bg);}
 .auth-wrap{padding:40px 28px 32px;display:flex;flex-direction:column;flex:1;}
 .auth-logo{
@@ -161,7 +161,7 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
 .auth-err{background:#C0392B18;border:0.5px solid #C0392B44;border-radius:var(--r-sm);padding:10px 14px;font-size:12px;color:#E74C3C;margin-bottom:14px;display:none;}
 .auth-err.show{display:block;}
 
-/* ââ LGPD CONSENT ââ */
+/* ── LGPD CONSENT ── */
 #screen-consent{background:var(--bg);}
 .consent-wrap{padding:28px 22px;flex:1;overflow-y:auto;display:flex;flex-direction:column;}
 .consent-logo{text-align:center;margin-bottom:24px;}
@@ -185,11 +185,11 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
 .consent-check.on{background:var(--gold);border-color:var(--gold);}
 .consent-check-label{font-size:13px;color:var(--muted);line-height:1.6;cursor:pointer;}
 
-/* ââ EXPIRED SCREEN ââ */
+/* ── EXPIRED SCREEN ── */
 #screen-expired{background:var(--bg);}
 .expired-wrap{padding:40px 28px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;text-align:center;}
 
-/* ââ INÃCIO ââ */
+/* ── INÍCIO ── */
 .greeting-line{font-size:12px;color:var(--muted);margin-bottom:2px;}
 .greeting-name{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--cream);margin-bottom:16px;}
 .progress-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
@@ -231,7 +231,7 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
 .notice-title{font-size:11px;color:var(--gold);font-weight:600;margin-bottom:4px;letter-spacing:.06em;}
 .notice-body{font-size:12px;color:var(--muted);line-height:1.6;}
 
-/* ââ PLANNER ââ */
+/* ── PLANNER ── */
 .seg-tabs{display:flex;gap:6px;margin-bottom:16px;}
 .seg-tab{
   flex:1;text-align:center;padding:8px 4px;border-radius:var(--r-sm);
@@ -242,7 +242,7 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
 .section-label{font-size:9px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin:16px 0 8px;opacity:.8;}
 .section-label:first-of-type{margin-top:0;}
 
-/* ââ SUBSTITUTOS ââ */
+/* ── SUBSTITUTOS ── */
 .taco-search{position:relative;margin-bottom:10px;}
 .taco-search .inp{padding-right:40px;}
 .taco-search-ico{position:absolute;right:14px;top:50%;transform:translateY(-50%);opacity:.4;}
@@ -260,7 +260,7 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
 .sub-info-detail{font-size:11px;color:var(--muted);margin-top:1px;}
 .sub-badge{margin-left:auto;font-size:9px;padding:3px 8px;border-radius:20px;background:var(--gold-dim);border:0.5px solid var(--gold);color:var(--gold);white-space:nowrap;}
 
-/* ââ EVOLUÃÃO ââ */
+/* ── EVOLUÇÃO ── */
 .stat-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px;}
 .stat-box{background:var(--surface2);border:0.5px solid var(--border);border-radius:var(--r-sm);padding:12px 8px;text-align:center;}
 .stat-val{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;color:var(--gold);display:block;}
@@ -269,7 +269,7 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
 .chart-title{font-size:10px;color:var(--gold);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px;}
 .mini-chart{display:flex;align-items:flex-end;gap:5px;height:50px;}
 .bar{flex:1;background:var(--surface3);border-radius:3px 3px 0 0;transition:height .5s ease;position:relative;}
-.bar.hitbackground:var(--gold);}
+.bar.hi{background:var(--gold);}
 .bar-lbl{position:absolute;bottom:-16px;left:50%;transform:translateX(-50%);font-size:8px;color:var(--muted);white-space:nowrap;}
 .photo-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px;}
 .photo-slot{
@@ -284,7 +284,7 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
 .photo-slot img{width:100%;height:100%;object-fit:cover;}
 .evol-inp-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 
-/* ââ MAIS MENU ââ */
+/* ── MAIS MENU ── */
 .mais-item{
   display:flex;align-items:center;gap:14px;padding:14px 16px;
   background:var(--surface2);border:0.5px solid var(--border);border-radius:var(--r);
@@ -298,7 +298,7 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
 .mais-arrow{margin-left:auto;opacity:.4;}
 .mais-arrow svg{width:16px;height:16px;stroke:var(--muted);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
 
-/* ââ SUB-SCREENS ââ */
+/* ── SUB-SCREENS ── */
 .subscreen{display:none;flex-direction:column;flex:1;min-height:0;overflow:hidden;}
 .subscreen.active{display:flex;}
 .back-btn{display:flex;align-items:center;gap:6px;cursor:pointer;padding:4px 0;margin-bottom:12px;}
@@ -324,14 +324,14 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
 .video-dur{font-size:11px;color:var(--muted);margin-top:2px;}
 
 /* SOS card */
-.sos-card{display:flex;align-items:center;gap:12px;padding:14px;background:var(--surface2);border:0.5px solid var(--border);border-radius:var(--r);margin-bottom:8px;cursor:pointer;transition:border-color .2s;}
+.sos-card{display:flex;align-items:center;gap:12px;padding:14px;background:var(--surface2);border:0.5px solld var(--border);border-radius:var(--r);margin-bottom:8px;cursor:pointer;transition:border-color .2s;}
 .sos-card:hover{border-color:var(--gold);}
 .sos-dot{width:10px;height:10px;border-radius:50%;background:var(--gold);flex-shrink:0;}
 .sos-text{flex:1;}
 .sos-title{font-size:13px;color:var(--cream);font-weight:500;}
 .sos-dur{font-size:11px;color:var(--muted);margin-top:2px;}
 
-/* ââ CONTA ââ */
+/* ── CONTA ── */
 .account-avatar{
   width:64px;height:64px;border-radius:50%;background:var(--gold-faint);
   border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;
@@ -347,7 +347,7 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
 }
 .plan-expires{font-size:11px;color:var(--muted);margin-top:6px;}
 
-/* ââ ADMIN ââ */
+/* ── ADMIN ── */
 .admin-stat-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;}
 .admin-stat{background:var(--surface2);border:0.5px solid var(--border);border-radius:var(--r-sm);padding:14px;text-align:center;}
 .admin-stat-n{font-family:'Cormorant Garamond',serif;font-size:32px;color:var(--gold);}
@@ -366,7 +366,7 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
 .suspend-btn{padding:5px 10px;background:transparent;border:0.5px solid var(--danger);color:var(--danger);border-radius:var(--r-sm);font-size:11px;cursor:pointer;}
 .divider{height:0.5px;background:var(--border);margin:16px 0;}
 
-/* ââ SUBSTITUTOS V2 ââ */
+/* ── SUBSTITUTOS V2 ── */
 .sub-view { display:none; }
 .sub-view.active { display:block; }
 .food-search-wrap { position:relative; margin-bottom:16px; }
@@ -413,7 +413,7 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
 .sub-item-g { font-size:14px; color:var(--gold); font-weight:700; }
 .sub-item-fav { font-size:18px; cursor:pointer; margin-top:4px; display:block; }
 
-/* ââ JORNADA ââ */
+/* ── JORNADA ── */
 .jornada-stats { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:18px; }
 .jornada-stat { background:var(--surface2); border:1px solid var(--border); border-radius:14px; padding:14px; text-align:center; }
 .jornada-stat-val { font-size:26px; color:var(--gold); font-weight:700; margin-bottom:3px; }
@@ -436,7 +436,7 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
 <!-- LOADING -->
 <div id="loading">
   <div class="logo-big">K</div>
-  <div class="sub">Albuquerque NutriÃ§Ã£o AvanÃ§ada</div>
+  <div class="sub">Albuquerque Nutrição Avançada</div>
   <div class="spinner"></div>
 </div>
 
@@ -450,21 +450,21 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
   <div class="sbar" id="sbar" style="display:none">
     <span class="sbar-time" id="sbar-time">9:41</span>
     <div class="sbar-icons">
-      <span>âââ</span>
+      <span>●●●</span>
       <span>WiFi</span>
-      <span>ð</span>
+      <span>🔋</span>
     </div>
   </div>
 
-  <!-- ââââââââââââââââââââââââââââââââ -->
+  <!-- ════════════════════════════════ -->
   <!-- SCREEN: AUTH                    -->
-  <!-- ââââââââââââââââââââââââââââââââ -->
+  <!-- ════════════════════════════════ -->
   <div class="screen" id="screen-auth">
     <div class="auth-wrap">
       <div class="auth-logo">
         <div class="auth-logo-k">K</div>
-        <div class="auth-logo-name">KAIRÃS</div>
-        <div class="auth-logo-sub">Albuquerque NutriÃ§Ã£o AvanÃ§ada</div>
+        <div class="auth-logo-name">KAIRÓS</div>
+        <div class="auth-logo-sub">Albuquerque Nutrição Avançada</div>
       </div>
       <div class="auth-tabs">
         <div class="auth-tab on" id="tab-login" onclick="authTab('login')">Entrar</div>
@@ -480,7 +480,7 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
         </div>
         <div class="inp-group">
           <label class="inp-label">Senha</label>
-          <input class="inp" type="password" id="login-pw" placeholder="â¢â¢â¢â¢â¢â¢â¢â¢" autocomplete="current-password">
+          <input class="inp" type="password" id="login-pw" placeholder="••••••••" autocomplete="current-password">
         </div>
         <button class="btn btn-gold" onclick="doLogin()" id="btn-login">Entrar</button>
       </div>
@@ -497,92 +497,93 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
         </div>
         <div class="inp-group">
           <label class="inp-label">Senha</label>
-          <input class="inp" type="password" id="reg-pw" placeholder="MÃ­nimo 8 caracteres" autocomplete="new-password">
+          <input class="inp" type="password" id="reg-pw" placeholder="Mínimo 8 caracteres" autocomplete="new-password">
         </div>
         <button class="btn btn-gold" onclick="doRegister()" id="btn-register">Criar conta</button>
         <p style="text-align:center;font-size:11px;color:var(--muted);margin-top:14px;line-height:1.6;">
-          Ao criar sua conta vocÃª concorda com nossa<br>
-          <span style="color:var(--gold);cursor:pointer">PolÃ­tica de Privacidade</span> e <span style="color:var(--gold);cursor:pointer">Termos de Uso</span>
+          Ao criar sua conta você concorda com nossa<br>
+          <span style="color:var(--gold);cursor:pointer">Política de Privacidade</span> e <span style="color:var(--gold);cursor:pointer">Termos de Uso</span>
         </p>
       </div>
     </div>
   </div>
 
-  <!-- ââââââââââââââââââââââââââââââââ -->
+  <!-- ════════════════════════════════ -->
   <!-- SCREEN: LGPD CONSENT            -->
-  <!-- ââââââââââââââââââââââââââââââââ -->
+  <!-- ════════════════════════════════ -->
   <div class="screen" id="screen-consent">
     <div class="consent-wrap">
       <div class="consent-logo">
         <div class="auth-logo-k" style="margin:0 auto 8px;">K</div>
       </div>
       <div class="consent-title">Antes de continuar</div>
-      <div class="consent-sub">Leia e aceite nossa PolÃ­tica de Privacidade e Termos de Uso para acessar o KairÃ³s.</div>
+      <div class="consent-sub">Leia e aceite nossa Política de Privacidade e Termos de Uso para acessar o Kairós.</div>
       <div class="consent-box">
         <h3>O que coletamos</h3>
-        <p>Nome, e-mail, dados de saÃºde (peso, medidas, fotos corporais), registros de hÃ¡bitos e anotaÃ§Ãµes pessoais.</p>
+        <p>Nome, e-mail, dados de saúde (peso, medidas, fotos corporais), registros de hábitos e anotações pessoais.</p>
         <h3>Como usamos seus dados</h3>
-        <p>Exclusivamente para prestaÃ§Ã£o dos serviÃ§os de acompanhamento nutricional contratados. Seus dados nunca sÃ£o vendidos ou compartilhados para fins publicitÃ¡rios.</p>
+        <p>Exclusivamente para prestação dos serviços de acompanhamento nutricional contratados. Seus dados nunca são vendidos ou compartilhados para fins publicitários.</p>
         <h3>Seus direitos (LGPD)</h3>
         <ul>
           <li>Acessar, corrigir ou excluir seus dados a qualquer momento</li>
           <li>Revogar o consentimento pelo e-mail privacidade@kairos.com.br</li>
           <li>Solicitar portabilidade dos dados</li>
         </ul>
-        <h3>SeguranÃ§a</h3>
-        <p>Todos os dados sÃ£o criptografados. Fotos e registros de saÃºde sÃ£o acessÃ­veis somente por vocÃª e pelo nutricionista responsÃ¡vel.</p>
+        <h3>Segurança</h3>
+        <p>Todos os dados são criptografados. Fotos e registros de saúde são acessíveis somente por você e pelo nutricionista responsável.</p>
         <h3>Controlador dos dados</h3>
-        <p>Roberto da Silva Cabral Albuquerque Ltda â CNPJ 55.081.700/0001-40 â Albuquerque NutriÃ§Ã£o AvanÃ§ada.</p>
+        <p>Roberto da Silva Cabral Albuquerque Ltda — CNPJ 55.081.700/0001-40 — Albuquerque Nutrição Avançada.</p>
       </div>
       <div class="consent-check-row" onclick="toggleConsent()">
         <div class="consent-check" id="consent-check">
           <svg viewBox="0 0 12 12" style="width:12px;height:12px;stroke:var(--bg);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;"><polyline points="2,6 5,9 10,3"/></svg>
         </div>
-        <div class="consent-check-label">Li e aceito a PolÃ­tica de Privacidade e os Termos de Uso. Consinto com o tratamento dos meus dados de saÃºde pela Albuquerque NutriÃ§Ã£o AvanÃ§ada.</div>
+        <div class="consent-check-label">Li e aceito a Política de Privacidade e os Termos de Uso. Consinto com o tratamento dos meus dados de saúde pela Albuquerque Nutrição Avançada.</div>
       </div>
       <button class="btn btn-gold" id="btn-consent" onclick="doConsent()" disabled>Continuar</button>
     </div>
   </div>
 
-  <!-- ââââââââââââââââââââââââââââââââ -->
+  <!-- ════════════════════════════════ -->
   <!-- SCREEN: PLANO EXPIRADO          -->
-  <!-- ââââââââââââââââââââââââââââââââ -->
+  <!-- ════════════════════════════════ -->
   <div class="screen" id="screen-expired">
     <div class="expired-wrap">
-      <div style="font-size:48px;margin-bottom:16px;">â³</div>
+      <div style="font-size:48px;margin-bottom:16px;">⏳</div>
       <div style="font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--cream);margin-bottom:8px;">Acesso encerrado</div>
-      <div style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:32px;">Seu plano expirou ou ainda nÃ£o foi ativado. Entre em contato com o consultÃ³rio para renovar.</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:32px;">Seu plano expirou ou ainda não foi ativado. Entre em contato com o consultório para renovar.</div>
       <a href="https://wa.me/55XXXXXXXXXXX" style="text-decoration:none;width:100%">
-        <button class="btn btn-gold">Falar com o consultÃ³rio</button>
+        <button class="btn btn-gold">Falar com o consultório</button>
       </a>
       <button class="btn btn-outline" style="margin-top:10px;" onclick="doLogout()">Sair</button>
     </div>
   </div>
 
-  <!-- ââââââââââââââââââââââââââââââââ -->
-  <!-- SCREEN: APP PRINCIPAL           -->
-  <!-- ââââââââââââââââââââââââââââââââ -->
+  <!-- ════════════════════════════════ -->
+  <!-- SCREEN: APQ���CIPAL
+           -->
+  <!-- ════════════════════════════════ -->
   <div class="screen" id="screen-app">
 
-    <!-- ââ INÃCIO ââ -->
+    <!-- ── INÍCIO ── -->
     <div class="subscreen active" id="tab-inicio">
       <div class="hdr">
         <div class="hdr-row">
           <div class="logo-pill">
             <div class="logo-k">K</div>
-            <span class="logo-name">KairÃ³s</span>
+            <span class="logo-name">Kairós</span>
           </div>
           <div style="width:32px;height:32px;border-radius:50%;background:var(--gold-faint);border:1px solid var(--gold-dim);display:flex;align-items:center;justify-content:center;cursor:pointer;" onclick="showMais()">
             <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:var(--gold);fill:none;stroke-width:2;stroke-linecap:round;"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
           </div>
         </div>
         <div class="greeting-line" id="greeting-tag">Bom dia</div>
-        <div class="greeting-name" id="greeting-name">â</div>
+        <div class="greeting-name" id="greeting-name">—</div>
       </div>
       <div class="scroll">
         <!-- Banner motivacional -->
         <div style="background:linear-gradient(135deg,var(--gold-dim) 0%,rgba(212,175,55,.08) 100%);border:1px solid var(--gold-dim);border-radius:14px;padding:16px 18px;margin-bottom:12px;text-align:center;">
-          <div style="font-size:13px;color:var(--gold);font-style:italic;line-height:1.5;">"A constÃ¢ncia constrÃ³i o que a motivaÃ§Ã£o comeÃ§a."</div>
+          <div style="font-size:13px;color:var(--gold);font-style:italic;line-height:1.5;">"A constC�ncia constrói o que a motivação começa."</div>
         </div>
         <!-- Progresso semanal -->
         <div class="card">
@@ -594,16 +595,16 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
           <div class="progress-bg"><div class="progress-fill" id="week-bar" style="width:0%"></div></div>
         </div>
 
-        <!-- Ãgua -->
+        <!-- Água -->
         <div class="card">
-          <div class="card-title">HidrataÃ§Ã£o</div>
+          <div class="card-title">Hidratação</div>
           <div class="cups-row" id="cups-row"></div>
           <div class="water-total">Total: <span class="water-ml" id="water-total-ml">0 ml</span> de 2.000 ml</div>
         </div>
 
-        <!-- HÃ¡bitos rÃ¡pidos -->
+        <!-- Hábitos rápidos -->
         <div class="card">
-          <div class="card-title">HÃ¡bitos de hoje</div>
+          <div class="card-title">Hábitos de hoje</div>
           <div id="quick-habits"></div>
         </div>
 
@@ -612,34 +613,34 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
       </div>
     </div>
 
-    <!-- ââ PLANNER ââ -->
+    <!-- ── PLANNER ── -->
     <div class="subscreen" id="tab-planner">
       <div class="hdr">
         <div class="tag">Planner</div>
-        <div class="hdr-title">HÃ¡bitos do dia</div>
+        <div class="hdr-title">Hábitos do dia</div>
       </div>
       <div class="scroll">
         <div class="seg-tabs">
           <div class="seg-tab on" onclick="setGoal('emagrecer',this)">Emagrecer</div>
           <div class="seg-tab" onclick="setGoal('ganhar_massa',this)">Ganhar massa</div>
-          <div class="seg-tab" onclick="setGoal('saude',this)">SaÃºde</div>
+          <div class="seg-tab" onclick="setGoal('saude',this)">Saúde</div>
         </div>
         <div id="planner-content"></div>
       </div>
     </div>
 
-    <!-- ââ SUBSTITUTOS V2 ââ -->
+    <!-- ── SUBSTITUTOS V2 ── -->
     <div class="subscreen" id="tab-substitutos">
       <div class="hdr">
         <div class="tag">Posso trocar?</div>
-        <div class="hdr-title">SubstituiÃ§Ãµes</div>
+        <div class="hdr-title">Substituições</div>
       </div>
       <div class="scroll">
         <!-- View: Home -->
         <div class="sub-view active" id="sub-view-home">
           <div class="food-search-wrap">
             <div class="food-search-ico"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
-            <input class="inp" type="text" id="food-search" placeholder="o que vocÃª quer trocar? (arroz, banana, frango...)" oninput="filterFoodsV2()">
+            <input class="inp" type="text" id="food-search" placeholder="o que você quer trocar? (arroz, banana, frango...)" oninput="filterFoodsV2()">
           </div>
           <div id="search-results-wrap" style="display:none;margin-bottom:12px;"></div>
           <div id="freq-section" class="freq-section">
@@ -650,7 +651,7 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
           <div class="cat-pills" id="cat-pills">
             <div class="cat-pill on" onclick="filterByCategory(this,'todos')">todos</div>
             <div class="cat-pill" onclick="filterByCategory(this,'carboidratos')">carboidratos</div>
-            <div class="cat-pill" onclick="filterByCategory(this,'proteÃ­nas')">proteÃ­nas</div>
+            <div class="cat-pill" onclick="filterByCategory(this,'proteínas')">proteínas</div>
             <div class="cat-pill" onclick="filterByCategory(this,'gorduras')">gorduras</div>
             <div class="cat-pill" onclick="filterByCategory(this,'frutas')">frutas</div>
             <div class="cat-pill" onclick="filterByCategory(this,'vegetais')">vegetais</div>
@@ -668,11 +669,11 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
             <div class="qty-calc-label">quanto tem na sua dieta?</div>
             <div class="qty-calc-row">
               <input class="inp" type="number" id="food-qty" placeholder="120" value="100" oninput="updateKcalBadge()" style="flex:1;">
-              <div class="qty-kcal-badge" id="kcal-badge">â kcal</div>
+              <div class="qty-kcal-badge" id="kcal-badge">— kcal</div>
             </div>
           </div>
           <div class="sort-tabs" id="sort-tabs">
-            <div class="sort-tab on" onclick="setSortMode(this,'padrao')">padrÃ£o</div>
+            <div class="sort-tab on" onclick="setSortMode(this,'padrao')">padrão</div>
             <div class="sort-tab" onclick="setSortMode(this,'az')">a-z</div>
             <div class="sort-tab" onclick="setSortMode(this,'menor_g')">menor g</div>
             <div class="sort-tab" onclick="setSortMode(this,'maior_g')">maior g</div>
@@ -682,16 +683,16 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
       </div>
     </div>
 
-    <!-- ââ EVOLUÃÃO ââ */
+    <!-- ── EVOLUÇÃO ── */
     <div class="subscreen" id="tab-evolucao">
       <div class="hdr">
-        <div class="tag">EvoluÃ§Ã£o</div>
-        <div class="hdr-title">Minha evoluÃ§Ã£o</div>
+        <div class="tag">Evolução</div>
+        <div class="hdr-title">Minha evolução</div>
       </div>
       <div class="scroll">
         <div class="stat-grid" id="evol-stats"></div>
         <div class="chart-wrap">
-          <div class="chart-title">Peso â Ãºltimas semanas</div>
+          <div class="chart-title">Peso — últimas semanas</div>
           <div class="mini-chart" id="weight-chart" style="margin-bottom:20px;"></div>
         </div>
         <div class="card">
@@ -700,9 +701,9 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
             <div class="inp-group"><label class="inp-label">Peso (kg)</label><input class="inp" type="number" id="inp-weight" placeholder="Ex: 72.5" step="0.1"></div>
             <div class="inp-group"><label class="inp-label">Cintura (cm)</label><input class="inp" type="number" id="inp-waist" placeholder="Ex: 80"></div>
             <div class="inp-group"><label class="inp-label">Quadril (cm)</label><input class="inp" type="number" id="inp-hip" placeholder="Ex: 95"></div>
-            <div class="inp-group"><label class="inp-label">BraÃ§o (cm)</label><input class="inp" type="number" id="inp-arm" placeholder="Ex: 30"></div>
+            <div class="inp-group"><label class="inp-label">Braço (cm)</label><input class="inp" type="number" id="inp-arm" placeholder="Ex: 30"></div>
           </div>
-          <div class="inp-group" style="margin-top:4px;"><label class="inp-label">ObservaÃ§Ãµes</label><input class="inp" type="text" id="inp-notes" placeholder="Como vocÃª estÃ¡ se sentindo?"></div>
+          <div class="inp-group" style="margin-top:4px;"><label class="inp-label">Observações</label><input class="inp" type="text" id="inp-notes" placeholder="Como você está se sentindo?"></div>
           <button class="btn btn-gold" onclick="saveBodyRecord()">Salvar registro</button>
         </div>
         <div class="card">
@@ -721,13 +722,13 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
               <span>Costas</span>
             </div>
           </div>
-          <p style="font-size:11px;color:var(--muted);text-align:center;margin-top:8px;">ð Fotos visÃ­veis somente para vocÃª</p>
+          <p style="font-size:11px;color:var(--muted);text-align:center;margin-top:8px;">🔒 Fotos visíveis somente para você</p>
           <input type="file" id="photo-input" accept="image/*" style="display:none" onchange="uploadPhoto(this)">
         </div>
       </div>
     </div>
 
-    <!-- ââ MAIS ââ -->
+    <!-- ── MAIS ── -->
     <div class="subscreen" id="tab-mais">
       <div class="hdr">
         <div class="tag">Menu</div>
@@ -741,29 +742,29 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
         </div>
         <div class="mais-item" onclick="showSub('conteudo')">
           <div class="mais-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10,8 16,12 10,16"/></svg></div>
-          <div><div class="mais-label">ConteÃºdo</div><div class="mais-sub">VÃ­deos e materiais do Dr. Roberto</div></div>
+          <div><div class="mais-label">Conteúdo</div><div class="mais-sub">Vídeos e materiais do Dr. Roberto</div></div>
           <div class="mais-arrow"><svg viewBox="0 0 24 24"><polyline points="9,18 15,12 9,6"/></svg></div>
         </div>
         <div class="mais-item" onclick="showSub('sos')">
           <div class="mais-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
-          <div><div class="mais-label">SOS Nutricional</div><div class="mais-sub">Leituras de apoio rÃ¡pido</div></div>
+          <div><div class="mais-label">SOS Nutricional</div><div class="mais-sub">Leituras de apoio rápido</div></div>
           <div class="mais-arrow"><svg viewBox="0 0 24 24"><polyline points="9,18 15,12 9,6"/></svg></div>
         </div>
         <div class="mais-item" onclick="showSub('jornada')">
           <div class="mais-ico"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 16l4-4 4 4 4-4"/></svg></div>
-          <div><div class="mais-label">Minha Jornada</div><div class="mais-sub">HistÃ³rico, sequÃªncia e conquistas</div></div>
+          <div><div class="mais-label">Minha Jornada</div><div class="mais-sub">Histórico, sequência e conquistas</div></div>
           <div class="mais-arrow"><svg viewBox="0 0 24 24"><polyline points="9,18 15,12 9,6"/></svg></div>
         </div>
         <div class="mais-item" onclick="showSub('conta')">
           <div class="mais-ico"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
-          <div><div class="mais-label">Minha conta</div><div class="mais-sub">Dados, plano e configuraÃ§Ãµes</div></div>
+          <div><div class="mais-label">Minha conta</div><div class="mais-sub">Dados, plano e configurações</div></div>
           <div class="mais-arrow"><svg viewBox="0 0 24 24"><polyline points="9,18 15,12 9,6"/></svg></div>
         </div>
         <div id="admin-btn-wrap" style="display:none">
           <div class="divider"></div>
           <div class="mais-item" onclick="showSub('admin')" style="border-color:var(--gold);">
             <div class="mais-ico" style="background:var(--gold-dim);"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
-            <div><div class="mais-label" style="color:var(--gold);">Painel Admin</div><div class="mais-sub">Gerenciar pacientes e conteÃºdo</div></div>
+            <div><div class="mais-label" style="color:var(--gold);">Painel Admin</div><div class="mais-sub">Gerenciar pacientes e conteúdo</div></div>
             <div class="mais-arrow"><svg viewBox="0 0 24 24"><polyline points="9,18 15,12 9,6"/></svg></div>
           </div>
         </div>
@@ -773,8 +774,8 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
       <div class="scroll" id="sub-jornada" style="display:none;padding-top:14px;">
         <div class="back-btn" onclick="hideSub()"><svg viewBox="0 0 24 24"><polyline points="15,18 9,12 15,6"/></svg><span>Voltar</span></div>
         <div class="tag" style="margin-bottom:4px;">Minha Jornada</div>
-        <div class="hdr-title" style="font-size:20px;margin-bottom:4px;">Sua evoluÃ§Ã£o</div>
-        <p style="font-size:12px;color:var(--muted);margin-bottom:16px;">A constÃ¢ncia constrÃ³i o que a motivaÃ§Ã£o comeÃ§a.</p>
+        <div class="hdr-title" style="font-size:20px;margin-bottom:4px;">Sua evolução</div>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:16px;">A constância constrói o que a motivação começa.</p>
         <div class="jornada-stats" id="jornada-stats"></div>
         <div class="jornada-legend">
           <div class="jornada-legend-item"><div class="jornada-legend-dot" style="background:var(--gold);"></div>check-in completo</div>
@@ -795,9 +796,9 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
       <!-- Sub: Conteudo -->
       <div class="scroll" id="sub-conteudo" style="display:none;padding-top:14px;">
         <div class="back-btn" onclick="hideSub()"><svg viewBox="0 0 24 24"><polyline points="15,18 9,12 15,6"/></svg><span>Voltar</span></div>
-        <div class="tag" style="margin-bottom:4px;">ConteÃºdo</div>
-        <div class="hdr-title" style="font-size:20px;margin-bottom:14px;">VÃ­deos e materiais</div>
-        <div id="content-list"><div style="text-align:center;padding:40px;color:var(--muted);font-size:13px;">Carregando conteÃºdo...</div></div>
+        <div class="tag" style="margin-bottom:4px;">Conteúdo</div>
+        <div class="hdr-title" style="font-size:20px;margin-bottom:14px;">Vídeos e materiais</div>
+        <div id="content-list"><div style="text-align:center;padding:40px;color:var(--muted);font-size:13px;">Carregando conteúdo...</div></div>
       </div>
 
       <!-- Sub: SOS -->
@@ -813,30 +814,30 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
         <div class="back-btn" onclick="hideSub()"><svg viewBox="0 0 24 24"><polyline points="15,18 9,12 15,6"/></svg><span>Voltar</span></div>
         <div style="text-align:center;margin-bottom:20px;">
           <div class="account-avatar" id="acc-avatar">?</div>
-          <div class="account-name" id="acc-name">â</div>
-          <div class="account-email" id="acc-email">â</div>
+          <div class="account-name" id="acc-name">—</div>
+          <div class="account-email" id="acc-email">—</div>
           <div style="margin-top:10px;">
-            <span class="plan-badge" id="acc-plan">â</span>
+            <span class="plan-badge" id="acc-plan">—</span>
           </div>
-          <div class="plan-expires" id="acc-expires">â</div>
+          <div class="plan-expires" id="acc-expires">—</div>
         </div>
         <div class="card">
           <div class="card-title">Dados pessoais</div>
           <div class="inp-group"><label class="inp-label">Nome</label><input class="inp" type="text" id="acc-inp-name" placeholder="Seu nome"></div>
           <div class="inp-group"><label class="inp-label">Objetivo</label>
             <select class="inp" id="acc-inp-goal">
-              <option value="">Selecionar</option>
+  3           <option value="">Selecionar</option>
               <option value="emagrecer">Emagrecer</option>
               <option value="ganhar_massa">Ganhar massa</option>
-              <option value="saude">SaÃºde e bem-estar</option>
+              <option value="saude">Saúde e bem-estar</option>
             </select>
           </div>
           <div class="inp-group"><label class="inp-label">Altura (cm)</label><input class="inp" type="number" id="acc-inp-height" placeholder="Ex: 165"></div>
-          <button class="btn btn-gold" onclick="saveProfile()">Salvar alteraÃ§Ãµes</button>
+          <button class="btn btn-gold" onclick="saveProfile()">Salvar alterações</button>
         </div>
         <div class="divider"></div>
         <button class="btn btn-outline" onclick="doLogout()" style="margin-bottom:10px;">Sair da conta</button>
-        <button class="btn btn-danger" onclick="requestDelete()">Solicitar exclusÃ£o de dados</button>
+        <button class="btn btn-danger" onclick="requestDelete()">Solicitar exclusão de dados</button>
         <p style="font-size:11px;color:var(--muted);text-align:center;margin-top:12px;line-height:1.6;">
           Controlador: Roberto da Silva Cabral Albuquerque Ltda<br>
           CNPJ 55.081.700/0001-40<br>
@@ -850,7 +851,7 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
         <div class="tag" style="margin-bottom:4px;">Admin</div>
         <div class="hdr-title" style="font-size:20px;margin-bottom:14px;">Painel Admin</div>
         <div class="admin-stat-row" id="admin-stats"></div>
-        <div class="card-title" style="margin-bottom:8px;">Pendentes de ativaÃ§Ã£o</div>
+        <div class="card-title" style="margin-bottom:8px;">Pendentes de ativação</div>
         <div id="admin-pending"></div>
         <div class="divider"></div>
         <div class="card-title" style="margin-bottom:8px;">Pacientes ativos</div>
@@ -863,7 +864,7 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
     <div class="bnav" id="bnav">
       <div class="bnav-item on" id="nav-inicio" onclick="switchTab('inicio')">
         <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
-        <span>InÃ­cio</span>
+        <span>Início</span>
       </div>
       <div class="bnav-item" id="nav-planner" onclick="switchTab('planner')">
         <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
@@ -875,7 +876,7 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
       </div>
       <div class="bnav-item" id="nav-evolucao" onclick="switchTab('evolucao')">
         <svg viewBox="0 0 24 24"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/></svg>
-        <span>EvoluÃ§Ã£o</span>
+        <span>Evolução</span>
       </div>
       <div class="bnav-item" id="nav-mais" onclick="switchTab('mais')">
         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
@@ -888,14 +889,14 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
 </div>
 
 <script>
-// ââ SUPABASE ââââââââââââââââââââââââââââââââââââââââââââââ
+// ── SUPABASE ──────────────────────────────────────────────
 const { createClient } = supabase;
 const sb = createClient(
   'https://qgyuvbnieyjprxbozotk.supabase.co',
   'sb_publishable_p_gvQ85WAG5RXVtW301cWQ_DmvTpR5j'
 );
 
-// ââ STATE âââââââââââââââââââââââââââââââââââââââââââââââââ
+// ── STATE ─────────────────────────────────────────────────
 let currentUser = null;
 let currentProfile = null;
 let todayLog = null;
@@ -906,127 +907,127 @@ let tacoData = [];
 let selectedFood = null;
 const TODAY = new Date().toISOString().slice(0,10);
 
-// ââ HÃBITOS POR OBJETIVO âââââââââââââââââââââââââââââââââ
+// ── HÁBITOS POR OBJETIVO ─────────────────────────────────
 const HABITS = {
   emagrecer: [
-    { key:'cafe_sem_acucar', label:'CafÃ© sem aÃ§Ãºcar', cat:'AlimentaÃ§Ã£o' },
-    { key:'proteina_almoco', label:'ProteÃ­na no almoÃ§o', cat:'AlimentaÃ§Ã£o' },
-    { key:'sem_ultraprocessados', label:'Evitar ultraprocessados', cat:'AlimentaÃ§Ã£o' },
-    { key:'jantar_leve', label:'Jantar leve', cat:'AlimentaÃ§Ã£o' },
-    { key:'agua_2l', label:'2L de Ã¡gua', cat:'HidrataÃ§Ã£o' },
-    { key:'sem_refrigerante', label:'Sem refrigerante', cat:'HidrataÃ§Ã£o' },
+    { key:'cafe_sem_acucar', label:'Café sem açúcar', cat:'Alimentação' },
+    { key:'proteina_almoco', label:'Proteína no almoço', cat:'Alimentação' },
+    { key:'sem_ultraprocessados', label:'Evitar ultraprocessados', cat:'Alimentação' },
+    { key:'jantar_leve', label:'Jantar leve', cat:'Alimentação' },
+    { key:'agua_2l', label:'2L de água', cat:'Hidratação' },
+    { key:'sem_refrigerante', label:'Sem refrigerante', cat:'Hidratação' },
     { key:'comer_devagar', label:'Comer devagar', cat:'Comportamento' },
-    { key:'sem_tela_almoco', label:'Sem tela no almoÃ§o', cat:'Comportamento' },
+    { key:'sem_tela_almoco', label:'Sem tela no almoço', cat:'Comportamento' },
   ],
   ganhar_massa: [
-    { key:'cafe_proteico', label:'CafÃ© da manhÃ£ proteico', cat:'AlimentaÃ§Ã£o' },
-    { key:'pre_treino', label:'RefeiÃ§Ã£o prÃ©-treino', cat:'AlimentaÃ§Ã£o' },
-    { key:'pos_treino', label:'RefeiÃ§Ã£o pÃ³s-treino', cat:'AlimentaÃ§Ã£o' },
-    { key:'meta_calorica', label:'Atingir meta calÃ³rica', cat:'AlimentaÃ§Ã£o' },
-    { key:'agua_3l', label:'3L de Ã¡gua', cat:'HidrataÃ§Ã£o' },
-    { key:'treino-feito', label:'Treino realizado', cat:'Atividade' },
-    { key:'sono_8h', label:'Dormir 8 horas', cat:'RecuperaÃ§Ã£o' },
+    { key:'cafe_proteico', label:'Café da manhã proteico', cat:'Alimentação' },
+    { key:'pre_treino', label:'Refeição pré-treino', cat:'Alimentação' },
+    { key:'pos_treino', label:'Refeição pós-treino', cat:'Alimentação' },
+    { key:'meta_calorica', label:'Atingir meta calórica', cat:'Alimentação' },
+    { key:'agua_3l', label:'3L de água', cat:'Hidratação' },
+    { key:'trein_feito', label:'Treino realizado', cat:'Atividade' },
+    { key:'s.no_8h� label:'Dormir 8 horas', cat:'Recuperação' },
   ],
   saude: [
-    { key:'frutas_legumes', label:'Frutas e legumes', cat:'AlimentaÃ§Ã£o' },
-    { key:'menos_sal', label:'Reduzir sal', cat:'AlimentaÃ§Ã£o' },
-    { key:'sem_acucar_refinado', label:'Sem aÃ§Ãºcar refinado', cat:'AlimentaÃ§Ã£o' },
-    { key:'agua_2l', label:'2L de Ã¡gua', cat:'HidrataÃ§Ã£o' },
+    { key:'frutas_legumes', label:'Frutas e legumes', cat:'Alimentação' },
+    { key:'menos_sal', label:'Reduzir sal', cat:'Alimentação' },
+    { key:'sem_acucar_refinado', label:'Sem açúcar refinado', cat:'Alimentação' },
+    { key:'agua_2l', label:'2L de água', cat:'Hidratação' },
     { key:'atividade_20min', label:'20 min de atividade', cat:'Atividade' },
     { key:'relaxamento', label:'Momento de relaxamento', cat:'Bem-estar' },
     { key:'sono_qualidade', label:'Sono de qualidade', cat:'Bem-estar' },
   ]
 };
 
-// ââ TABELA TACO (amostra representativa) âââââââââââââââââ
+// ── TABELA TACO (amostra representativa) ─────────────────
 // cat: macro category for filter pills
 const TACO_DB = [
   // CARBOIDRATOS
-  { id:1,  name:'Arroz branco', medida:'2 col. sopa Â· 40g', emoji:'ð', kcal_100:128, prot:2.5, carb:28.1, fat:0.2, group:'Cereais', cat:'carboidratos' },
-  { id:2,  name:'Arroz integral', medida:'2 col. sopa Â· 40g', emoji:'ð', kcal_100:124, prot:2.6, carb:25.8, fat:1.0, group:'Cereais', cat:'carboidratos' },
-  { id:3,  name:'MacarrÃ£o cozido', medida:'1 col. serv. Â· 80g', emoji:'ð', kcal_100:111, prot:3.8, carb:22.7, fat:0.5, group:'Cereais', cat:'carboidratos' },
-  { id:4,  name:'PÃ£o francÃªs', medida:'Â½ unidade Â· 25g', emoji:'ð', kcal_100:300, prot:8.0, carb:58.6, fat:3.1, group:'Panificados', cat:'carboidratos' },
-  { id:5,  name:'PÃ£o de forma', medida:'Â½ fatia Â· 25g', emoji:'ð', kcal_100:253, prot:8.1, carb:48.1, fat:3.4, group:'Panificados', cat:'carboidratos' },
-  { id:6,  name:'Torrada', medida:'2 unidades Â· 20g', emoji:'ð', kcal_100:392, prot:10.5, carb:73.2, fat:5.5, group:'Panificados', cat:'carboidratos' },
-  { id:7,  name:'Aveia em flocos', medida:'3 col. sopa Â· 30g', emoji:'ð¾', kcal_100:394, prot:13.9, carb:66.6, fat:8.5, group:'Cereais', cat:'carboidratos' },
-  { id:8,  name:'Tapioca', medida:'1 col. sopa cheia Â· 25g', emoji:'ð«', kcal_100:130, prot:0.2, carb:32.0, fat:0.0, group:'Cereais', cat:'carboidratos' },
-  { id:9,  name:'Quinoa cozida', medida:'2 col. sopa Â· 40g', emoji:'ð¾', kcal_100:120, prot:4.4, carb:21.3, fat:1.9, group:'Cereais', cat:'carboidratos' },
-  { id:10, name:'Batata inglesa', medida:'1 unidade mÃ©d. Â· 90g', emoji:'ð¥', kcal_100:52, prot:1.2, carb:11.9, fat:0.1, group:'TubÃ©rculos', cat:'carboidratos' },
-  { id:11, name:'Batata doce', medida:'3 fatias mÃ©d. Â· 80g', emoji:'ð ', kcal_100:77, prot:0.6, carb:18.4, fat:0.1, group:'TubÃ©rculos', cat:'carboidratos' },
-  { id:12, name:'Batata baroa', medida:'1 unidade mÃ©d. Â· 70g', emoji:'ð¥', kcal_100:95, prot:0.9, carb:22.3, fat:0.2, group:'TubÃ©rculos', cat:'carboidratos' },
-  { id:13, name:'Mandioca cozida', medida:'2 col. sopa Â· 50g', emoji:'ð¥', kcal_100:125, prot:0.6, carb:30.1, fat:0.3, group:'TubÃ©rculos', cat:'carboidratos' },
-  { id:14, name:'Inhame', medida:'1 pedaÃ§o Â· 50g', emoji:'ð ', kcal_100:98, prot:1.5, carb:23.0, fat:0.2, group:'TubÃ©rculos', cat:'carboidratos' },
-  { id:15, name:'Milho cozido', medida:'2 col. sopa Â· 40g', emoji:'ð½', kcal_100:91, prot:2.5, carb:20.0, fat:0.9, group:'Vegetais', cat:'carboidratos' },
-  { id:16, name:'Nhoque', medida:'1 col. sopa Â· 30g', emoji:'ð', kcal_100:120, prot:2.8, carb:25.0, fat:0.5, group:'Cereais', cat:'carboidratos' },
-  { id:17, name:'Farofa', medida:'1 col. sopa Â· 15g', emoji:'ð¡', kcal_100:370, prot:3.5, carb:76.0, fat:4.0, group:'Cereais', cat:'carboidratos' },
-  { id:18, name:'FeijÃ£o carioca', medida:'1 concha Â· 80g', emoji:'ð«', kcal_100:76, prot:4.8, carb:13.6, fat:0.5, group:'Leguminosas', cat:'carboidratos' },
-  { id:19, name:'FeiÃ§Ã£o preto', medida:'1 concha Â· 80g', emoji:'ð', kcal_100:77, prot:4.5, carb:14.0, fat:0.5, group:'Leguminosas', cat:'carboidratos' },
-  { id:20, name:'Lentilha cozida', medida:'3 col. sopa Â· 60g', emoji:'ð«', kcal_100:93, prot:6.3, carb:16.3, fat:0.5, group:'Leguminosas', cat:'carboidratos' },
-  // PROTEÃNAS
-  { id:30, name:'Frango grelhado', medida:'3 bifes peq. Â· 100g', emoji:'ð', kcal_100:159, prot:32.0, carb:0.0, fat:3.0, group:'Aves', cat:'proteÃ­nas' },
-  { id:31, name:'Peito de frango', medida:'1 filÃ© Â· 100g', emoji:'ð', kcal_100:163, prot:31.5, carb:0.0, fat:3.2, group:'Aves', cat:'proteÃ­nas' },
-  { id:32, name:'Sobrecoxa sem pele', medida:'1 unidade Â· 80g', emoji:'ð'%, kcal_100:180, prot:25.0, carb:0.0, fat:8.5, group:'Aves', cat:'proteÃ­nas' },
-  { id:33, name:'CoÃ£o duro sem gordura', medida:'1 bife peq. Â· 70g', emoji:'ð¥©', kcal_100:219, prot:21.5, carb:0.0, fat:14.1, group:'Carnes Bovinas', cat:'proteÃ­nas' },
-  { id:34, name:'Coxão mole sem gordura', medida:'2 bifes peq. Â· 80g', emoji:'ð¥©', kcal_100:197, prot:22.4, carb:0.0, fat:11.2, group:'Carnes Bovinas', cat:'proteÃ­nas' },
-  { id:35, name:'MÃºsculo sem gordura', medida:'3 bifes peq. Â· 80g', emoji:'ð¥©', kcal_100:185, prot:28.9, carb:0.0, fat:7.2, group:'Carnes Bovinas', cat:'proteÃ­nas' },
-  { id:36, name:'Patinho sem gordura', medida:'3 bifes peq. Â· 80g', emoji:'ð¥©', kcal_100:176, prot:29.0, carb:0.0, fat:5.8, group:'Carnes Bovinas', cat:'proteÃ­nas' },
-  { id:37, name:'AcÃ©m sem gordura', medida:'1 bife peq. Â· 75g', emoji:'ð¥©', kcal_100:200, prot:26.3, carb:0.0, fat:10.1, group:'Carnes Bovinas', cat:'proteÃ­nas' },
-  { id:38, name:'Ovo de galinha', medida:'1 unidade Â· 50g', emoji:'ð¥', kcal_100:146, prot:13.3, carb:0.6, fat:9.5, group:'Ovos', cat:'proteÃ­nas' },
-  { id:39, name:'Clara de ovo', medida:'3 unidades Â· 90g', emoji:'ð¥', kcal_100:47, prot:10.9, carb:0.7, fat:0.2, group:'Ovos', cat:'proteÃ­nas' },
-  { id:40, name:'Atum enlatado', medida:'Â½ lata Â· 60g', emoji:'ð', kcal_100:119, prot:26.0, carb:0.0, fat:0.8, group:'Pescados', cat:'proteÃ­nas' },
-  { id:41, name:'Sardinha enlatada', medida:'3 unidades Â· 60g', emoji:'ð', kcal_100:185, prot:23.0, carb:0.0, fat:10.3, group:'Pescados', cat:'proteÃ­nas' },
-  { id:42, name:'TilÃ¡pia grelhada', medida:'1 filÃ© Â· 100g', emoji:'ð', kcal_100:96, prot:20.1, carb:0.0, fat:1.7, group:'Pescados', cat:'proteÃ­nas' },
-  { id:43, name:'Iogurte grego', medida:'1 pote Â· 170g', emoji:'ð¥', kcal_100:97, prot:9.0, carb:3.6, fat:5.0, group:'LaticÃ­nios', cat:'proteÃ­nas' },
-  { id:44, name:'Queijo minas frescal', medida:'1 fatia Â· 30g', emoji:'ð§', kcal_100:264, prot:17.4, carb:3.2, fat:20.2, group:'LaticÃ­nios', cat:'proteÃ­nas' },
-  { id:45, name:'Iogurte natural', medida:'1 pote Â· 170g', emoji:'ð¥', kcal_100:51, prot:4.1, carb:5.9, fat:1.2, group:'LaticÃ­nios', cat:'proteÃ­nas' },
-  { id:46, name:'Leite desnatado', medida:'1 copo Â· 240g', emoji:'ð¥', kcal_100:35, prot:3.4, carb:4.9, fat:0.1, group:'LaticÃ­nios', cat:'proteÃ­nas' },
-  { id:47, name:'Leite semidesnatado', medida:'1 copo Â· 240g', emoji:'ð¥', kcal_100:46, prot:3.3, carb:4.8, fat:1.2, group:'LaticÃ­nios', cat:'proteÃ­nas' },
-  { id:48, name:'Leite integral', medida:'1 copo Â· 240g', emoji:'ð¥', kcal_100:61, prot:3.2, carb:4.7, fat:3.2, group:'LaticÃ­nios', cat:'proteÃ­nas' },
-  { id:49, name:'Leite desnatado em pÃ³', medida:'1 col. sopa Â· 25g', emoji:'ð¥', kcal_100:358, prot:35.5, carb:52.0, fat:0.8, group:'LaticÃ­nios', cat:'proteÃ­nas' },
+  { id:1,  name:'Arroz branco', medida:'2 col. sopa · 40g', emoji:'🍚', kcal_100:128, prot:2.5, carb:28.1, fat:0.2, group:'Cereais', cat:'carboidratos' },
+  { id:2,  name:'Arroz integral', medida:'2 col. sopa · 40g', emoji:'🍚', kcal_100:124, prot:2.6, carb:25.8, fat:1.0, group:'Cereais', cat:'carboidratos' },
+  { id:3,  name:'Macarrão cozido', medida:'1 col. serv. · 80g', emoji:'🍝', kcal_100:111, prot:3.8, carb:22.7, fat:0.5, group:'Cereais', cat:'carboidratos' },
+  { id:4,  name:'Pão francês', medida:'½ unidade · 25g', emoji:'🍞', kcal_100:300, prot:8.0, carb:58.6, fat:3.1, group:'Panificados', cat:'carboidratos' },
+  { id:5,  name:'Pão de forma', medida:'½ fatia · 25g', emoji:'🍞', kcal_100:253, prot:8.1, carb:48.1, fat:3.4, group:'Panificados', cat:'carboidratos' },
+  { id:6,  name:'Torrada', medida:'2 unidades · 20g', emoji:'🍞', kcal_100:392, prot:10.5, carb:73.2, fat:5.5, group:'Panificados', cat:'carboidratos' },
+  { id:7,  name:'Aveia em flocos', medida:'3 col. sopa · 30g', emoji:'🌾', kcal_100:394, prot:13.9, carb:66.6, fat:8.5, group:'Cereais', cat:'carboidratos' },
+  { id:8,  name:'Tapioca', medida:'1 col. sopa cheia · 25g', emoji:'🫓', kcal_100:130, prot:0.2, carb:32.0, fat:0.0, group:'Cereais', cat:'carboidratos' },
+  { id:9,  name:'Quinoa cozida', medida:'2 col. sopa · 40g', emoji:'🌾', kcal_100:120, prot:4.4, carb:21.3, fat:1.9, group:'Cereais', cat:'carboidratos' },
+  { id:10, name:'Batata inglesa', medida:'1 unidade méd. · 90g', emoji:'🥔', kcal_100:52, prot:1.2, carb:11.9, fat:0.1, group:'Tubérculos', cat:'carboidratos' },
+  { id:11, name:'Batata doce', medida:'3 fatias méd. · 80g', emoji:'🍠', kcal_100:77, prot:0.6, carb:18.4, fat:0.1, group:'Tubérculos', cat:'carboidratos' },
+  { id:12, name:'Batata baroa', medida:'1 unidade méd. · 70g', emoji:'🥕', kcal_100:95, prot:0.9, carb:22.3, fat:0.2, group:'Tubérculos', cat:'carboidratos' },
+  { id:13, name:'Mandioca cozida', medida:'2 col. sopa · 50g', emoji:'🥕', kcal_100:125, prot:0.6, carb:30.1, fat:0.3, group:'Tubérculos', cat:'carboidratos' },
+  { id:14, name:'Inhame', medida:'1 pedaço · 50g', emoji:'🍠', kcal_100:98, prot:1.5, carb:23.0, fat:0.2, group:'Tubérculos', cat:'carboidratos' },
+  { id:15, name:'Milho cozido', medida:'2 col. sopa · 40g', emoji:'🌽', kcal_100:91, prot:2.5, carb:20.0, fat:0.9, group:'Vegetais', cat:'carboidratos' },
+  { id:16, name:'Nhoque', medida:'1 col. sopa · 30g', emoji:'🍝', kcal_100:120, prot:2.8, carb:25.0, fat:0.5, group:'Cereais', cat:'carboidratos' },
+  { id:17, name:'Farofa', medida:'1 col. sopa · 15g', emoji:'🟡', kcal_100:370, prot:3.5, carb:76.0, fat:4.0, group:'Cereais', cat:'carboidratos' },
+  { id:18, name:'Feijão carioca', medida:'1 concha · 80g', emoji:'🫘', kcal_100:76, prot:4.8, carb:13.6, fat:0.5, group:'Leguminosas', cat:'carboidratos' },
+  { id:19, name:'Feijão preto', medida:'1 concha · 80g', emoji:'🫘', kcal_100:77, prot:4.5, carb:14.0, fat:0.5, group:'Leguminosas', cat:'carboidratos' },
+  { id:20, name:'Lentilha cozida', medida:'3 col. sopa · 60g', emoji:'🫘', kcal_100:93, prot:6.3, carb:16.3, fat:0.5, group:'Leguminosas', cat:'carboidratos' },
+  // PROTEÍNAS
+  { id:30, name:'Frango grelhado', medida:'3 bifes peq. · 100g', emoji:'🍗', kcal_100:159, prot:32.0, carb:0.0, fat:3.0, group:'Aves', cat:'proteínas' },
+  { id:31, name:'Peito de frango', medida:'1 filé · 100g', emoji:'🍗', kcal_100:163, prot:31.5, carb:0.0, fat:3.2, group:'Aves', cat:'proteínas' },
+  { id:32, name:'Sobrecoxa sem pele', medida:'1 unidade · 80g', emoji:'🍗', kcal_100:180, prot:25.0, carb:0.0, fat:8.5, group:'Aves', cat:'proteínas' },
+  { id:33, name:'Coxão duro sem gordura', medida:'1 bife peq. · 70g', emoji:'🥩', kcal_100:219, prot:21.5, carb:0.0, fat:14.1, group:'Carnes Bovinas', cat:'proteínas' },
+  { id:34, name:'Coxão mole sem gordura', medida:'2 bifes peq. · 80g', emoji:'🥩', kcal_100:197, prot:22.4, carb:0.0, fat:11.2, group:'Carnes Bovinas', cat:'proteínas' },
+  { id:35, name:'Músculo sem gordura', medida:'3 bifes peq. · 80g', emoji:'🥩', kcal_100:185, prot:28.9, carb:0.0, fat:7.2, group:'Carnes Bovinas', cat:'proteínas' },
+  { id:36, name:'Patinho sem gordura', medida:'3 bifes peq. · 80g', emoji:'🥩', kcal_100:176, prot:29.0, carb:0.0, fat:5.8, group:'Carnes Bovinas', cat:'proteínas' },
+  { id:37, name:'Acém sem gordura', medida:'1 bife peq. · 75g', emoji:'🥩', kcal_100:200, prot:26.3, carb:0.0, fat:10.1, group:'Carnes Bovinas', cat:'proteínas' },
+  { id:38, name:'Ovo de galinha', medida:'1 unidade · 50g', emoji:'🥚', kcal_100:146, prot:13.3, carb:0.6, fat:9.5, group:'Ovos', cat:'proteínas' },
+  { id:39, name:'Clara de ovo', medida:'3 unidades · 90g', emoji:'🥚', kcal_100:47, prot:10.9, carb:0.7, fat:0.2, group:'Ovos', cat:'proteínas' },
+  { id:40, name:'Atum enlatado', medida:'½ lata · 60g', emoji:'🐟', kcal_100:119, prot:26.0, carb:0.0, fat:0.8, group:'Pescados', cat:'proteínas' },
+  { id:41, name:'Sardinha enlatada', medida:'3 unidades · 60g', emoji:'🐟', kcal_100:185, prot:23.0, carb:0.0, fat:10.3, group:'Pescados', cat:'proteínas' },
+  { id:42, name:'Tilápia grelhada', medida:'1 filé · 100g', emoji:'🐟', kcal_100:96, prot:20.1, carb:0.0, fat:1.7, group:'Pescados', cat:'proteínas' },
+  { id:43, name:'Iogurte grego', medida:'1 pote · 170g', emoji:'🥛', kcal_100:97, prot:9.0, carb:3.6, fat:5.0, group:'Laticínios', cat:'proteínas' },
+  { id:44, name:'Queijo minas frescal', medida:'1 fatia · 30g', emoji:'🧀', kcal_100:264, prot:17.4, carb:3.2, fat:20.2, group:'Laticínios', cat:'proteínas' },
+  { id:45, name:'Iogurte natural', medida:'1 pote · 170g', emoji:'🥛', kcal_100:51, prot:4.1, carb:5.9, fat:1.2, group:'Laticínios', cat:'proteínas' },
+  { id:46, name:'Leite desnatado', medida:'1 copo · 240g', emoji:'🥛', kcal_100:35, prot:3.4, carb:4.9, fat:0.1, group:'Laticínios', cat:'proteínas' },
+  { id:47, name:'Leite semidesnatado', medida:'1 copo · 240g', emoji:'🥛', kcal_100:46, prot:3.3, carb:4.8, fat:1.2, group:'Laticínios', cat:'proteínas' },
+  { id:48, name:'Leite integral', medida:'1 copo · 240g', emoji:'🥛', kcal_100:61, prot:3.2, carb:4.7, fat:3.2, group:'Laticínios', cat:'proteínas' },
+  { id:49, name:'Leite desnatado em pó', medida:'1 col. sopa · 25g', emoji:'🥛', kcal_100:358, prot:35.5, carb:52.0, fat:0.8, group:'Laticínios', cat:'proteínas' },
   // GORDURAS
-  { id:60, name:'Azeite de oliva', medida:'1 col. sopa Â· 10g', emoji:'ð«', kcal_100:884, prot:0.0, carb:0.0, fat:100.0, group:'Gorduras', cat:'gorduras' },
-  { id:61, name:'Amendoim torrado', medida:'1 punhado Â· 30g', emoji:'ð¥', kcal_100:581, prot:26.0, carb:17.6, fat:47.5, group:'Oleaginosas', cat:'gorduras' },
-  { id:62, name:'Castanha-do-parÃ¡', medida:'2 unidades Â· 10g', emoji:'ð°', kcal_100:656, prot:14.3, carb:12.3, fat:63.5, group:'Oleaginosas', cat:'gorduras' },
-  { id:63, name:'Castanha de caju', medida:'1 punhado Â· 30g', emoji:'ð°', kcal_100:574, prot:18.5, carb:29.1, fat:44.3, group:'Oleaginosas', cat:'gorduras' },
-  { id:64, name:'Abacate', medida:'Â½ unidade Â· 100g', emoji:'ð¥', kcal_100:96, prot:1.2, carb:3.5, fat:8.9, group:'Gorduras', cat:'gorduras' },
-  { id:65, name:'Manteiga', medida:'1 col. chÃ¡ Â· 10g', emoji:'ð§', kcal_100:726, prot:0.5, carb:0.0, fat:82.0, group:'Gorduras', cat:'gorduras' },
-  { id:66, name:'Pasta de amendoim', medida:'1 col. sopa Â· 20g', emoji:'ð¥', kcal_100:588, prot:23.0, carb:22.0, fat:47.0, group:'Oleaginosas', cat:'gorduras' },
+  { id:60, name:'Azeite de oliva', medida:'1 col. sopa · 10g', emoji:'🫒', kcal_100:884, prot:0.0, carb:0.0, fat:100.0, group:'Gorduras', cat:'gorduras' },
+  { id:61, name:'Amendoim torrado', medida:'1 punhado · 30g', emoji:'🥜', kcal_100:581, prot:26.0, carb:17.6, fat:47.5, group:'Oleaginosas', cat:'gorduras' },
+  { id:62, name:'Castanha-do-pará', medida:'2 unidades · 10g', emoji:'🌰', kcal_100:656, prot:14.3, carb:12.3, fat:63.5, group:'Oleaginosas', cat:'gorduras' },
+  { id:63, name:'Castanha de caju', medida:'1 punhado · 30g', emoji:'🌰', kcal_100:574, prot:18.5, carb:29.1, fat:44.3, group:'Oleaginosas', cat:'gorduras' },
+  { id:64, name:'Abacate', medida:'½ unidade · 100g', emoji:'🥑', kcal_100:96, prot:1.2, carb:3.5, fat:8.9, group:'Gorduras', cat:'gorduras' },
+  { id:65, name:'Manteiga', medida:'1 col. chá · 10g', emoji:'🧈', kcal_100:726, prot:0.5, carb:0.0, fat:82.0, group:'Gorduras', cat:'gorduras' },
+  { id:66, name:'Pasta de amendoim', medida:'1 col. sopa · 20g', emoji:'🥜', kcal_100:588, prot:23.0, carb:22.0, fat:47.0, group:'Oleaginosas', cat:'gorduras' },
   // FRUTAS
-  { id:70, name:'Banana prata', medida:'1 unidade Â· 90g', emoji:'ð', kcal_100:98, prot:1.3, carb:26.0, fat:0.1, group:'Frutas', cat:'frutas' },
-  { id:71, name:'MaÃ§Ã£', medida:'1 unidade Â· 130g', emoji:'ð', kcal_100:56, prot:0.3, carb:15.2, fat:0.1, group:'Frutas', cat:'frutas' },
-  { id:72, name:'MamÃ£o papaia', medida:'1 fatia Â· 130g', emoji:'ð', kcal_100:45, prot:0.5, carb:11.6, fat:0.1, group:'Frutas', cat:'frutas' },
-  { id:73, name:'Laranja pÃ©ra', medida:'1 unidade Â· 140g', emoji:'ð', kcal_100:37, prot:1.0, carb:8.9, fat:0.1, group:'Frutas', cat:'frutas' },
-  { id:74, name:'Melancia', medida:'1 fatia Â· 200g', emoji:'ð', kcal_100:33, prot:0.7, carb:8.1, fat:0.2, group:'Frutas', cat:'frutas' },
-  { id:75, name:'Abacaxi', medida:'1 fatia Â· 100g', emoji:'ð', kcal_100:48, prot:0.9, carb:12.3, fat:0.1, group:'Frutas', cat:'frutas' },
-  { id:76, name:'Morango', medida:'10 unidades Â· 100g', emoji:'ð', kcal_100:34, prot:0.7, carb:7.7, fat:0.3, group:'Frutas', cat:'frutas' },
-  { id:77, name:'Uva itÃ¡lia', medida:'1 cacho peq. Â· 80g', emoji:'ð', kcal_100:67, prot:0.6, carb:17.2, fat:0.2, group:'Frutas', cat:'frutas' },
-  { id:78, name:'PÃ©ra', medida:'1 unidade Â· 120g', emoji:'ð', kcal_100:53, prot:0.4, carb:14.0, fat:0.1, group:'Frutas', cat:'frutas' },
-  { id:79, name:'Manga', medida:'1 fatia Â· 100g', emoji:'ð¥­', kcal_100:57, prot:0.7, carb:14.3, fat:0.2, group:'Frutas', cat:'frutas' },
+  { id:70, name:'Banana prata', medida:'1 unidade · 90g', emoji:'🍌', kcal_100:98, prot:1.3, carb:26.0, fat:0.1, group:'Frutas', cat:'frutas' },
+  { id:71, name:'Maçã', medida:'1 unidade · 130g', emoji:'🍎', kcal_100:56, prot:0.3, carb:15.2, fat:0.1, group:'Frutas', cat:'frutas' },
+  { id:72, name:'Mamão papaia', medida:'1 fatia · 130g', emoji:'🍈', kcal_100:45, prot:0.5, carb:11.6, fat:0.1, group:'Frutas', cat:'frutas' },
+  { id:73, name:'Laranja pêra', medida:'1 unidade · 140g', emoji:'🍊', kcal_100:37, prot:1.0, carb:8.9, fat:0.1, group:'Frutas', cat:'frutas' },
+  { id:74, name:'Melancia', medida:'1 fatia · 200g', emoji:'🍉', kcal_100:33, prot:0.7, carb:8.1, fat:0.2, group:'Frutas', cat:'frutas' },
+  { id:75, name:'Abacaxi', medida:'1 fatia · 100g', emoji:'🍍', kcal_100:48, prot:0.9, carb:12.3, fat:0.1, group:'Frutas', cat:'frutas' },
+  { id:76, name:'Morango', medida:'10 unidades · 100g', emoji:'🍓', kcal_100:34, prot:0.7, carb:7.7, fat:0.3, group:'Frutas', cat:'frutas' },
+  { id:77, name:'Uva itália', medida:'1 cacho peq. · 80g', emoji:'🍇', kcal_100:67, prot:0.6, carb:17.2, fat:0.2, group:'Frutas', cat:'frutas' },
+  { id:78, name:'Pêra', medida:'1 unidade · 120g', emoji:'🍐', kcal_100:53, prot:0.4, carb:14.0, fat:0.1, group:'Frutas', cat:'frutas' },
+  { id:79, name:'Manga', medida:'1 fatia · 100g', emoji:'🥭', kcal_100:57, prot:0.7, carb:14.3, fat:0.2, group:'Frutas', cat:'frutas' },
   // VEGETAIS
-  { id:80, name:'BrÃ³colis cozido', medida:'3 col. sopa Â· 60g', emoji:'ð¥¦', kcal_100:25, prot:2.6, carb:3.5, fat:0.4, group:'HortaliÃ§as', cat:'vegetais' },
-  { id:81, name:'Cenoura crua', medida:'Â½ unidade Â· 50g', emoji:'ð¥', kcal_100:34, prot:1.3, carb:7.7, fat:0.2, group:'HortaliÃ§as', cat:'vegetais' },
-  { id:82, name:'Tomate', medida:'1 unidade Â· 100g', emoji:'ð', kcal_100:15, prot:0.9, carb:3.1, fat:0.2, group:'HortaliÃ§as', cat:'vegetais' },
-  { id:83, name:'Abobrinha cozida', medida:'3 col. sopa Â· 70g', emoji:'ð¥', kcal_100:12, prot:0.9, carb:2.0, fat:0.2, group:'HortaliÃ§as', cat:'vegetais' },
-  { id:84, name:'Couve refogada', medida:'2 col. sopa Â· 40g', emoji:'ð¥¬', kcal_100:19, prot:2.1, carb:2.4, fat:0.4, group:'HortaliÃ§as', cat:'vegetais' },
-  { id:85, name:'Espinafre cozido', medida:'3 col. sopa Â· 60g', emoji:'ð¥¬', kcal_100:17, prot:2.2, carb:1.8, fat:0.3, group:'HortaliÃ§as', cat:'vegetais' },
-  { id:86, name:'Chuchu cozido', medida:'4 col. sopa Â· 100g', emoji:'ð¥', kcal_100:19, prot:0.7, carb:3.9, fat:0.2, group:'HortaliÃ§as', cat:'vegetais' },
-  { id:87, name:'Beterraba cozida', medida:'2 fatias Â· 50g', emoji:'ð«', kcal_100:39, prot:1.7, carb:8.0, fat:0.1, group:'HortaliÃ§as', cat:'vegetais' },
-  { id:88, name:'Berinjela grelhada', medida:'3 fatias Â· 80g', emoji:'ð', kcal_100:20, prot:1.0, carb:3.9, fat:0.2, group:'HortaliÃ§as', cat:'vegetais' },
-  { id:89, name:'Vagem cozida', medida:'4 col. sopa Â· 60g', emoji:'ð«', kcal_100:22, prot:1.7, carb:3.3, fat:0.2, group:'HortaliÃ§as', cat:'vegetais' },
+  { id:80, name:'Brócolis cozido', medida:'3 col. sopa · 60g', emoji:'🥦', kcal_100:25, prot:2.6, carb:3.5, fat:0.4, group:'Hortaliças', cat:'vegetais' },
+  { id:81, name:'Cenoura crua', medida:'½ unidade · 50g', emoji:'🥕', kcal_100:34, prot:1.3, carb:7.7, fat:0.2, group:'Hortaliças', cat:'vegetais' },
+  { id:82, name:'Tomate', medida:'1 unidade · 100g', emoji:'🍅', kcal_100:15, prot:0.9, carb:3.1, fat:0.2, group:'Hortaliças', cat:'vegetais' },
+  { id:83, name:'Abobrinha cozida', medida:'3 col. sopa · 70g', emoji:'🥒', kcal_100:12, prot:0.9, carb:2.0, fat:0.2, group:'Hortaliças', cat:'vegetais' },
+  { id:84, name:'Couve refogada', medida:'2 col. sopa · 40g', emoji:'🥬', kcal_100:19, prot:2.1, carb:2.4, fat:0.4, group:'Hortaliças', cat:'vegetais' },
+  { id:85, name:'Espinafre cozido', medida:'3 col. sopa · 60g', emoji:'🥬', kcal_100:17, prot:2.2, carb:1.8, fat:0.3, group:'Hortaliças', cat:'vegetais' },
+  { id:86, name:'Chuchu cozido', medida:'4 col. sopa · 100g', emoji:'🥒', kcal_100:19, prot:0.7, carb:3.9, fat:0.2, group:'Hortaliças', cat:'vegetais' },
+  { id:87, name:'Beterraba cozida', medida:'2 fatias · 50g', emoji:'🫐', kcal_100:39, prot:1.7, carb:8.0, fat:0.1, group:'Hortaliças', cat:'vegetais' },
+  { id:88, name:'Berinjela grelhada', medida:'3 fatias · 80g', emoji:'🍆', kcal_100:20, prot:1.0, carb:3.9, fat:0.2, group:'Hortaliças', cat:'vegetais' },
+  { id:89, name:'Vagem cozida', medida:'4 col. sopa · 60g', emoji:'🫛', kcal_100:22, prot:1.7, carb:3.3, fat:0.2, group:'Hortaliças', cat:'vegetais' },
 ];
 
 // SOS Data
 const SOS_DATA = [
   { t:'Como lidar com a fome fora de hora', d:'4 min de leitura' },
-  { t:'RefeiÃ§Ãµes rÃ¡pidas fora de casa', d:'3 min de leitura' },
-  { t:'Voltando aos trilhos apÃ³s um deslize', d:'5 min de leitura' },
+  { t:'Refeições rápidas fora de casa', d:'3 min de leitura' },
+  { t:'Voltando aos trilhos após um deslize', d:'5 min de leitura' },
   { t:'Como lidar com a fome noturna', d:'3 min de leitura' },
   { t:'Gerenciando estresse sem comida', d:'6 min de leitura' },
   { t:'O que fazer no fim de semana', d:'4 min de leitura' },
-  { t:'HidrataÃ§Ã£o: por que Ã© tÃ£o importante', d:'3 min de leitura' },
+  { t:'Hidratação: por que é tão importante', d:'3 min de leitura' },
 ];
 
-// ââ INIT ââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ── INIT ──────────────────────────────────────────────────
 window.onload = async function() {
   updateClock();
   setInterval(updateClock, 30000);
@@ -1041,7 +1042,7 @@ window.onload = async function() {
       await loadProfile();
       return;
     }
-  }
+ %}
 
   // Listener para mudancas de estado de autenticacao
   sb.auth.onAuthStateChange(async (event, session) => {
@@ -1072,13 +1073,13 @@ function updateClock() {
   if(el) el.textContent = h + ':' + m;
 }
 
-// ââ PROFILE & ROUTING âââââââââââââââââââââââââââââââââââââ
+// ── PROFILE & ROUTING ─────────────────────────────────────
 async function loadProfile() {
-  console.log('[KairÃ³s] loadProfile - user id:', currentUser.id);
+  console.log('[Kairós] loadProfile - user id:', currentUser.id);
   const { data, error } = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
-  console.log('[KairÃ³s] profiles result - data:', JSON.stringify(data), '| error:', JSON.stringify(error));
+  console.log('[Kairós] profiles result - data:', JSON.stringify(data), '| error:', JSON.stringify(error));
   if (error || !data) { 
-    console.log('[KairÃ³s] erro no perfil, voltando para auth');
+    console.log('[Kairós] erro no perfil, voltando para auth');
     showScreen('auth'); return; 
   }
   currentProfile = data;
@@ -1123,7 +1124,7 @@ async function initApp() {
   loadAccount();
 }
 
-// ââ AUTH ââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ── AUTH ──────────────────────────────────────────────────
 function authTab(tab) {
   document.getElementById('form-login').style.display = tab === 'login' ? 'block' : 'none';
   document.getElementById('form-register').style.display = tab === 'register' ? 'block' : 'none';
@@ -1150,7 +1151,7 @@ async function doRegister() {
   const pw = document.getElementById('reg-pw').value;
   const btn = document.getElementById('btn-register');
   if (!name || !email || !pw) { showAuthErr('Preencha todos os campos.'); return; }
-  if (pw.length < 8) { showAuthErr('Senha deve ter no mÃ­nimo 8 caracteres.'); return; }
+  if (pw.length < 8) { showAuthErr('Senha deve ter no mínimo 8 caracteres.'); return; }
   btn.disabled = true; btn.textContent = 'Criando conta...';
   const { data, error } = await sb.auth.signUp({ email, password: pw, options: { data: { full_name: name } } });
   if (error) { showAuthErr(error.message); btn.disabled = false; btn.textContent = 'Criar conta'; return; }
@@ -1169,7 +1170,7 @@ async function doLogout() {
   showScreen('auth');
 }
 
-// ââ LGPD CONSENT ââââââââââââââââââââââââââââââââââââââââââ
+// ── LGPD CONSENT ──────────────────────────────────────────
 let consentChecked = false;
 function toggleConsent() {
   consentChecked = !consentChecked;
@@ -1192,7 +1193,7 @@ async function doConsent() {
   await loadProfile();
 }
 
-// ââ TODAY LOG âââââââââââââââââââââââââââââââââââââââââââââ
+// ── TODAY LOG ─────────────────────────────────────────────
 async function loadTodayLog() {
   const { data } = await sb.from('daily_logs').select('*').eq('user_id', currentUser.id).eq('log_date', TODAY).maybeSingle();
   todayLog = data;
@@ -1204,7 +1205,7 @@ async function ensureTodayLog() {
   todayLog = data;
 }
 
-// ââ ÃGUA ââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ── ÁGUA ──────────────────────────────────────────────────
 function renderCups() {
   const ml = todayLog ? todayLog.water_ml : 0;
   const filled = Math.round(ml / 250);
@@ -1229,7 +1230,7 @@ async function toggleCup(i) {
   if (!error) { todayLog.water_ml = newMl; renderCups(); updateWeekProgress(); }
 }
 
-// ââ HABIT LOGS ââââââââââââââââââââââââââââââââââââââââââââ
+// ── HABIT LOGS ────────────────────────────────────────────
 async function loadHabitLogs() {
   const { data } = await sb.from('habit_logs').select('*').eq('user_id', currentUser.id).eq('log_date', TODAY);
   habitLogs = data || [];
@@ -1272,7 +1273,7 @@ function updateWeekProgress() {
   document.getElementById('week-bar').style.width = pct + '%';
 }
 
-// ââ PLANNER âââââââââââââââââââââââââââââââââââââââââââââââ
+// ── PLANNER ───────────────────────────────────────────────
 function setGoal(goal, el) {
   currentGoal = goal;
   document.querySelectorAll('.seg-tab').forEach(t => t.classList.remove('on'));
@@ -1299,20 +1300,20 @@ function renderPlanner() {
   updateWeekProgress();
 }
 
-// ââ NOTICES âââââââââââââââââââââââââââââââââââââââââââââââ
+// ── NOTICES ───────────────────────────────────────────────
 async function loadNotices() {
   const { data } = await sb.from('notices').select('*').eq('published', true).order('created_at', { ascending: false }).limit(3);
   const wrap = document.getElementById('notices-wrap');
   if (!data || data.length === 0) { wrap.innerHTML = ''; return; }
   wrap.innerHTML = data.map(n => `
     <div class="notice">
-      <div class="notice-title">ð ${n.title}</div>
+      <div class="notice-title">📌 ${n.title}</div>
       <div class="notice-body">${n.body}</div>
     </div>
   `).join('');
 }
 
-// ââ SUBSTITUTOS V2 ââââââââââââââââââââââââââââââââââââââââ
+// ── SUBSTITUTOS V2 ────────────────────────────────────────
 let currentSubSort = 'padrao';
 let currentCatFilter = 'todos';
 let foodHistory = [];
@@ -1379,7 +1380,7 @@ function filterFoodsV2() {
         <span style="font-size:22px;">${f.emoji}</span>
         <div>
           <div style="font-size:13px;color:var(--cream);">${f.name}</div>
-          <div style="font-size:11px;color:var(--muted);">${f.medida} Â· ${f.group}</div>
+          <div style="font-size:11px;color:var(--muted);">${f.medida} · ${f.group}</div>
         </div>
       </div>`).join('');
 }
@@ -1390,7 +1391,7 @@ function renderFoodGrid(foods) {
   grid.innerHTML = foods.map(f => {
     const isFav = foodFavorites.some(fv => fv.food_id === f.id);
     return `<div class="food-card" onclick="selectFoodV2(${f.id})">
-      <div class="food-card-fav" onclick="event.stopPropagation();toggleFavorite(${f.id})" id="fav-card-${f.id}">${isFav ? 'â¤ï¸' : 'ð¤'}</div>
+      <div class="food-card-fav" onclick="event.stopPropagation();toggleFavorite(${f.id})" id="fav-card-${f.id}">${isFav ? '❤️' : '🤍'}</div>
       <div class="food-card-emoji">${f.emoji}</div>
       <div class="food-card-name">${f.name}</div>
       <div class="food-card-detail">${f.medida}</div>
@@ -1423,9 +1424,9 @@ function renderSelectedFoodCard() {
     <div class="selected-food-emoji">${selectedFood.emoji}</div>
     <div class="selected-food-info">
       <div class="selected-food-name">${selectedFood.name}</div>
-      <div class="selected-food-meta">${selectedFood.medida} Â· ${selectedFood.kcal_100} kcal/100g Â· ${selectedFood.group}</div>
+      <div class="selected-food-meta">${selectedFood.medida} · ${selectedFood.kcal_100} kcal/100g · ${selectedFood.group}</div>
     </div>
-    <div onclick="toggleFavorite(${selectedFood.id})" id="fav-detail-${selectedFood.id}" style="font-size:22px;cursor:pointer;">${isFav ? 'â¤ï¸' : 'ð¤'}</div>`;
+    <div onclick="toggleFavorite(${selectedFood.id})" id="fav-detail-${selectedFood.id}" style="font-size:22px;cursor:pointer;">${isFav ? '❤️' : '🤍'}</div>`;
 }
 
 function updateKcalBadge() {
@@ -1470,11 +1471,11 @@ function calcSubstitutosV2() {
         <div class="sub-item-emoji">${s.emoji}</div>
         <div class="sub-item-body">
           <div class="sub-item-name">${s.name}</div>
-          <div class="sub-item-detail">${s.medida} Â· ${Math.round(s.prot*s.qty_needed/100)}g prot</div>
+          <div class="sub-item-detail">${s.medida} · ${Math.round(s.prot*s.qty_needed/100)}g prot</div>
         </div>
         <div class="sub-item-right">
           <div class="sub-item-g">${s.qty_needed}g</div>
-          <span class="sub-item-fav" onclick="toggleFavorite(${s.id})" id="fav-sub-${s.id}">${isFav ? 'â¤ï¸' : 'ð¤'}</span>
+          <span class="sub-item-fav" onclick="toggleFavorite(${s.id})" id="fav-sub-${s.id}">${isFav ? '❤️' : '🤍'}</span>
         </div>
       </div>`;
     }).join('')}
@@ -1495,7 +1496,7 @@ async function toggleFavorite(foodId) {
   // Update all heart icons
   [`fav-card-${foodId}`, `fav-detail-${foodId}`, `fav-sub-${foodId}`].forEach(id => {
     const el = document.getElementById(id);
-    if (el) el.textContent = foodFavorites.some(fv => fv.food_id === foodId) ? 'â¤ï¸' : 'ð¤';
+    if (el) el.textContent = foodFavorites.some(fv => fv.food_id === foodId) ? '❤️' : '🤍';
   });
   renderFoodGrid(getFilteredFoods());
 }
@@ -1505,7 +1506,7 @@ function showSubView(view) {
   document.getElementById('sub-view-' + view).classList.add('active');
 }
 
-// ââ EVOLUÃÃO ââââââââââââââââââââââââââââââââââââââââââââââ
+// ── EVOLUÇÃO ──────────────────────────────────────────────
 async function loadEvolution() {
   const { data } = await sb.from('body_records').select('*').eq('user_id', currentUser.id).order('record_date', { ascending: false }).limit(10);
   const records = data || [];
@@ -1516,14 +1517,14 @@ async function loadEvolution() {
     const first = records[records.length - 1];
     const diff = latest.weight_kg && first.weight_kg ? (latest.weight_kg - first.weight_kg).toFixed(1) : null;
     statsHtml = `
-      <div class="stat-box"><span class="stat-val">${latest.weight_kg || 'â'}</span><span class="stat-lbl">kg atual</span></div>
-      <div class="stat-box"><span class="stat-val" style="color:${diff < 0 ? '#27AE60' : 'var(--gold)'}">${diff !== null ? (diff > 0 ? '+' : '') + diff : 'â'}</span><span class="stat-lbl">variaÃ§Ã£o</span></div>
+      <div class="stat-box"><span class="stat-val">${latest.weight_kg || '—'}</span><span class="stat-lbl">kg atual</span></div>
+      <div class="stat-box"><span class="stat-val" style="color:${diff < 0 ? '#27AE60' : 'var(--gold)'}">${diff !== null ? (diff > 0 ? '+' : '') + diff : '—'}</span><span class="stat-lbl">variação</span></div>
       <div class="stat-box"><span class="stat-val">${records.length}</span><span class="stat-lbl">registros</span></div>
     `;
   } else {
     statsHtml = `
-      <div class="stat-box"><span class="stat-val">â</span><span class="stat-lbl">kg atual</span></div>
-      <div class="stat-box"><span class="stat-val">â</span><span class="stat-lbl">variaÃ§Ã£o</span></div>
+      <div class="stat-box"><span class="stat-val">—</span><span class="stat-lbl">kg atual</span></div>
+      <div class="stat-box"><span class="stat-val">—</span><span class="stat-lbl">variação</span></div>
       <div class="stat-box"><span class="stat-val">0</span><span class="stat-lbl">registros</span></div>
     `;
   }
@@ -1542,7 +1543,7 @@ async function loadEvolution() {
       return `<div class="bar ${isLast ? 'hi' : ''}" style="height:${h}px"><span class="bar-lbl">${r.record_date.slice(5)}</span></div>`;
     }).join('');
   } else {
-    chartEl.innerHTML = '<p style="font-size:12px;color:var(--muted);text-align:center;width:100%;padding:10px 0;">Registre seu primeiro peso para ver o grÃ¡fico.</p>';
+    chartEl.innerHTML = '<p style="font-size:12px;color:var(--muted);text-align:center;width:100%;padding:10px 0;">Registre seu primeiro peso para ver o gráfico.</p>';
   }
 }
 
@@ -1561,7 +1562,7 @@ async function saveBodyRecord() {
   }, { onConflict: 'user_id,record_date' });
 
   if (error) { toast('Erro ao salvar. Tente novamente.'); return; }
-  toast('Registro salvo! â');
+  toast('Registro salvo! ✓');
   document.getElementById('inp-weight').value = '';
   document.getElementById('inp-waist').value = '';
   document.getElementById('inp-hip').value = '';
@@ -1570,7 +1571,7 @@ async function saveBodyRecord() {
   await loadEvolution();
 }
 
-// ââ FOTOS âââââââââââââââââââââââââââââââââââââââââââââââââ
+// ── FOTOS ─────────────────────────────────────────────────
 function triggerPhoto(slot) {
   currentPhotoSlot = slot;
   document.getElementById('photo-input').click();
@@ -1587,11 +1588,11 @@ async function uploadPhoto(input) {
   const { data: urlData } = sb.storage.from('body-photos').getPublicUrl(path);
   const colMap = { front: 'photo_front_url', side: 'photo_side_url', back: 'photo_back_url' };
   await sb.from('body_records').upsert({ user_id: currentUser.id, record_date: TODAY, [colMap[currentPhotoSlot]]: urlData.publicUrl }, { onConflict: 'user_id,record_date' });
-  toast('Foto salva! â');
+  toast('Foto salvo! ✓');
   input.value = '';
 }
 
-// ââ RECEITAS ââââââââââââââââââââââââââââââââââââââââââââââ
+// ── RECEITAS ──────────────────────────────────────────────
 async function loadRecipes() {
   const { data } = await sb.from('recipes').select('*').eq('published', true).order('created_at', { ascending: false });
   const el = document.getElementById('recipes-list');
@@ -1599,25 +1600,25 @@ async function loadRecipes() {
     el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);font-size:13px;">Em breve novas receitas do Dr. Roberto!</div>';
     return;
   }
-  const emojis = { cafe:'â', almoco:'ð½ï¸', lanche:'ð¥', jantar:'ð', sobremesa:'ð®' };
+  const emojis = { cafe:'☕', almoco:'🍽️', lanche:'🥗', jantar:'🌙', sobremesa:'🍮' };
   el.innerHTML = data.map(r => `
     <div class="recipe-card">
-      <div class="recipe-thumb">${emojis[r.meal_type] || 'ð´'}</div>
+      <div class="recipe-thumb">${emojis[r.meal_type] || '🍴'}</div>
       <div>
         <div class="recipe-name">${r.title}</div>
-        <div class="recipe-meta">${r.calories || 'â'} kcal Â· ${r.protein_g || 'â'}g prot</div>
+        <div class="recipe-meta">${r.calories || '—'} kcal · ${r.protein_g || '—'}g prot</div>
         <span class="recipe-tag">${r.meal_type}</span>
       </div>
     </div>
   `).join('');
 }
 
-// ââ CONTEÃDO ââââââââââââââââââââââââââââââââââââââââââââââ
+// ── CONTEÚDO ──────────────────────────────────────────────
 async function loadContent() {
   const { data } = await sb.from('content_items').select('*').eq('published', true).neq('type','sos').order('created_at', { ascending: false });
   const el = document.getElementById('content-list');
   if (!data || data.length === 0) {
-    el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);font-size:13px;">Em breve novos conteÃºdos do Dr. Roberto!</div>';
+    el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);font-size:13px;">Em breve novos conteúdos do Dr. Roberto!</div>';
     return;
   }
   el.innerHTML = data.map(v => `
@@ -1625,16 +1626,16 @@ async function loadContent() {
       <div class="video-thumb"><div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
       <div class="video-info">
         <div class="video-title">${v.title}</div>
-        <div class="video-dur">${v.duration_min ? v.duration_min + ' min' : ''} Â· ${v.description || ''}</div>
+        <div class="video-dur">${v.duration_min ? v.duration_min + ' min' : ''} · ${v.description || ''}</div>
       </div>
     </div>
   `).join('');
 }
 
-// ââ SOS âââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ── SOS ───────────────────────────────────────────────────
 function renderSOS() {
   document.getElementById('sos-list').innerHTML = SOS_DATA.map(s => `
-    <div class="sos-card" onclick="toast('ConteÃºdo em breve!')">
+    <div class="sos-card" onclick="toast('Conteúdo em breve!')">
       <div class="sos-dot"></div>
       <div class="sos-text">
         <div class="sos-title">${s.t}</div>
@@ -1644,18 +1645,18 @@ function renderSOS() {
   `).join('');
 }
 
-// ââ CONTA âââââââââââââââââââââââââââââââââââââââââââââââââ
+// ── CONTA ─────────────────────────────────────────────────
 function loadAccount() {
   const p = currentProfile;
   const initials = (p.full_name || '?').split(' ').map(w => w[0]).slice(0,2).join('').toUpperCase();
   document.getElementById('acc-avatar').textContent = initials;
-  document.getElementById('acc-name').textContent = p.full_name || 'â';
+  document.getElementById('acc-name').textContent = p.full_name || '—';
   document.getElementById('acc-email').textContent = p.email || '';
   const planLabels = { trimestral:'Plano Trimestral', semestral:'Plano Semestral', anual:'Plano Anual' };
-  document.getElementById('acc-plan').textContent = planLabels[p.plan] || 'Plano â';
+  document.getElementById('acc-plan').textContent = planLabels[p.plan] || 'Plano —';
   if (p.subscription_expires_at) {
     const d = new Date(p.subscription_expires_at);
-    document.getElementById('acc-expires').textContent = 'VÃ¡lido atÃ© ' + d.toLocaleDateString('pt-BR');
+    document.getElementById('acc-expires').textContent = 'Válido até ' + d.toLocaleDateString('pt-BR');
   }
   document.getElementById('acc-inp-name').value = p.full_name || '';
   document.getElementById('acc-inp-goal').value = p.goal || '';
@@ -1670,7 +1671,7 @@ async function saveProfile() {
   if (error) { toast('Erro ao salvar.'); return; }
   currentProfile.full_name = name; currentProfile.goal = goal; currentProfile.height_cm = height;
   if (goal) { currentGoal = goal; }
-  toast('Perfil atualizado! â');
+  toast('Perfil atualizado! ✓');
   loadAccount();
   document.getElementById('greeting-name').textContent = name;
 }
@@ -1679,7 +1680,7 @@ function requestDelete() {
   toast('Envie um e-mail para privacidade@kairos.com.br');
 }
 
-// ââ ADMIN âââââââââââââââââââââââââââââââââââââââââââââââââ
+// ── ADMIN ─────────────────────────────────────────────────
 async function loadAdmin() {
   const { data: all } = await sb.from('profiles').select('*').neq('role','admin').order('created_at', { ascending: false });
   if (!all) return;
@@ -1719,14 +1720,14 @@ async function loadAdmin() {
     activeEl.innerHTML = '<p style="font-size:12px;color:var(--muted);padding:8px 0;">Nenhum paciente ativo.</p>';
   } else {
     activeEl.innerHTML = active.map(p => {
-      const expires = p.subscription_expires_at ? new Date(p.subscription_expires_at).toLocaleDateString('pt-BR') : 'â';
+      const expires = p.subscription_expires_at ? new Date(p.subscription_expires_at).toLocaleDateString('pt-BR') : '—';
       return `
         <div class="patient-row">
           <div class="patient-name">${p.full_name || '(sem nome)'}</div>
           <div class="patient-email">${p.email}</div>
           <div class="patient-meta">
             <span class="status-badge status-active">Ativo</span>
-            <span style="font-size:11px;color:var(--muted);">atÃ© ${expires}</span>
+            <span style="font-size:11px;color:var(--muted);">até ${expires}</span>
             <button class="suspend-btn" onclick="suspendPatient('${p.id}')">Suspender</button>
           </div>
         </div>
@@ -1747,7 +1748,7 @@ async function activatePatient(id) {
     subscription_expires_at: expires.toISOString()
   }).eq('id', id);
   if (error) { toast('Erro ao ativar.'); return; }
-  toast('Paciente ativado! â');
+  toast('Paciente ativado! ✓');
   await loadAdmin();
 }
 
@@ -1758,7 +1759,7 @@ async function suspendPatient(id) {
   await loadAdmin();
 }
 
-// ââ NAVIGATION ââââââââââââââââââââââââââââââââââââââââââââ
+// ── NAVIGATION ────────────────────────────────────────────
 function switchTab(tab) {
   document.querySelectorAll('.subscreen').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.bnav-item').forEach(n => n.classList.remove('on'));
@@ -1791,7 +1792,7 @@ function hideSub() {
   });
 }
 
-// ââ JORNADA âââââââââââââââââââââââââââââââââââââââââââââââ
+// ── JORNADA ───────────────────────────────────────────────
 async function loadJornada() {
   if (!currentUser) return;
   const ninetyDaysAgo = new Date(); ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
@@ -1841,10 +1842,10 @@ async function loadJornada() {
     : 0;
 
   document.getElementById('jornada-stats').innerHTML = `
-    <div class="jornada-stat"><div class="jornada-stat-val">${streak}</div><div class="jornada-stat-label">sequÃªncia atual</div></div>
+    <div class="jornada-stat"><div class="jornada-stat-val">${streak}</div><div class="jornada-stat-label">sequência atual</div></div>
     <div class="jornada-stat"><div class="jornada-stat-val">${totalDays}</div><div class="jornada-stat-label">dias ativos</div></div>
-    <div class="jornada-stat"><div class="jornada-stat-val">${best}</div><div class="jornada-stat-label">melhor sequÃªncia</div></div>
-    <div class="jornada-stat"><div class="jornada-stat-val">${avgPct}%</div><div class="jornada-stat-label">mÃ©dia de hÃ¡bitos</div></div>
+    <div class="jornada-stat"><div class="jornada-stat-val">${best}</div><div class="jornada-stat-label">melhor sequência</div></div>
+    <div class="jornada-stat"><div class="jornada-stat-val">${avgPct}%</div><div class="jornada-stat-label">média de hábitos</div></div>
   `;
 
   const monthsWrap = document.getElementById('jornada-months');
@@ -1876,7 +1877,7 @@ async function loadJornada() {
   }).join('');
 }
 
-// ââ SCREEN MANAGER ââââââââââââââââââââââââââââââââââââââââ
+// ── SCREEN MANAGER ────────────────────────────────────────
 function showScreen(name) {
   document.getElementById('loading').style.display = 'none';
   document.getElementById('sbar').style.display = name === 'app' ? 'flex' : 'none';
@@ -1886,7 +1887,7 @@ function showScreen(name) {
   document.getElementById('screen-app').classList.toggle('active', name === 'app');
 }
 
-// ââ TOAST âââââââââââââââââââââââââââââââââââââââââââââââââ
+// ── TOAST ─────────────────────────────────────────────────
 let toastTimer;
 function toast(msg) {
   const el = document.getElementById('toast');
