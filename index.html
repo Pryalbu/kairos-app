@@ -324,7 +324,7 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
 .video-dur{font-size:11px;color:var(--muted);margin-top:2px;}
 
 /* SOS card */
-.sos-card{display:flex;align-items:center;gap:12px;padding:14px;background:var(--surface2);border:0.5px solld var(--border);border-radius:var(--r);margin-bottom:8px;cursor:pointer;transition:border-color .2s;}
+.sos-card{display:flex;align-items:center;gap:12px;padding:14px;background:var(--surface2);border:0.5px solid var(--border);border-radius:var(--r);margin-bottom:8px;cursor:pointer;transition:border-color .2s;}
 .sos-card:hover{border-color:var(--gold);}
 .sos-dot{width:10px;height:10px;border-radius:50%;background:var(--gold);flex-shrink:0;}
 .sos-text{flex:1;}
@@ -560,8 +560,7 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
   </div>
 
   <!-- ════════════════════════════════ -->
-  <!-- SCREEN: APQ���CIPAL
-           -->
+  <!-- SCREEN: APP PRINCIPAL           -->
   <!-- ════════════════════════════════ -->
   <div class="screen" id="screen-app">
 
@@ -583,7 +582,7 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
       <div class="scroll">
         <!-- Banner motivacional -->
         <div style="background:linear-gradient(135deg,var(--gold-dim) 0%,rgba(212,175,55,.08) 100%);border:1px solid var(--gold-dim);border-radius:14px;padding:16px 18px;margin-bottom:12px;text-align:center;">
-          <div style="font-size:13px;color:var(--gold);font-style:italic;line-height:1.5;">"A constC�ncia constrói o que a motivação começa."</div>
+          <div style="font-size:13px;color:var(--gold);font-style:italic;line-height:1.5;">"A constância constrói o que a motivação começa."</div>
         </div>
         <!-- Progresso semanal -->
         <div class="card">
@@ -826,7 +825,7 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
           <div class="inp-group"><label class="inp-label">Nome</label><input class="inp" type="text" id="acc-inp-name" placeholder="Seu nome"></div>
           <div class="inp-group"><label class="inp-label">Objetivo</label>
             <select class="inp" id="acc-inp-goal">
-  3           <option value="">Selecionar</option>
+              <option value="">Selecionar</option>
               <option value="emagrecer">Emagrecer</option>
               <option value="ganhar_massa">Ganhar massa</option>
               <option value="saude">Saúde e bem-estar</option>
@@ -925,8 +924,8 @@ const HABITS = {
     { key:'pos_treino', label:'Refeição pós-treino', cat:'Alimentação' },
     { key:'meta_calorica', label:'Atingir meta calórica', cat:'Alimentação' },
     { key:'agua_3l', label:'3L de água', cat:'Hidratação' },
-    { key:'trein_feito', label:'Treino realizado', cat:'Atividade' },
-    { key:'s.no_8h� label:'Dormir 8 horas', cat:'Recuperação' },
+    { key:'treino_feito', label:'Treino realizado', cat:'Atividade' },
+    { key:'sono_8h', label:'Dormir 8 horas', cat:'Recuperação' },
   ],
   saude: [
     { key:'frutas_legumes', label:'Frutas e legumes', cat:'Alimentação' },
@@ -1042,7 +1041,7 @@ window.onload = async function() {
       await loadProfile();
       return;
     }
- %}
+  }
 
   // Listener para mudancas de estado de autenticacao
   sb.auth.onAuthStateChange(async (event, session) => {
@@ -1588,7 +1587,7 @@ async function uploadPhoto(input) {
   const { data: urlData } = sb.storage.from('body-photos').getPublicUrl(path);
   const colMap = { front: 'photo_front_url', side: 'photo_side_url', back: 'photo_back_url' };
   await sb.from('body_records').upsert({ user_id: currentUser.id, record_date: TODAY, [colMap[currentPhotoSlot]]: urlData.publicUrl }, { onConflict: 'user_id,record_date' });
-  toast('Foto salvo! ✓');
+  toast('Foto salva! ✓');
   input.value = '';
 }
 
