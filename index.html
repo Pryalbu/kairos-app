@@ -1110,6 +1110,23 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
 </div>
 
 <script>
+// ── DEBUG VISUAL (remover após diagnóstico) ───────────────
+window.onerror = function(msg, src, line, col, err) {
+  const d = document.getElementById('loading');
+  if (d) d.innerHTML = '<div style="padding:20px;color:#ff4444;font-size:13px;text-align:left;word-break:break-all;">' +
+    '<b>ERRO JS:</b><br>' + msg + '<br><br>' +
+    '<b>Arquivo:</b> ' + (src||'?') + '<br>' +
+    '<b>Linha:</b> ' + line + ':' + col + '<br><br>' +
+    (err ? '<b>Stack:</b><br>' + (err.stack||'').substring(0,300) : '') +
+  '</div>';
+};
+window.addEventListener('unhandledrejection', function(e) {
+  const d = document.getElementById('loading');
+  if (d) d.innerHTML = '<div style="padding:20px;color:#ff8800;font-size:13px;text-align:left;word-break:break-all;">' +
+    '<b>PROMISE REJEITADA:</b><br>' + (e.reason?.message || String(e.reason)).substring(0,400) +
+  '</div>';
+});
+
 // ── SUPABASE ──────────────────────────────────────────────
 const { createClient } = supabase;
 const sb = createClient(
