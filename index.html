@@ -44,6 +44,9 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
 @media(min-width:900px){
   body{background:radial-gradient(ellipse at 50% 0%, #0D1B2A 0%, #070F18 70%);}
 }
+@media(min-width:900px){
+  body{background:radial-gradient(ellipse at 50% 0%, #0D1B2A 0%, #070F18 70%);}
+}
 @media(min-width:500px){
   .phone{
     min-height:820px;max-height:900px;
@@ -2536,6 +2539,14 @@ function toast(msg) {
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => el.classList.remove('show'), 2500);
 }
+</script>
+<script>
+(function(){
+var p=document.querySelector('.phone');
+var a=document.getElementById('app');
+if(!p||!a)return;
+Array.from(a.children).forEach(function(el){if(el!==p)p.appendChild(el);});
+})();
 </script>
 </body>
 </html>
