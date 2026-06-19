@@ -28,7 +28,7 @@
 html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--cream);}
 
 /* ── LAYOUT ── */
-#app{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:0;}
+#app{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:0;width:100%;box-sizing:border-box;}
 .phone{
   width:100%;max-width:430px;min-height:100vh;
   background:var(--surface);
@@ -134,7 +134,7 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
 
 /* ── LOADING ── */
 #loading{
-  position:fixed;inset:0;background:var(--bg);
+  position:fixed;top:0;left:0;right:0;bottom:0;width:100%;height:100%;background:var(--bg);
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:1000;
 }
 #loading .logo-big{font-family:'Cormorant Garamond',serif;font-size:48px;color:var(--gold);letter-spacing:.2em;}
@@ -557,6 +557,7 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
   <div class="logo-big">K</div>
   <div class="sub">Albuquerque Nutrição Avançada</div>
   <div class="spinner"></div>
+  <div id="dbg" style="position:absolute;bottom:40px;left:0;right:0;text-align:center;font-size:11px;color:#5a7a9a;letter-spacing:.05em;"></div>
 </div>
 
 <!-- TOAST -->
@@ -1110,29 +1111,46 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
 </div>
 
 <script>
-// ── DEBUG VISUAL (remover após diagnóstico) ───────────────
+// ── DEBUG VISUAL ───────────────────────────────────────────
+function dbg(msg, color) {
+  var el = document.getElementById('dbg');
+  if (el) { el.textContent = msg; if (color) el.style.color = color; }
+}
 window.onerror = function(msg, src, line, col, err) {
-  const d = document.getElementById('loading');
-  if (d) d.innerHTML = '<div style="padding:20px;color:#ff4444;font-size:13px;text-align:left;word-break:break-all;">' +
-    '<b>ERRO JS:</b><br>' + msg + '<br><br>' +
-    '<b>Arquivo:</b> ' + (src||'?') + '<br>' +
-    '<b>Linha:</b> ' + line + ':' + col + '<br><br>' +
-    (err ? '<b>Stack:</b><br>' + (err.stack||'').substring(0,300) : '') +
-  '</div>';
+  var d = document.getElementById('loading');
+  if (d) {
+    d.style.display = 'flex';
+    d.innerHTML = '<div style="padding:20px;color:#ff4444;font-size:13px;text-align:left;word-break:break-all;max-width:340px;">' +
+      '<b>ERRO JS:</b><br>' + msg + '<br><br>' +
+      '<b>Linha:</b> ' + line + ':' + col + '<br><br>' +
+      (err ? '<b>Stack:</b><br>' + String(err.stack||'').substring(0,300) : '') +
+    '</div>';
+  }
 };
 window.addEventListener('unhandledrejection', function(e) {
-  const d = document.getElementById('loading');
-  if (d) d.innerHTML = '<div style="padding:20px;color:#ff8800;font-size:13px;text-align:left;word-break:break-all;">' +
-    '<b>PROMISE REJEITADA:</b><br>' + (e.reason?.message || String(e.reason)).substring(0,400) +
-  '</div>';
+  var d = document.getElementById('loading');
+  if (d) {
+    d.style.display = 'flex';
+    d.innerHTML = '<div style="padding:20px;color:#ff8800;font-size:13px;text-align:left;word-break:break-all;max-width:340px;">' +
+      '<b>PROMISE REJEITADA:</b><br>' + (e.reason && e.reason.message ? e.reason.message : String(e.reason)).substring(0,400) +
+    '</div>';
+  }
 });
+dbg('JS iniciado...');
 
 // ── SUPABASE ──────────────────────────────────────────────
-const { createClient } = supabase;
-const sb = createClient(
-  'https://qgyuvbnieyjprxbozotk.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFneXV2Ym5pZXlqcHJ4Ym96b3RrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MjI5NjUsImV4cCI6MjA5NTI5ODk2NX0.y-AKEl9SUXzZDi-jRvwULBV-SCRDh1aqRnwVnTIuyIc'
-);
+dbg('carregando Supabase...');
+var sb;
+try {
+  var createClient = supabase.createClient;
+  sb = createClient(
+    'https://qgyuvbnieyjprxbozotk.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFneXV2Ym5pZXlqcHJ4Ym96b3RrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MjI5NjUsImV4cCI6MjA5NTI5ODk2NX0.y-AKEl9SUXzZDi-jRvwULBV-SCRDh1aqRnwVnTIuyIc'
+  );
+  dbg('Supabase OK');
+} catch(e) {
+  dbg('ERRO Supabase: ' + (e && e.message ? e.message : String(e)), '#ff4444');
+}
 
 // ── STATE ─────────────────────────────────────────────────
 let currentUser = null;
@@ -1249,21 +1267,26 @@ const SOS_DATA = [
 
 // ── INIT ──────────────────────────────────────────────────
 window.onload = async function() {
+  dbg('onload iniciado...');
   updateClock();
   setInterval(updateClock, 30000);
 
   try {
+    dbg('verificando hash...');
     const hash = window.location.hash;
     if (hash && (hash.includes('access_token') || hash.includes('type=signup'))) {
+      dbg('hash detectado, verificando sessão...');
       const { data } = await sb.auth.getSession();
       if (data && data.session) {
         currentUser = data.session.user;
         window.history.replaceState(null, '', window.location.pathname);
+        dbg('sessão via hash OK, carregando perfil...');
         await loadProfile();
         return;
       }
     }
 
+    dbg('registrando listener...');
     sb.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session && !currentUser) {
         currentUser = session.user;
@@ -1275,16 +1298,20 @@ window.onload = async function() {
       }
     });
 
+    dbg('verificando sessão existente...');
     const { data: { session } } = await sb.auth.getSession();
     if (session) {
+      dbg('sessão encontrada, carregando perfil...');
       currentUser = session.user;
       await loadProfile();
     } else {
+      dbg('sem sessão, indo para login...');
       showScreen('auth');
     }
   } catch(e) {
     console.error('Erro na inicialização:', e);
-    showScreen('auth');
+    dbg('ERRO: ' + (e && e.message ? e.message : String(e)), '#ff4444');
+    setTimeout(function() { showScreen('auth'); }, 2000);
   }
 };
 
