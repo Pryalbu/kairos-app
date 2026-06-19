@@ -1114,7 +1114,7 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
 const { createClient } = supabase;
 const sb = createClient(
   'https://qgyuvbnieyjprxbozotk.supabase.co',
-  'sb_publishable_p_gvQ85WAG5RXVtW301cWQ_DmvTpR5j'
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFneXV2Ym5pZXlqcHJ4Ym96b3RrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MjI5NjUsImV4cCI6MjA5NTI5ODk2NX0.y-AKEl9SUXzZDi-jRvwULBV-SCRDh1aqRnwVnTIuyIc'
 );
 
 // ── STATE ─────────────────────────────────────────────────
@@ -1235,33 +1235,38 @@ window.onload = async function() {
   updateClock();
   setInterval(updateClock, 30000);
 
-  const hash = window.location.hash;
-  if (hash && (hash.includes('access_token') || hash.includes('type=signup'))) {
-    const { data } = await sb.auth.getSession();
-    if (data && data.session) {
-      currentUser = data.session.user;
-      window.history.replaceState(null, '', window.location.pathname);
-      await loadProfile();
-      return;
+  try {
+    const hash = window.location.hash;
+    if (hash && (hash.includes('access_token') || hash.includes('type=signup'))) {
+      const { data } = await sb.auth.getSession();
+      if (data && data.session) {
+        currentUser = data.session.user;
+        window.history.replaceState(null, '', window.location.pathname);
+        await loadProfile();
+        return;
+      }
     }
-  }
 
-  sb.auth.onAuthStateChange(async (event, session) => {
-    if (event === 'SIGNED_IN' && session && !currentUser) {
+    sb.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_IN' && session && !currentUser) {
+        currentUser = session.user;
+        await loadProfile();
+      } else if (event === 'SIGNED_OUT') {
+        currentUser = null;
+        currentProfile = null;
+        showScreen('auth');
+      }
+    });
+
+    const { data: { session } } = await sb.auth.getSession();
+    if (session) {
       currentUser = session.user;
       await loadProfile();
-    } else if (event === 'SIGNED_OUT') {
-      currentUser = null;
-      currentProfile = null;
+    } else {
       showScreen('auth');
     }
-  });
-
-  const { data: { session } } = await sb.auth.getSession();
-  if (session) {
-    currentUser = session.user;
-    await loadProfile();
-  } else {
+  } catch(e) {
+    console.error('Erro na inicialização:', e);
     showScreen('auth');
   }
 };
