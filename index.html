@@ -1268,6 +1268,13 @@ const SOS_DATA = [
 // ── INIT ──────────────────────────────────────────────────
 window.onload = async function() {
   dbg('onload iniciado...');
+
+  // Fallback geral: se nada acontecer em 10s, força tela de login
+  var fallbackTimer = setTimeout(function() {
+    dbg('timeout geral, indo para login...', '#ff8800');
+    showScreen('auth');
+  }, 10000);
+
   updateClock();
   setInterval(updateClock, 30000);
 
@@ -1276,8 +1283,12 @@ window.onload = async function() {
     const hash = window.location.hash;
     if (hash && (hash.includes('access_token') || hash.includes('type=signup'))) {
       dbg('hash detectado, verificando sessão...');
-      const { data } = await sb.auth.getSession();
+      const { data } = await Promise.race([
+        sb.auth.getSession(),
+        new Promise(function(resolve) { setTimeout(function() { resolve({data:{session:null}}); }, 5000); })
+      ]);
       if (data && data.session) {
+        clearTimeout(fallbackTimer);
         currentUser = data.session.user;
         window.history.replaceState(null, '', window.location.pathname);
         dbg('sessão via hash OK, carregando perfil...');
@@ -1288,6 +1299,7 @@ window.onload = async function() {
 
     dbg('registrando listener...');
     sb.auth.onAuthStateChange(async (event, session) => {
+      clearTimeout(fallbackTimer);
       if (event === 'SIGNED_IN' && session && !currentUser) {
         currentUser = session.user;
         await loadProfile();
@@ -1299,7 +1311,18 @@ window.onload = async function() {
     });
 
     dbg('verificando sessão existente...');
-    const { data: { session } } = await sb.auth.getSession();
+    // Timeout de 5s: se getSession travar (WKWebView/iOS), cai no login
+    const sessionResult = await Promise.race([
+      sb.auth.getSession(),
+      new Promise(function(resolve) { setTimeout(function() { resolve({data:{session:null},_timedout:true}); }, 5000); })
+    ]);
+    clearTimeout(fallbackTimer);
+    if (sessionResult._timedout) {
+      dbg('getSession timeout, indo para login...');
+      showScreen('auth');
+      return;
+    }
+    const session = sessionResult.data && sessionResult.data.session;
     if (session) {
       dbg('sessão encontrada, carregando perfil...');
       currentUser = session.user;
@@ -1309,6 +1332,7 @@ window.onload = async function() {
       showScreen('auth');
     }
   } catch(e) {
+    clearTimeout(fallbackTimer);
     console.error('Erro na inicialização:', e);
     dbg('ERRO: ' + (e && e.message ? e.message : String(e)), '#ff4444');
     setTimeout(function() { showScreen('auth'); }, 2000);
