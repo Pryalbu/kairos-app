@@ -41,6 +41,9 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
   #app{height:100%;min-height:100vh;align-items:flex-start;}
   .phone{height:100%;min-height:100vh;}
 }
+@media(min-width:900px){
+  body{background:radial-gradient(ellipse at 50% 0%, #0D1B2A 0%, #070F18 70%);}
+}
 @media(min-width:500px){
   .phone{
     min-height:820px;max-height:900px;
@@ -303,8 +306,8 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
 }
 .banner-kairos-img{
   width:100%;display:block;
-  object-fit:cover;max-height:140px;
-  object-position:center top;
+  object-fit:cover;max-height:200px;
+  object-position:center center;
 }
 
 /* ── HEADER KAIRÓS CLUB ── */
@@ -1355,7 +1358,14 @@ function updateClock() {
 
 // ── PROFILE & ROUTING ─────────────────────────────────────
 async function loadProfile() {
-  const { data, error } = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
+  let data, error;
+  try {
+    const _r = await Promise.race([
+      sb.from('profiles').select('*').eq('id', currentUser.id).single(),
+      new Promise(function(_, reject) { setTimeout(function() { reject(new Error('timeout')); }, 12000); })
+    ]);
+    data = _r.data; error = _r.error;
+  } catch(e) { showScreen('auth'); return; }
   if (error || !data) { showScreen('auth'); return; }
   currentProfile = data;
 
@@ -1407,7 +1417,11 @@ async function doLogin() {
   const btn = document.getElementById('btn-login');
   if (!email || !pw) { showAuthErr('Preencha e-mail e senha.'); return; }
   btn.disabled = true; btn.textContent = 'Entrando...';
-  const { data, error } = await sb.auth.signInWithPassword({ email, password: pw });
+  const authResult = await Promise.race([
+      sb.auth.signInWithPassword({ email, password: pw }),
+      new Promise(function(_, reject) { setTimeout(function() { reject(new Error('timeout')); }, 15000); })
+    ]);
+    const { data, error } = authResult;
   if (error) { showAuthErr('E-mail ou senha incorretos.'); btn.disabled = false; btn.textContent = 'Entrar'; return; }
   currentUser = data.user;
   await loadProfile();
