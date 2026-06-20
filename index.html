@@ -2109,7 +2109,7 @@ function renderSelectedFoodCard() {
     <div class="selected-food-emoji">${selectedFood.emoji}</div>
     <div class="selected-food-info">
       <div class="selected-food-name">${selectedFood.name}</div>
-      <div class="selected-food-meta">${selectedFood.group} · ${selectedFood.kcal_100} kcal/100g · ${selectedFood.group}</div>
+      <div class="selected-food-meta">${selectedFood.kcal_100} kcal/100g · ${selectedFood.group}</div>
     </div>
     <div onclick="toggleFavorite(${selectedFood.id})" id="fav-detail-${selectedFood.id}" style="font-size:22px;cursor:pointer;">${isFav ? '❤️' : '🤍'}</div>`;
 }
@@ -2153,7 +2153,7 @@ function calcSubstitutosV2() {
         <div class="sub-item-emoji">${s.emoji}</div>
         <div class="sub-item-body">
           <div class="sub-item-name">${s.name}</div>
-          <div class="sub-item-detail">${s.medida} · ${Math.round(s.prot*s.qty_needed/100)}g prot</div>
+          <div class="sub-item-detail">${s.group} · ${Math.round(s.prot*s.qty_needed/100)}g prot</div>
         </div>
         <div class="sub-item-right">
           <div class="sub-item-g">${s.qty_needed}g</div>
