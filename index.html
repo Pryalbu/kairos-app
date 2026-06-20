@@ -1301,7 +1301,7 @@ window.onload = async function() {
       dbg('hash detectado, verificando sessão...');
       const { data } = await Promise.race([
         sb.auth.getSession(),
-        new Promise(function(resolve) { setTimeout(function() { resolve({data:{session:null}}); }, 20000); })
+        new Promise(function(resolve) { setTimeout(function() { try{var _st=localStorage.getItem('sb-qgyuvbnieyjprxbozotk-auth-token');if(_st){var _sp=JSON.parse(_st);if(_sp&&_sp.user&&_sp.expires_at>Date.now()/1000){resolve({data:{session:_sp}});return;}}}catch(_se){}resolve({data:{session:null}}); }, 8000); })
       ]);
       if (data && data.session) {
         clearTimeout(fallbackTimer);
@@ -1500,7 +1500,7 @@ async function ensureTodayLog() {
 function renderCups() {
   const ml = todayLog ? todayLog.water_ml : 0;
   const filled = Math.round(ml / 250);
-  const wrap = document.getElementById('cups-row');
+  const wrap = document.getElementById('cups-row') || document.getElementById('checkin-cups-row'); if (!wrap) return;
   wrap.innerHTML = '';
   for (let i = 0; i < 8; i++) {
     const c = document.createElement('div');
@@ -1509,7 +1509,7 @@ function renderCups() {
     c.onclick = () => toggleCup(i);
     wrap.appendChild(c);
   }
-  document.getElementById('water-total-ml').textContent = ml + ' ml';
+  const totalEl = document.getElementById('water-total-ml') || document.getElementById('checkin-water-ml'); if (totalEl) totalEl.textContent = ml + ' ml';
 }
 
 async function toggleCup(i) {
