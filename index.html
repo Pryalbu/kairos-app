@@ -1,7 +1,3 @@
-https://raw.githubusercontent.com/Pryalbu/kairos-app/main/index.html
-→ https://raw.githubusercontent.com/Pryalbu/kairos-app/main/index.html
-Content-Type: text/plain; charset=utf-8
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -369,6 +365,70 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
 .activate-btn:hover{opacity:.85;}
 .suspend-btn{padding:5px 10px;background:transparent;border:0.5px solid var(--danger);color:var(--danger);border-radius:var(--r-sm);font-size:11px;cursor:pointer;}
 .divider{height:0.5px;background:var(--border);margin:16px 0;}
+
+/* ── SUBSTITUTOS V2 ── */
+.sub-view { display:none; }
+.sub-view.active { display:block; }
+.food-search-wrap { position:relative; margin-bottom:16px; }
+.food-search-wrap .inp { padding-left:40px; padding-right:14px; }
+.food-search-ico { position:absolute; left:13px; top:50%; transform:translateY(-50%); opacity:.4; pointer-events:none; }
+.food-search-ico svg { width:17px; height:17px; stroke:var(--cream); fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.freq-section { margin-bottom:18px; }
+.freq-scroll { display:flex; gap:10px; overflow-x:auto; padding-bottom:6px; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+.freq-scroll::-webkit-scrollbar { display:none; }
+.freq-chip { flex-shrink:0; background:var(--surface2); border:1px solid var(--border); border-radius:12px; padding:8px 12px; cursor:pointer; text-align:center; min-width:80px; transition:border-color .2s; }
+.freq-chip:hover { border-color:var(--gold-dim); }
+.freq-chip-emoji { font-size:24px; display:block; margin-bottom:4px; }
+.freq-chip-name { font-size:10px; color:var(--muted); line-height:1.2; }
+.cat-pills { display:flex; gap:6px; overflow-x:auto; padding-bottom:8px; margin-bottom:14px; scrollbar-width:none; }
+.cat-pills::-webkit-scrollbar { display:none; }
+.cat-pill { flex-shrink:0; background:var(--surface2); border:1px solid var(--border); border-radius:20px; padding:6px 14px; font-size:12px; color:var(--muted); cursor:pointer; transition:all .2s; white-space:nowrap; }
+.cat-pill.on { background:var(--gold); border-color:var(--gold); color:#1a1a14; font-weight:600; }
+.food-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.food-card { background:var(--surface2); border:1px solid var(--border); border-radius:14px; padding:14px 12px; cursor:pointer; transition:border-color .2s,transform .15s; position:relative; text-align:center; }
+.food-card:hover { border-color:var(--gold-dim); transform:translateY(-1px); }
+.food-card-fav { position:absolute; top:8px; right:10px; font-size:16px; cursor:pointer; z-index:2; }
+.food-card-emoji { font-size:32px; margin-bottom:6px; }
+.food-card-name { font-size:12px; color:var(--cream); font-weight:500; line-height:1.3; margin-bottom:3px; }
+.food-card-detail { font-size:10px; color:var(--muted); }
+.selected-food-card { background:var(--surface2); border:1px solid var(--gold-dim); border-radius:16px; padding:16px; margin-bottom:16px; display:flex; gap:14px; align-items:center; }
+.selected-food-emoji { font-size:40px; }
+.selected-food-info { flex:1; }
+.selected-food-name { font-size:15px; color:var(--cream); font-weight:600; margin-bottom:3px; }
+.selected-food-meta { font-size:12px; color:var(--muted); }
+.qty-calc-wrap { background:var(--surface2); border:1px solid var(--border); border-radius:14px; padding:14px; margin-bottom:16px; }
+.qty-calc-row { display:flex; gap:10px; align-items:center; }
+.qty-calc-label { font-size:12px; color:var(--muted); margin-bottom:8px; }
+.qty-kcal-badge { background:var(--gold-dim); border:1px solid var(--gold); border-radius:8px; padding:8px 14px; font-size:13px; color:var(--gold); font-weight:700; white-space:nowrap; }
+.sort-tabs { display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap; }
+.sort-tab { background:var(--surface2); border:1px solid var(--border); border-radius:20px; padding:5px 12px; font-size:11px; color:var(--muted); cursor:pointer; transition:all .2s; }
+.sort-tab.on { background:var(--gold-dim); border-color:var(--gold); color:var(--gold); }
+.sub-group-label { font-size:10px; color:var(--muted); font-weight:700; letter-spacing:.08em; text-transform:uppercase; margin:14px 0 8px; }
+.sub-item-v2 { background:var(--surface2); border:1px solid var(--border); border-radius:12px; padding:12px; display:flex; align-items:center; gap:12px; margin-bottom:8px; }
+.sub-item-emoji { font-size:26px; flex-shrink:0; }
+.sub-item-body { flex:1; min-width:0; }
+.sub-item-name { font-size:13px; color:var(--cream); margin-bottom:2px; }
+.sub-item-detail { font-size:11px; color:var(--muted); }
+.sub-item-right { text-align:right; flex-shrink:0; }
+.sub-item-g { font-size:14px; color:var(--gold); font-weight:700; }
+.sub-item-fav { font-size:18px; cursor:pointer; margin-top:4px; display:block; }
+
+/* ── JORNADA ── */
+.jornada-stats { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:18px; }
+.jornada-stat { background:var(--surface2); border:1px solid var(--border); border-radius:14px; padding:14px; text-align:center; }
+.jornada-stat-val { font-size:26px; color:var(--gold); font-weight:700; margin-bottom:3px; }
+.jornada-stat-label { font-size:11px; color:var(--muted); }
+.jornada-month { margin-bottom:20px; }
+.jornada-month-title { font-size:12px; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:.06em; margin-bottom:8px; }
+.jornada-days { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; }
+.jornada-day { aspect-ratio:1; border-radius:5px; background:var(--surface2); }
+.jornada-day.active { background:var(--gold); }
+.jornada-day.partial { background:var(--gold-dim); border:1px solid var(--gold); }
+.jornada-day.future { opacity:.3; }
+.jornada-legend { display:flex; gap:14px; margin-bottom:18px; }
+.jornada-legend-item { display:flex; align-items:center; gap:6px; font-size:11px; color:var(--muted); }
+.jornada-legend-dot { width:12px; height:12px; border-radius:3px; }
+
 </style>
 </head>
 <body>
@@ -520,6 +580,10 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
         <div class="greeting-name" id="greeting-name">—</div>
       </div>
       <div class="scroll">
+        <!-- Banner motivacional -->
+        <div style="background:linear-gradient(135deg,var(--gold-dim) 0%,rgba(212,175,55,.08) 100%);border:1px solid var(--gold-dim);border-radius:14px;padding:16px 18px;margin-bottom:12px;text-align:center;">
+          <div style="font-size:13px;color:var(--gold);font-style:italic;line-height:1.5;">"A constância constrói o que a motivação começa."</div>
+        </div>
         <!-- Progresso semanal -->
         <div class="card">
           <div class="card-title">Progresso semanal</div>
@@ -564,23 +628,57 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
       </div>
     </div>
 
-    <!-- ── SUBSTITUTOS ── -->
+    <!-- ── SUBSTITUTOS V2 ── -->
     <div class="subscreen" id="tab-substitutos">
       <div class="hdr">
-        <div class="tag">Calculadora</div>
-        <div class="hdr-title">Substitutos TACO</div>
+        <div class="tag">Posso trocar?</div>
+        <div class="hdr-title">Substituições</div>
       </div>
       <div class="scroll">
-        <div class="taco-search">
-          <input class="inp" type="text" id="food-search" placeholder="Ex: Arroz branco" oninput="filterFoods()">
-          <div class="taco-search-ico"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+        <!-- View: Home -->
+        <div class="sub-view active" id="sub-view-home">
+          <div class="food-search-wrap">
+            <div class="food-search-ico"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+            <input class="inp" type="text" id="food-search" placeholder="o que você quer trocar? (arroz, banana, frango...)" oninput="filterFoodsV2()">
+          </div>
+          <div id="search-results-wrap" style="display:none;margin-bottom:12px;"></div>
+          <div id="freq-section" class="freq-section">
+            <div class="section-label">Suas trocas frequentes</div>
+            <div class="freq-scroll" id="freq-scroll"></div>
+          </div>
+          <div class="section-label">Categorias</div>
+          <div class="cat-pills" id="cat-pills">
+            <div class="cat-pill on" onclick="filterByCategory(this,'todos')">todos</div>
+            <div class="cat-pill" onclick="filterByCategory(this,'Cereais')">carboidratos</div>
+            <div class="cat-pill" onclick="filterByCategory(this,'Carnes')">proteínas</div>
+            <div class="cat-pill" onclick="filterByCategory(this,'Gorduras')">gorduras</div>
+            <div class="cat-pill" onclick="filterByCategory(this,'Frutas')">frutas</div>
+            <div class="cat-pill" onclick="filterByCategory(this,'Vegetais')">vegetais</div>
+          </div>
+          <div class="section-label">Todos os alimentos</div>
+          <div class="food-grid" id="food-grid"></div>
         </div>
-        <div id="food-list" style="margin-bottom:14px;max-height:180px;overflow-y:auto;"></div>
-        <div class="qty-row" id="qty-row" style="display:none">
-          <input class="inp" type="number" id="food-qty" placeholder="Quantidade (g)" value="100">
-          <button class="btn btn-gold" style="width:auto;padding:12px 20px;" onclick="calcSubstitutos()">Calcular</button>
+        <!-- View: Food Detail -->
+        <div class="sub-view" id="sub-view-detail">
+          <div class="back-btn" onclick="showSubView('home')">
+            <svg viewBox="0 0 24 24"><polyline points="15,18 9,12 15,6"/></svg><span>Voltar</span>
+          </div>
+          <div class="selected-food-card" id="selected-food-card"></div>
+          <div class="qty-calc-wrap">
+            <div class="qty-calc-label">quanto tem na sua dieta?</div>
+            <div class="qty-calc-row">
+              <input class="inp" type="number" id="food-qty" placeholder="120" value="100" oninput="updateKcalBadge()" style="flex:1;">
+              <div class="qty-kcal-badge" id="kcal-badge">— kcal</div>
+            </div>
+          </div>
+          <div class="sort-tabs" id="sort-tabs">
+            <div class="sort-tab on" onclick="setSortMode(this,'padrao')">padrão</div>
+            <div class="sort-tab" onclick="setSortMode(this,'az')">a-z</div>
+            <div class="sort-tab" onclick="setSortMode(this,'menor_g')">menor g</div>
+            <div class="sort-tab" onclick="setSortMode(this,'maior_g')">maior g</div>
+          </div>
+          <div id="sub-result-wrap"></div>
         </div>
-        <div id="sub-result-wrap"></div>
       </div>
     </div>
 
@@ -651,6 +749,11 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
           <div><div class="mais-label">SOS Nutricional</div><div class="mais-sub">Leituras de apoio rápido</div></div>
           <div class="mais-arrow"><svg viewBox="0 0 24 24"><polyline points="9,18 15,12 9,6"/></svg></div>
         </div>
+        <div class="mais-item" onclick="showSub('jornada')">
+          <div class="mais-ico"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 16l4-4 4 4 4-4"/></svg></div>
+          <div><div class="mais-label">Minha Jornada</div><div class="mais-sub">Histórico, sequência e conquistas</div></div>
+          <div class="mais-arrow"><svg viewBox="0 0 24 24"><polyline points="9,18 15,12 9,6"/></svg></div>
+        </div>
         <div class="mais-item" onclick="showSub('conta')">
           <div class="mais-ico"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
           <div><div class="mais-label">Minha conta</div><div class="mais-sub">Dados, plano e configurações</div></div>
@@ -664,6 +767,21 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
             <div class="mais-arrow"><svg viewBox="0 0 24 24"><polyline points="9,18 15,12 9,6"/></svg></div>
           </div>
         </div>
+      </div>
+
+      <!-- Sub: Jornada -->
+      <div class="scroll" id="sub-jornada" style="display:none;padding-top:14px;">
+        <div class="back-btn" onclick="hideSub()"><svg viewBox="0 0 24 24"><polyline points="15,18 9,12 15,6"/></svg><span>Voltar</span></div>
+        <div class="tag" style="margin-bottom:4px;">Minha Jornada</div>
+        <div class="hdr-title" style="font-size:20px;margin-bottom:4px;">Sua evolução</div>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:16px;">A constância constrói o que a motivação começa.</p>
+        <div class="jornada-stats" id="jornada-stats"></div>
+        <div class="jornada-legend">
+          <div class="jornada-legend-item"><div class="jornada-legend-dot" style="background:var(--gold);"></div>check-in completo</div>
+          <div class="jornada-legend-item"><div class="jornada-legend-dot" style="background:var(--gold-dim);border:1px solid var(--gold);"></div>parcial</div>
+          <div class="jornada-legend-item"><div class="jornada-legend-dot" style="background:var(--surface2);"></div>sem registro</div>
+        </div>
+        <div id="jornada-months"></div>
       </div>
 
       <!-- Sub: Receitas -->
@@ -821,6 +939,7 @@ const HABITS = {
 };
 
 // ── TABELA TACO (amostra representativa) ─────────────────
+// cat: macro category for filter pills
 const TACO_DB = [
   // CEREAIS
   { id:1,   name:'Arroz branco cozido',       emoji:'🍚', kcal_100:128, prot:2.5,  carb:28.1, fat:0.2,  group:'Cereais' },
@@ -947,7 +1066,7 @@ const TACO_DB = [
   { id:110, name:'Cogumelo champignon',        emoji:'🍄', kcal_100:24,  prot:1.7,  carb:4.1,  fat:0.3,  group:'Vegetais' },
   { id:111, name:'Ora-pro-nóbis',             emoji:'🌿', kcal_100:36,  prot:3.2,  carb:4.3,  fat:0.7,  group:'Vegetais' },
   { id:112, name:'Feijão-vagem cozido',        emoji:'🌿', kcal_100:25,  prot:1.6,  carb:4.5,  fat:0.2,  group:'Vegetais' },
-];
+]
 
 
 // SOS Data
@@ -1247,68 +1366,197 @@ async function loadNotices() {
   `).join('');
 }
 
-// ── SUBSTITUTOS TACO ──────────────────────────────────────
-function populateFoodList() { tacoData = TACO_DB; renderFoodList(tacoData); }
+// ── SUBSTITUTOS V2 ────────────────────────────────────────
+let currentSubSort = 'padrao';
+let currentCatFilter = 'todos';
+let foodHistory = [];
+let foodFavorites = [];
 
-function filterFoods() {
+function populateFoodList() {
+  tacoData = TACO_DB;
+  loadFoodHistoryAndFavorites();
+  renderFoodGrid(TACO_DB);
+}
+
+async function loadFoodHistoryAndFavorites() {
+  if (!currentUser) return;
+  const [hRes, fRes] = await Promise.all([
+    sb.from('food_history').select('*').eq('user_id', currentUser.id).order('searched_at', { ascending:false }).limit(8),
+    sb.from('food_favorites').select('*').eq('user_id', currentUser.id)
+  ]);
+  foodHistory = hRes.data || [];
+  foodFavorites = fRes.data || [];
+  renderFrequentSwaps();
+  renderFoodGrid(getFilteredFoods());
+}
+
+function renderFrequentSwaps() {
+  const wrap = document.getElementById('freq-scroll');
+  const sect = document.getElementById('freq-section');
+  if (!wrap) return;
+  if (!foodHistory.length) { sect.style.display = 'none'; return; }
+  sect.style.display = 'block';
+  // Dedupe by food_id
+  const seen = new Set();
+  const unique = foodHistory.filter(h => { if (seen.has(h.food_id)) return false; seen.add(h.food_id); return true; });
+  wrap.innerHTML = unique.slice(0,6).map(h => {
+    const food = TACO_DB.find(f => f.id === h.food_id);
+    if (!food) return '';
+    return `<div class="freq-chip" onclick="selectFoodV2(${food.id})">
+      <span class="freq-chip-emoji">${food.emoji}</span>
+      <span class="freq-chip-name">${food.name.split(' ')[0]}</span>
+    </div>`;
+  }).join('');
+}
+
+function getFilteredFoods() {
+  return currentCatFilter === 'todos' ? TACO_DB : TACO_DB.filter(f => f.group === currentCatFilter);
+}
+
+function filterByCategory(el, cat) {
+  document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('on'));
+  el.classList.add('on');
+  currentCatFilter = cat;
+  renderFoodGrid(getFilteredFoods());
+}
+
+function filterFoodsV2() {
   const q = document.getElementById('food-search').value.trim().toLowerCase();
-  if (!q) { document.getElementById('food-list').innerHTML = ''; document.getElementById('qty-row').style.display = 'none'; return; }
-  const filtered = tacoData.filter(f => f.name.toLowerCase().includes(q));
-  renderFoodList(filtered);
+  const wrap = document.getElementById('search-results-wrap');
+  if (!q) { wrap.style.display = 'none'; return; }
+  const filtered = TACO_DB.filter(f => f.name.toLowerCase().includes(q));
+  wrap.style.display = 'block';
+  wrap.innerHTML = filtered.length === 0
+    ? '<p style="font-size:12px;color:var(--muted);padding:8px;">Nenhum alimento encontrado.</p>'
+    : filtered.slice(0,6).map(f => `
+      <div onclick="selectFoodV2(${f.id})" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;">
+        <span style="font-size:22px;">${f.emoji}</span>
+        <div>
+          <div style="font-size:13px;color:var(--cream);">${f.name}</div>
+          <div style="font-size:11px;color:var(--muted);">${f.kcal_100} kcal/100g · ${f.group}</div>
+        </div>
+      </div>`).join('');
 }
 
-function renderFoodList(foods) {
-  const el = document.getElementById('food-list');
-  if (foods.length === 0) { el.innerHTML = '<p style="font-size:12px;color:var(--muted);padding:10px;">Nenhum alimento encontrado.</p>'; return; }
-  el.innerHTML = foods.slice(0,8).map(f => `
-    <div onclick="selectFood(${f.id})" style="padding:10px 12px;cursor:pointer;border-radius:8px;display:flex;align-items:center;gap:10px;transition:background .15s;" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background='transparent'">
-      <span style="font-size:20px;">${f.emoji}</span>
-      <div>
-        <div style="font-size:13px;color:var(--cream);">${f.name}</div>
-        <div style="font-size:11px;color:var(--muted);">${f.kcal_100} kcal/100g · ${f.group}</div>
-      </div>
+function renderFoodGrid(foods) {
+  const grid = document.getElementById('food-grid');
+  if (!grid) return;
+  grid.innerHTML = foods.map(f => {
+    const isFav = foodFavorites.some(fv => fv.food_id === f.id);
+    return `<div class="food-card" onclick="selectFoodV2(${f.id})">
+      <div class="food-card-fav" onclick="event.stopPropagation();toggleFavorite(${f.id})" id="fav-card-${f.id}">${isFav ? '❤️' : '🤍'}</div>
+      <div class="food-card-emoji">${f.emoji}</div>
+      <div class="food-card-name">${f.name}</div>
+      <div class="food-card-detail">${f.group}</div>
+    </div>`;
+  }).join('');
+}
+
+async function selectFoodV2(id) {
+  selectedFood = TACO_DB.find(f => f.id === id);
+  if (!selectedFood) return;
+  // Save to history
+  if (currentUser) {
+    const existing = foodHistory.find(h => h.food_id === id);
+    if (!existing) {
+      const { data } = await sb.from('food_history').insert({ user_id: currentUser.id, food_id: id, food_name: selectedFood.name, searched_at: new Date().toISOString() }).select().single();
+      if (data) { foodHistory.unshift(data); renderFrequentSwaps(); }
+    }
+  }
+  document.getElementById('food-search').value = '';
+  document.getElementById('search-results-wrap').style.display = 'none';
+  showSubView('detail');
+  renderSelectedFoodCard();
+  updateKcalBadge();
+  calcSubstitutosV2();
+}
+
+function renderSelectedFoodCard() {
+  const isFav = foodFavorites.some(fv => fv.food_id === selectedFood.id);
+  document.getElementById('selected-food-card').innerHTML = `
+    <div class="selected-food-emoji">${selectedFood.emoji}</div>
+    <div class="selected-food-info">
+      <div class="selected-food-name">${selectedFood.name}</div>
+      <div class="selected-food-meta">${selectedFood.kcal_100} kcal/100g · ${selectedFood.group}</div>
     </div>
-  `).join('');
+    <div onclick="toggleFavorite(${selectedFood.id})" id="fav-detail-${selectedFood.id}" style="font-size:22px;cursor:pointer;">${isFav ? '❤️' : '🤍'}</div>`;
 }
 
-function selectFood(id) {
-  selectedFood = tacoData.find(f => f.id === id);
-  document.getElementById('food-search').value = selectedFood.name;
-  document.getElementById('food-list').innerHTML = '';
-  document.getElementById('qty-row').style.display = 'flex';
-  document.getElementById('sub-result-wrap').innerHTML = '';
+function updateKcalBadge() {
+  if (!selectedFood) return;
+  const qty = parseFloat(document.getElementById('food-qty').value) || 0;
+  const kcal = Math.round((selectedFood.kcal_100 / 100) * qty);
+  document.getElementById('kcal-badge').textContent = kcal + ' kcal';
+  if (qty > 0) calcSubstitutosV2();
 }
 
-function calcSubstitutos() {
+function setSortMode(el, mode) {
+  document.querySelectorAll('.sort-tab').forEach(t => t.classList.remove('on'));
+  el.classList.add('on');
+  currentSubSort = mode;
+  calcSubstitutosV2();
+}
+
+function calcSubstitutosV2() {
   if (!selectedFood) return;
   const qty = parseFloat(document.getElementById('food-qty').value) || 100;
   const kcalTarget = (selectedFood.kcal_100 / 100) * qty;
-
-  const candidates = tacoData.filter(f => f.id !== selectedFood.id && f.group !== selectedFood.group);
-  const subs = candidates.map(f => ({
+  const candidates = TACO_DB.filter(f => f.id !== selectedFood.id).map(f => ({
     ...f,
     qty_needed: Math.round((kcalTarget / f.kcal_100) * 100),
-    kcal: Math.round(kcalTarget)
-  })).sort((a,b) => Math.abs(a.kcal - kcalTarget) - Math.abs(b.kcal - kcalTarget)).slice(0,5);
+    kcalTarget: Math.round(kcalTarget)
+  }));
+  let sorted = [...candidates];
+  if (currentSubSort === 'az') sorted.sort((a,b) => a.name.localeCompare(b.name));
+  else if (currentSubSort === 'menor_g') sorted.sort((a,b) => a.qty_needed - b.qty_needed);
+  else if (currentSubSort === 'maior_g') sorted.sort((a,b) => b.qty_needed - a.qty_needed);
+  else sorted.sort((a,b) => a.group.localeCompare(b.group));
 
-  document.getElementById('sub-result-wrap').innerHTML = `
-    <div class="sub-result">
-      <div class="sub-header">
-        <div class="sub-header-name">${selectedFood.name} · ${qty}g</div>
-        <div class="sub-header-cal">${Math.round(kcalTarget)} kcal · ${Math.round(selectedFood.prot*qty/100)}g prot</div>
-      </div>
-      ${subs.map(s => `
-        <div class="sub-item">
-          <div class="sub-emoji">${s.emoji}</div>
-          <div>
-            <div class="sub-info-name">${s.name}</div>
-            <div class="sub-info-detail">${s.qty_needed}g · ${Math.round(kcalTarget)} kcal · ${Math.round(s.prot*s.qty_needed/100)}g prot</div>
-          </div>
-          <div class="sub-badge">${s.group}</div>
+  // Group by group
+  const groups = {};
+  sorted.forEach(f => { if (!groups[f.group]) groups[f.group] = []; groups[f.group].push(f); });
+
+  document.getElementById('sub-result-wrap').innerHTML = Object.entries(groups).map(([grp, items]) => `
+    <div class="sub-group-label">${grp}</div>
+    ${items.map(s => {
+      const isFav = foodFavorites.some(fv => fv.food_id === s.id);
+      return `<div class="sub-item-v2">
+        <div class="sub-item-emoji">${s.emoji}</div>
+        <div class="sub-item-body">
+          <div class="sub-item-name">${s.name}</div>
+          <div class="sub-item-detail">${s.group} · ${Math.round(s.prot*s.qty_needed/100)}g prot</div>
         </div>
-      `).join('')}
-    </div>
-  `;
+        <div class="sub-item-right">
+          <div class="sub-item-g">${s.qty_needed}g</div>
+          <span class="sub-item-fav" onclick="toggleFavorite(${s.id})" id="fav-sub-${s.id}">${isFav ? '❤️' : '🤍'}</span>
+        </div>
+      </div>`;
+    }).join('')}
+  `).join('');
+}
+
+async function toggleFavorite(foodId) {
+  if (!currentUser) return;
+  const existing = foodFavorites.find(fv => fv.food_id === foodId);
+  if (existing) {
+    await sb.from('food_favorites').delete().eq('id', existing.id);
+    foodFavorites = foodFavorites.filter(fv => fv.food_id !== foodId);
+  } else {
+    const food = TACO_DB.find(f => f.id === foodId);
+    const { data } = await sb.from('food_favorites').insert({ user_id: currentUser.id, food_id: foodId, food_name: food?.name || '' }).select().single();
+    if (data) foodFavorites.push(data);
+  }
+  // Update all heart icons
+  [`fav-card-${foodId}`, `fav-detail-${foodId}`, `fav-sub-${foodId}`].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = foodFavorites.some(fv => fv.food_id === foodId) ? '❤️' : '🤍';
+  });
+  renderFoodGrid(getFilteredFoods());
+}
+
+function showSubView(view) {
+  document.querySelectorAll('.sub-view').forEach(v => v.classList.remove('active'));
+  document.getElementById('sub-view-' + view).classList.add('active');
 }
 
 // ── EVOLUÇÃO ──────────────────────────────────────────────
@@ -1577,20 +1825,109 @@ function showMais() { switchTab('mais'); }
 
 function showSub(name) {
   document.getElementById('mais-main').style.display = 'none';
-  ['receitas','conteudo','sos','conta','admin'].forEach(s => {
-    document.getElementById('sub-'+s).style.display = 'none';
+  ['receitas','conteudo','sos','conta','admin','jornada'].forEach(s => {
+    const el = document.getElementById('sub-'+s);
+    if (el) el.style.display = 'none';
   });
-  document.getElementById('sub-' + name).style.display = 'block';
+  const target = document.getElementById('sub-' + name);
+  if (target) target.style.display = 'block';
   if (name === 'receitas') loadRecipes();
   if (name === 'conteudo') loadContent();
   if (name === 'admin') loadAdmin();
+  if (name === 'jornada') loadJornada();
 }
 
 function hideSub() {
   document.getElementById('mais-main').style.display = 'block';
-  ['receitas','conteudo','sos','conta','admin'].forEach(s => {
-    document.getElementById('sub-'+s).style.display = 'none';
+  ['receitas','conteudo','sos','conta','admin','jornada'].forEach(s => {
+    const el = document.getElementById('sub-'+s);
+    if (el) el.style.display = 'none';
   });
+}
+
+// ── JORNADA ───────────────────────────────────────────────
+async function loadJornada() {
+  if (!currentUser) return;
+  const ninetyDaysAgo = new Date(); ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
+  const fromDate = ninetyDaysAgo.toISOString().split('T')[0];
+  const today = new Date().toISOString().split('T')[0];
+
+  const [logsRes, habitsRes] = await Promise.all([
+    sb.from('daily_logs').select('log_date').eq('user_id', currentUser.id).gte('log_date', fromDate),
+    sb.from('habit_logs').select('log_date,habit_key').eq('user_id', currentUser.id).gte('log_date', fromDate)
+  ]);
+
+  const logs = logsRes.data || [];
+  const habits = habitsRes.data || [];
+  const habitsPerDay = (HABITS[currentGoal] || HABITS['emagrecer']).length;
+
+  // Build day map: date -> count of done habits
+  const dayMap = {};
+  logs.forEach(l => { dayMap[l.log_date] = dayMap[l.log_date] || 0; });
+  habits.forEach(h => { dayMap[h.log_date] = (dayMap[h.log_date] || 0) + 1; });
+
+  const activeDays = Object.keys(dayMap).filter(d => d <= today).sort();
+  const totalDays = activeDays.length;
+
+  // Current streak
+  let streak = 0;
+  let checkDate = new Date();
+  while (true) {
+    const key = checkDate.toISOString().split('T')[0];
+    if (key > today) { checkDate.setDate(checkDate.getDate()-1); continue; }
+    if (dayMap[key] !== undefined) { streak++; checkDate.setDate(checkDate.getDate()-1); } else break;
+  }
+
+  // Best streak
+  let best = 0, cur = 0;
+  activeDays.forEach((k, i) => {
+    if (i === 0) { cur = 1; }
+    else {
+      const prev = new Date(activeDays[i-1]); prev.setDate(prev.getDate()+1);
+      cur = prev.toISOString().split('T')[0] === k ? cur+1 : 1;
+    }
+    if (cur > best) best = cur;
+  });
+
+  // Avg %
+  const avgPct = activeDays.length > 0
+    ? Math.round(activeDays.reduce((acc, d) => acc + Math.min(100, Math.round(((dayMap[d]||0)/habitsPerDay)*100)), 0) / activeDays.length)
+    : 0;
+
+  document.getElementById('jornada-stats').innerHTML = `
+    <div class="jornada-stat"><div class="jornada-stat-val">${streak}</div><div class="jornada-stat-label">sequência atual</div></div>
+    <div class="jornada-stat"><div class="jornada-stat-val">${totalDays}</div><div class="jornada-stat-label">dias ativos</div></div>
+    <div class="jornada-stat"><div class="jornada-stat-val">${best}</div><div class="jornada-stat-label">melhor sequência</div></div>
+    <div class="jornada-stat"><div class="jornada-stat-val">${avgPct}%</div><div class="jornada-stat-label">média de hábitos</div></div>
+  `;
+
+  const monthsWrap = document.getElementById('jornada-months');
+  const now2 = new Date();
+  const months = [2,1,0].map(m => new Date(now2.getFullYear(), now2.getMonth()-m, 1));
+
+  monthsWrap.innerHTML = months.map(month => {
+    const y = month.getFullYear(), mo = month.getMonth();
+    const label = month.toLocaleDateString('pt-BR', { month:'long', year:'numeric' });
+    const daysInMonth = new Date(y, mo+1, 0).getDate();
+    const firstDay = new Date(y, mo, 1).getDay();
+    let cells = '';
+    for (let i = 0; i < firstDay; i++) cells += '<div></div>';
+    for (let day = 1; day <= daysInMonth; day++) {
+      const dateStr = `${y}-${String(mo+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+      const isToday = dateStr === today;
+      const isFuture = dateStr > today;
+      const done = dayMap[dateStr];
+      let cls = 'jornada-day';
+      if (isFuture) cls += ' future';
+      else if (done !== undefined) {
+        const pct = Math.min(100, Math.round((done/habitsPerDay)*100));
+        cls += pct >= 70 ? ' active' : ' partial';
+      }
+      const outline = isToday ? ' style="outline:2px solid var(--gold);outline-offset:2px;"' : '';
+      cells += `<div class="${cls}"${outline}></div>`;
+    }
+    return `<div class="jornada-month"><div class="jornada-month-title">${label}</div><div class="jornada-days">${cells}</div></div>`;
+  }).join('');
 }
 
 // ── SCREEN MANAGER ────────────────────────────────────────
