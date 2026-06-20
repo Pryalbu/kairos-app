@@ -943,11 +943,11 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
           <div class="section-label">Categorias</div>
           <div class="cat-pills" id="cat-pills">
             <div class="cat-pill on" onclick="filterByCategory(this,'todos')">todos</div>
-            <div class="cat-pill" onclick="filterByCategory(this,'carboidratos')">carboidratos</div>
-            <div class="cat-pill" onclick="filterByCategory(this,'proteínas')">proteínas</div>
-            <div class="cat-pill" onclick="filterByCategory(this,'gorduras')">gorduras</div>
-            <div class="cat-pill" onclick="filterByCategory(this,'frutas')">frutas</div>
-            <div class="cat-pill" onclick="filterByCategory(this,'vegetais')">vegetais</div>
+            <div class="cat-pill" onclick="filterByCategory(this,'Cereais')">carboidratos</div>
+            <div class="cat-pill" onclick="filterByCategory(this,'Carnes')">proteínas</div>
+            <div class="cat-pill" onclick="filterByCategory(this,'Gorduras')">gorduras</div>
+            <div class="cat-pill" onclick="filterByCategory(this,'Frutas')">frutas</div>
+            <div class="cat-pill" onclick="filterByCategory(this,'Vegetais')">vegetais</div>
           </div>
           <div class="section-label">Todos os alimentos</div>
           <div class="food-grid" id="food-grid"></div>
@@ -2043,7 +2043,7 @@ function renderFrequentSwaps() {
 }
 
 function getFilteredFoods() {
-  return currentCatFilter === 'todos' ? TACO_DB : TACO_DB.filter(f => f.cat === currentCatFilter);
+  return currentCatFilter === 'todos' ? TACO_DB : TACO_DB.filter(f => f.group === currentCatFilter);
 }
 
 function filterByCategory(el, cat) {
@@ -2066,7 +2066,7 @@ function filterFoodsV2() {
         <span style="font-size:22px;">${f.emoji}</span>
         <div>
           <div style="font-size:13px;color:var(--cream);">${f.name}</div>
-          <div style="font-size:11px;color:var(--muted);">${f.medida} · ${f.group}</div>
+          <div style="font-size:11px;color:var(--muted);">${f.kcal_100} kcal/100g · ${f.group}</div>
         </div>
       </div>`).join('');
 }
@@ -2080,7 +2080,7 @@ function renderFoodGrid(foods) {
       <div class="food-card-fav" onclick="event.stopPropagation();toggleFavorite(${f.id})" id="fav-card-${f.id}">${isFav ? '❤️' : '🤍'}</div>
       <div class="food-card-emoji">${f.emoji}</div>
       <div class="food-card-name">${f.name}</div>
-      <div class="food-card-detail">${f.medida}</div>
+      <div class="food-card-detail">${f.group}</div>
     </div>`;
   }).join('');
 }
@@ -2109,7 +2109,7 @@ function renderSelectedFoodCard() {
     <div class="selected-food-emoji">${selectedFood.emoji}</div>
     <div class="selected-food-info">
       <div class="selected-food-name">${selectedFood.name}</div>
-      <div class="selected-food-meta">${selectedFood.medida} · ${selectedFood.kcal_100} kcal/100g · ${selectedFood.group}</div>
+      <div class="selected-food-meta">${selectedFood.group} · ${selectedFood.kcal_100} kcal/100g · ${selectedFood.group}</div>
     </div>
     <div onclick="toggleFavorite(${selectedFood.id})" id="fav-detail-${selectedFood.id}" style="font-size:22px;cursor:pointer;">${isFav ? '❤️' : '🤍'}</div>`;
 }
