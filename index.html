@@ -1161,7 +1161,7 @@ try {
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFneXV2Ym5pZXlqcHJ4Ym96b3RrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MjI5NjUsImV4cCI6MjA5NTI5ODk2NX0.y-AKEl9SUXzZDi-jRvwULBV-SCRDh1aqRnwVnTIuyIc'
   );
   dbg('Supabase OK');
-try{var _qp=sb.from('__p');var _pp=_qp;while(_pp&&!Object.prototype.hasOwnProperty.call(_pp,'then'))_pp=Object.getPrototypeOf(_pp);if(_pp&&typeof _pp.then==='function'){var _ot2=_pp.then;_pp.then=function(res,rej){var _s=this;return Promise.race([new Promise(function(ok,nk){_ot2.call(_s,ok,nk);}),new Promise(function(_,nk){setTimeout(function(){nk({data:null,error:{message:'timeout'}});},8000);})]).then(res,rej).catch(function(e){if(res)res({data:null,error:e});});};}}catch(e){}
+try{var _qp=sb.from('__p');var _pp=_qp;while(_pp&&!Object.prototype.hasOwnProperty.call(_pp,'then'))_pp=Object.getPrototypeOf(_pp);if(_pp&&typeof _pp.then==='function'){var _ot2=_pp.then;_pp.then=function(res,rej){var _s=this;return Promise.race([new Promise(function(ok,nk){_ot2.call(_s,ok,nk);}),new Promise(function(ok){setTimeout(function(){ok({data:null,error:{message:'timeout'}});},8000);})]).then(res,rej).catch(function(e){if(res)res({data:null,error:e});});};}}catch(e){}
 
 } catch(e) {
   dbg('ERRO Supabase: ' + (e && e.message ? e.message : String(e)), '#ff4444');
@@ -1300,7 +1300,7 @@ window.onload = async function() {
       dbg('hash detectado, verificando sessão...');
       const { data } = await Promise.race([
         sb.auth.getSession(),
-        new Promise(function(resolve) { setTimeout(function() { resolve({data:{session:null}}); }, 5000); })
+        new Promise(function(resolve) { setTimeout(function() { resolve({data:{session:null}}); }, 20000); })
       ]);
       if (data && data.session) {
         clearTimeout(fallbackTimer);
