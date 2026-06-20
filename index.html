@@ -2002,7 +2002,7 @@ async function loadNotices() {
 }
 
 // ── SUBSTITUTOS TACO ──────────────────────────────────────
-function populateFoodList() { tacoData = TACO_DB; renderFoodList(tacoData); }
+function populateFoodList() { tacoData = TACO_DB; renderFoodGrid(tacoData); }
 
 function filterFoods() {
   const q = document.getElementById('food-search').value.trim().toLowerCase();
@@ -2012,7 +2012,7 @@ function filterFoods() {
 }
 
 function renderFoodList(foods) {
-  const el = document.getElementById('food-list');
+  const el = document.getElementById('food-list');  if (!el) { renderFoodGrid(foods); return; }
   if (foods.length === 0) { el.innerHTML = '<p style="font-size:12px;color:var(--muted);padding:10px;">Nenhum alimento encontrado.</p>'; return; }
   el.innerHTML = foods.slice(0,8).map(f => `
     <div onclick="selectFood(${f.id})" style="padding:10px 12px;cursor:pointer;border-radius:8px;display:flex;align-items:center;gap:10px;transition:background .15s;" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background='transparent'">
