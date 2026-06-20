@@ -2002,7 +2002,190 @@ async function loadNotices() {
 }
 
 // ── SUBSTITUTOS TACO ──────────────────────────────────────
-function populateFoodList() { tacoData = TACO_DB; renderFoodGrid(tacoData); }
+let currentSubSort = 'padrao';
+let currentCatFilter = 'todos';
+let foodHistory = [];
+let foodFavorites = [];
+function populateFoodList() {
+  tacoData = TACO_DB;
+  loadFoodHistoryAndFavorites();
+  renderFoodGrid(TACO_DB);
+}
+
+async function loadFoodHistoryAndFavorites() {
+  if (!currentUser) return;
+  const [hRes, fRes] = await Promise.all([
+    sb.from('food_history').select('*').eq('user_id', currentUser.id).order('searched_at', { ascending:false }).limit(8),
+    sb.from('food_favorites').select('*').eq('user_id', currentUser.id)
+  ]);
+  foodHistory = hRes.data || [];
+  foodFavorites = fRes.data || [];
+  renderFrequentSwaps();
+  renderFoodGrid(getFilteredFoods());
+}
+
+function renderFrequentSwaps() {
+  const wrap = document.getElementById('freq-scroll');
+  const sect = document.getElementById('freq-section');
+  if (!wrap) return;
+  if (!foodHistory.length) { sect.style.display = 'none'; return; }
+  sect.style.display = 'block';
+  const seen = new Set();
+  const unique = foodHistory.filter(h => { if (seen.has(h.food_id)) return false; seen.add(h.food_id); return true; });
+  wrap.innerHTML = unique.slice(0,6).map(h => {
+    const food = TACO_DB.find(f => f.id === h.food_id);
+    if (!food) return '';
+    return `<div class="freq-chip" onclick="selectFoodV2(${food.id})">
+      <span class="freq-chip-emoji">${food.emoji}</span>
+      <span class="freq-chip-name">${food.name.split(' ')[0]}</span>
+    </div>`;
+  }).join('');
+}
+
+function getFilteredFoods() {
+  return currentCatFilter === 'todos' ? TACO_DB : TACO_DB.filter(f => f.cat === currentCatFilter);
+}
+
+function filterByCategory(el, cat) {
+  document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('on'));
+  el.classList.add('on');
+  currentCatFilter = cat;
+  renderFoodGrid(getFilteredFoods());
+}
+
+function filterFoodsV2() {
+  const q = document.getElementById('food-search').value.trim().toLowerCase();
+  const wrap = document.getElementById('search-results-wrap');
+  if (!q) { wrap.style.display = 'none'; return; }
+  const filtered = TACO_DB.filter(f => f.name.toLowerCase().includes(q));
+  wrap.style.display = 'block';
+  wrap.innerHTML = filtered.length === 0
+    ? '<p style="font-size:12px;color:var(--muted);padding:8px;">Nenhum alimento encontrado.</p>'
+    : filtered.slice(0,6).map(f => `
+      <div onclick="selectFoodV2(${f.id})" style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;">
+        <span style="font-size:22px;">${f.emoji}</span>
+        <div>
+          <div style="font-size:13px;color:var(--cream);">${f.name}</div>
+          <div style="font-size:11px;color:var(--muted);">${f.medida} · ${f.group}</div>
+        </div>
+      </div>`).join('');
+}
+
+function renderFoodGrid(foods) {
+  const grid = document.getElementById('food-grid');
+  if (!grid) return;
+  grid.innerHTML = foods.map(f => {
+    const isFav = foodFavorites.some(fv => fv.food_id === f.id);
+    return `<div class="food-card" onclick="selectFoodV2(${f.id})">
+      <div class="food-card-fav" onclick="event.stopPropagation();toggleFavorite(${f.id})" id="fav-card-${f.id}">${isFav ? '❤️' : '🤍'}</div>
+      <div class="food-card-emoji">${f.emoji}</div>
+      <div class="food-card-name">${f.name}</div>
+      <div class="food-card-detail">${f.medida}</div>
+    </div>`;
+  }).join('');
+}
+
+async function selectFoodV2(id) {
+  selectedFood = TACO_DB.find(f => f.id === id);
+  if (!selectedFood) return;
+  if (currentUser) {
+    const existing = foodHistory.find(h => h.food_id === id);
+    if (!existing) {
+      const { data } = await sb.from('food_history').insert({ user_id: currentUser.id, food_id: id, food_name: selectedFood.name, searched_at: new Date().toISOString() }).select().single();
+      if (data) { foodHistory.unshift(data); renderFrequentSwaps(); }
+    }
+  }
+  document.getElementById('food-search').value = '';
+  document.getElementById('search-results-wrap').style.display = 'none';
+  showSubView('detail');
+  renderSelectedFoodCard();
+  updateKcalBadge();
+  calcSubstitutosV2();
+}
+
+function renderSelectedFoodCard() {
+  const isFav = foodFavorites.some(fv => fv.food_id === selectedFood.id);
+  document.getElementById('selected-food-card').innerHTML = `
+    <div class="selected-food-emoji">${selectedFood.emoji}</div>
+    <div class="selected-food-info">
+      <div class="selected-food-name">${selectedFood.name}</div>
+      <div class="selected-food-meta">${selectedFood.medida} · ${selectedFood.kcal_100} kcal/100g · ${selectedFood.group}</div>
+    </div>
+    <div onclick="toggleFavorite(${selectedFood.id})" id="fav-detail-${selectedFood.id}" style="font-size:22px;cursor:pointer;">${isFav ? '❤️' : '🤍'}</div>`;
+}
+
+function updateKcalBadge() {
+  if (!selectedFood) return;
+  const qty = parseFloat(document.getElementById('food-qty').value) || 0;
+  const kcal = Math.round((selectedFood.kcal_100 / 100) * qty);
+  document.getElementById('kcal-badge').textContent = kcal + ' kcal';
+  if (qty > 0) calcSubstitutosV2();
+}
+
+function setSortMode(el, mode) {
+  document.querySelectorAll('.sort-tab').forEach(t => t.classList.remove('on'));
+  el.classList.add('on');
+  currentSubSort = mode;
+  calcSubstitutosV2();
+}
+
+function calcSubstitutosV2() {
+  if (!selectedFood) return;
+  const qty = parseFloat(document.getElementById('food-qty').value) || 100;
+  const kcalTarget = (selectedFood.kcal_100 / 100) * qty;
+  const candidates = TACO_DB.filter(f => f.id !== selectedFood.id).map(f => ({
+    ...f,
+    qty_needed: Math.round((kcalTarget / f.kcal_100) * 100),
+    kcalTarget: Math.round(kcalTarget)
+  }));
+  let sorted = [...candidates];
+  if (currentSubSort === 'az') sorted.sort((a,b) => a.name.localeCompare(b.name));
+  else if (currentSubSort === 'menor_g') sorted.sort((a,b) => a.qty_needed - b.qty_needed);
+  else if (currentSubSort === 'maior_g') sorted.sort((a,b) => b.qty_needed - a.qty_needed);
+  else sorted.sort((a,b) => a.group.localeCompare(b.group));
+  const groups = {};
+  sorted.forEach(f => { if (!groups[f.group]) groups[f.group] = []; groups[f.group].push(f); });
+  document.getElementById('sub-result-wrap').innerHTML = Object.entries(groups).map(([grp, items]) => `
+    <div class="sub-group-label">${grp}</div>
+    ${items.map(s => {
+      const isFav = foodFavorites.some(fv => fv.food_id === s.id);
+      return `<div class="sub-item-v2">
+        <div class="sub-item-emoji">${s.emoji}</div>
+        <div class="sub-item-body">
+          <div class="sub-item-name">${s.name}</div>
+          <div class="sub-item-detail">${s.medida} · ${Math.round(s.prot*s.qty_needed/100)}g prot</div>
+        </div>
+        <div class="sub-item-right">
+          <div class="sub-item-g">${s.qty_needed}g</div>
+          <span class="sub-item-fav" onclick="toggleFavorite(${s.id})" id="fav-sub-${s.id}">${isFav ? '❤️' : '🤍'}</span>
+        </div>
+      </div>`;
+    }).join('')}
+  `).join('');
+}
+
+async function toggleFavorite(foodId) {
+  if (!currentUser) return;
+  const existing = foodFavorites.find(fv => fv.food_id === foodId);
+  if (existing) {
+    await sb.from('food_favorites').delete().eq('id', existing.id);
+    foodFavorites = foodFavorites.filter(fv => fv.food_id !== foodId);
+  } else {
+    const food = TACO_DB.find(f => f.id === foodId);
+    const { data } = await sb.from('food_favorites').insert({ user_id: currentUser.id, food_id: foodId, food_name: food?.name || '' }).select().single();
+    if (data) foodFavorites.push(data);
+  }
+  [`fav-card-${foodId}`, `fav-detail-${foodId}`, `fav-sub-${foodId}`].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = foodFavorites.some(fv => fv.food_id === foodId) ? '❤️' : '🤍';
+  });
+  renderFoodGrid(getFilteredFoods());
+}
+
+function showSubView(view) {
+  document.querySelectorAll('.sub-view').forEach(v => v.classList.remove('active'));
+  document.getElementById('sub-view-' + view).classList.add('active');
+}
 
 function filterFoods() {
   const q = document.getElementById('food-search').value.trim().toLowerCase();
