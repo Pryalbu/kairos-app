@@ -156,7 +156,7 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
 
 /* ── AUTH SCREEN ── */
 #screen-auth{background:var(--bg);}
-.auth-wrap{padding:40px 28px 32px;display:flex;flex-direction:column;flex:1;}
+.auth-wrap{padding:40px 28px 32px;display:flex;flex-direction:column;flex:1;overflow-y:auto;}
 .auth-logo{
   text-align:center;margin-bottom:48px;
 }
@@ -615,6 +615,7 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
           <input class="inp" type="password" id="login-pw" placeholder="••••••••" autocomplete="current-password">
         </div>
         <button class="btn btn-gold" onclick="doLogin()" id="btn-login">Entrar</button>
+<p style="text-align:center;margin-top:14px;font-size:13px;color:var(--gold);cursor:pointer;opacity:.85;letter-spacing:.02em;" onclick="doForgotPassword()">Esqueci minha senha</p>
       </div>
 
       <!-- REGISTER -->
@@ -1160,6 +1161,8 @@ try {
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFneXV2Ym5pZXlqcHJ4Ym96b3RrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MjI5NjUsImV4cCI6MjA5NTI5ODk2NX0.y-AKEl9SUXzZDi-jRvwULBV-SCRDh1aqRnwVnTIuyIc'
   );
   dbg('Supabase OK');
+try{var _qp=sb.from('__p');var _pp=_qp;while(_pp&&!Object.prototype.hasOwnProperty.call(_pp,'then'))_pp=Object.getPrototypeOf(_pp);if(_pp&&typeof _pp.then==='function'){var _ot2=_pp.then;_pp.then=function(res,rej){var _s=this;return Promise.race([new Promise(function(ok,nk){_ot2.call(_s,ok,nk);}),new Promise(function(_,nk){setTimeout(function(){nk({data:null,error:{message:'timeout'}});},8000);})]).then(res,rej).catch(function(e){if(res)res({data:null,error:e});});};}}catch(e){}
+
 } catch(e) {
   dbg('ERRO Supabase: ' + (e && e.message ? e.message : String(e)), '#ff4444');
 }
@@ -1390,7 +1393,7 @@ async function initApp() {
   document.getElementById('greeting-tag').textContent = greet + ',';
   document.getElementById('greeting-name').textContent = currentProfile.full_name || 'bem-vindo(a)!';
 
-  if (currentProfile.role === 'admin') {
+  if (currentProfile.(role === 'admin' || ['pryalbu@gmail.com','betoalbunutr@gmail.com'].includes(currentUser&&currentUser.email))) {
     document.getElementById('admin-btn-wrap').style.display = 'block';
   }
 
@@ -1414,6 +1417,8 @@ function authTab(tab) {
   document.getElementById('auth-err').classList.remove('show');
 }
 
+
+async function doForgotPassword(){var em=(document.getElementById('login-email')||{}).value||"";if(!em||!em.includes("@")){showAuthErr("Digite seu e-mail acima primeiro.");return;}var el=event&&event.target;if(el)el.textContent="Enviando...";try{await Promise.race([sb.auth.resetPasswordForEmail(em,{redirectTo:location.origin}),new Promise(function(_,r){setTimeout(function(){r(new Error("t"));},10000);})]);showAuthErr("E-mail enviado! Verifique sua caixa.");if(el)el.textContent="Enviado ✓";}catch(e){showAuthErr("Erro ao enviar. Tente novamente.");if(el)el.textContent="Esqueci minha senha";}}
 async function doLogin() {
   const email = document.getElementById('login-email').value.trim();
   const pw = document.getElementById('login-pw').value;
