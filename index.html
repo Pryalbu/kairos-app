@@ -1393,7 +1393,7 @@ async function initApp() {
   document.getElementById('greeting-tag').textContent = greet + ',';
   document.getElementById('greeting-name').textContent = currentProfile.full_name || 'bem-vindo(a)!';
 
-  if (currentProfile.(role === 'admin' || ['pryalbu@gmail.com','betoalbunutr@gmail.com'].includes(currentUser&&currentUser.email))) {
+  if ((currentProfile.role === 'admin' || ['pryalbu@gmail.com','betoalbunutr@gmail.com'].includes(currentUser&&currentUser.email))) {
     document.getElementById('admin-btn-wrap').style.display = 'block';
   }
 
