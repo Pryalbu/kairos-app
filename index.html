@@ -293,6 +293,104 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
 .photo-slot img{width:100%;height:100%;object-fit:cover;}
 .evol-inp-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 
+/* ── INÍCIO NOVO ── */
+.card-title-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.hoje-data{font-size:11px;color:var(--muted);}
+.quinzenal-card{
+  display:flex;align-items:center;gap:12px;
+  background:linear-gradient(135deg,rgba(184,150,90,.15),rgba(184,150,90,.05));
+  border:1px solid var(--gold);border-radius:var(--r);
+  padding:14px 16px;margin-bottom:10px;cursor:pointer;
+}
+.quinzenal-ico{font-size:22px;flex-shrink:0;}
+.quinzenal-info{flex:1;}
+.quinzenal-title{font-size:13px;font-weight:600;color:var(--gold);}
+.quinzenal-sub{font-size:11px;color:var(--muted);margin-top:2px;line-height:1.5;}
+.hoje-habitos{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
+.hoje-hab{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  padding:10px 6px;border-radius:var(--r-sm);
+  background:var(--surface3);border:0.5px solid var(--border);
+  transition:all .2s;
+}
+.hoje-hab.done{background:rgba(39,174,96,.1);border-color:rgba(39,174,96,.4);}
+.hoje-hab.partial{background:var(--gold-faint);border-color:var(--gold-dim);}
+.hoje-hab-ico{font-size:18px;}
+.hoje-hab-lbl{font-size:9px;color:var(--muted);text-align:center;line-height:1.3;}
+.hoje-hab.done .hoje-hab-lbl{color:#27AE60;}
+.hoje-hab.partial .hoje-hab-lbl{color:var(--gold);}
+.btn-checkin-cta{
+  width:100%;padding:12px;border:none;border-radius:var(--r-sm);
+  background:var(--gold);color:var(--bg);font-size:13px;font-weight:600;
+  cursor:pointer;transition:opacity .2s;letter-spacing:.03em;
+}
+.btn-checkin-cta:hover{opacity:.88;}
+.btn-checkin-cta.done{background:rgba(39,174,96,.15);color:#27AE60;border:0.5px solid rgba(39,174,96,.4);}
+.cal-legenda{display:flex;align-items:center;font-size:10px;color:var(--muted);gap:4px;}
+.cal-dot{display:inline-block;width:8px;height:8px;border-radius:50%;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
+.cal-day-label{font-size:9px;color:var(--muted);text-align:center;padding:2px 0;font-weight:500;}
+.cal-day{
+  aspect-ratio:1;border-radius:6px;display:flex;align-items:center;justify-content:center;
+  font-size:11px;color:var(--muted);background:var(--surface3);
+  border:0.5px solid transparent;position:relative;transition:all .2s;
+}
+.cal-day.today{border-color:var(--gold);color:var(--gold);font-weight:700;}
+.cal-day.done{background:rgba(39,174,96,.2);border-color:rgba(39,174,96,.4);color:#27AE60;font-weight:600;}
+.cal-day.partial{background:var(--gold-faint);border-color:var(--gold-dim);color:var(--gold);font-weight:600;}
+.cal-day.empty{background:transparent;border-color:transparent;}
+.cal-day.future{opacity:.35;}
+
+/* ── CHECK-IN ── */
+.checkin-status-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.checkin-status-label{font-size:12px;color:var(--muted);}
+.checkin-pct{font-size:12px;color:var(--gold);font-weight:600;}
+.checkin-card{cursor:pointer;transition:border-color .2s;}
+.checkin-card:active{opacity:.85;}
+.checkin-row{display:flex;align-items:center;gap:12px;}
+.checkin-ico{font-size:22px;flex-shrink:0;width:36px;text-align:center;}
+.checkin-info{flex:1;}
+.checkin-name{font-size:14px;font-weight:500;color:var(--cream);}
+.checkin-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+.checkin-toggle{
+  width:44px;height:26px;border-radius:13px;
+  background:var(--surface3);border:1.5px solid var(--border);
+  position:relative;transition:all .25s;flex-shrink:0;
+}
+.checkin-toggle::after{
+  content:'';position:absolute;top:3px;left:3px;
+  width:18px;height:18px;border-radius:50%;
+  background:var(--muted2);transition:all .25s;
+}
+.checkin-toggle.on{background:var(--gold-dim);border-color:var(--gold);}
+.checkin-toggle.on::after{left:19px;background:var(--gold);}
+.cardio-input-row{display:flex;align-items:center;justify-content:center;gap:16px;}
+.cardio-btn{
+  width:40px;height:40px;border-radius:50%;border:1.5px solid var(--border);
+  background:var(--surface3);color:var(--gold);font-size:22px;font-weight:300;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:all .15s;line-height:1;
+}
+.cardio-btn:active{background:var(--gold-dim);border-color:var(--gold);transform:scale(.93);}
+.cardio-display{text-align:center;min-width:70px;}
+.cardio-val{font-family:'Cormorant Garamond',serif;font-size:36px;color:var(--gold);font-weight:600;}
+.cardio-unit{font-size:12px;color:var(--muted);margin-left:3px;}
+
+/* ── PERFORMANCE SEMANAL ── */
+.perf-grid{display:flex;flex-direction:column;gap:10px;}
+.perf-item{display:flex;align-items:center;gap:10px;}
+.perf-ico{font-size:16px;width:24px;text-align:center;flex-shrink:0;}
+.perf-label{font-size:12px;color:var(--muted);flex:1;}
+.perf-bar-wrap{flex:1;background:var(--surface3);height:6px;border-radius:3px;overflow:hidden;}
+.perf-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold),#C9A96E);border-radius:3px;transition:width .5s ease;}
+.perf-val{font-size:11px;color:var(--gold);font-weight:600;min-width:38px;text-align:right;}
+.perf-week-row{margin-bottom:12px;}
+.perf-week-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;}
+.perf-week-bars{display:flex;gap:4px;align-items:flex-end;height:36px;}
+.perf-week-bar{flex:1;border-radius:2px 2px 0 0;background:var(--surface3);position:relative;min-height:3px;transition:height .4s ease;}
+.perf-week-bar.filled{background:var(--gold);}
+.perf-week-bar-lbl{position:absolute;bottom:-14px;left:50%;transform:translateX(-50%);font-size:7px;color:var(--muted);white-space:nowrap;}
+
 /* ── MAIS MENU ── */
 .mais-item{
   display:flex;align-items:center;gap:14px;padding:14px 16px;
@@ -355,6 +453,45 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
   font-size:11px;color:var(--gold);font-weight:600;letter-spacing:.06em;
 }
 .plan-expires{font-size:11px;color:var(--muted);margin-top:6px;}
+
+/* ── ADMIN TABS ── */
+.admin-tabs{display:flex;gap:6px;margin-bottom:16px;}
+.admin-tab{
+  flex:1;text-align:center;padding:8px 4px;border-radius:var(--r-sm);
+  font-size:11px;font-weight:500;color:var(--muted);
+  background:var(--surface3);border:0.5px solid var(--border);cursor:pointer;transition:all .2s;
+}
+.admin-tab.on{background:var(--gold-dim);border-color:var(--gold);color:var(--gold);}
+.ranking-row{
+  display:flex;align-items:center;gap:12px;
+  background:var(--surface2);border:0.5px solid var(--border);
+  border-radius:var(--r);padding:12px 14px;margin-bottom:8px;
+}
+.ranking-pos{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--gold);width:28px;text-align:center;flex-shrink:0;}
+.ranking-pos.gold{color:#FFD700;}
+.ranking-pos.silver{color:#C0C0C0;}
+.ranking-pos.bronze{color:#CD7F32;}
+.ranking-info{flex:1;}
+.ranking-name{font-size:13px;font-weight:500;color:var(--cream);}
+.ranking-bar-wrap{background:var(--surface3);height:4px;border-radius:2px;margin-top:5px;overflow:hidden;}
+.ranking-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold),#C9A96E);border-radius:2px;transition:width .5s;}
+.ranking-dias{font-size:12px;color:var(--gold);font-weight:600;flex-shrink:0;}
+.evento-admin-row{background:var(--surface2);border:0.5px solid var(--border);border-radius:var(--r);padding:12px 14px;margin-bottom:8px;}
+.evento-admin-title{font-size:13px;font-weight:500;color:var(--cream);}
+.evento-admin-date{font-size:11px;color:var(--gold);margin-top:2px;}
+.evento-admin-desc{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.5;}
+.evento-admin-actions{display:flex;gap:8px;margin-top:10px;}
+.evento-del-btn{padding:5px 12px;background:transparent;border:0.5px solid var(--danger);color:var(--danger);border-radius:var(--r-sm);font-size:11px;cursor:pointer;}
+.evento-card{
+  background:linear-gradient(135deg,rgba(184,150,90,.12),rgba(184,150,90,.04));
+  border:0.5px solid var(--gold-dim);border-radius:var(--r);
+  padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .2s;
+}
+.evento-card:hover{border-color:var(--gold);}
+.evento-card-tag{font-size:9px;color:var(--gold);text-transform:uppercase;letter-spacing:.12em;font-weight:600;margin-bottom:6px;}
+.evento-card-title{font-size:15px;font-family:'Cormorant Garamond',serif;color:var(--cream);margin-bottom:4px;}
+.evento-card-date{font-size:11px;color:var(--muted);}
+.evento-card-link{font-size:11px;color:var(--gold);margin-top:8px;display:inline-block;}
 
 /* ── ADMIN ── */
 .admin-stat-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;}
@@ -589,51 +726,151 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
         <div class="greeting-name" id="greeting-name">—</div>
       </div>
       <div class="scroll">
-        <!-- Banner motivacional -->
-        <div style="background:linear-gradient(135deg,var(--gold-dim) 0%,rgba(212,175,55,.08) 100%);border:1px solid var(--gold-dim);border-radius:14px;padding:16px 18px;margin-bottom:12px;text-align:center;">
-          <div style="font-size:13px;color:var(--gold);font-style:italic;line-height:1.5;">"A constância constrói o que a motivação começa."</div>
-        </div>
-        <!-- Progresso semanal -->
-        <div class="card">
-          <div class="card-title">Progresso semanal</div>
-          <div class="progress-row">
-            <span class="progress-label" id="week-label">Semana 1</span>
-            <span class="progress-pct" id="week-pct">0%</span>
+
+        <!-- Lembrete check-in quinzenal -->
+        <div id="quinzenal-wrap" style="display:none;">
+          <div class="quinzenal-card" onclick="switchTab('mais')">
+            <div class="quinzenal-ico">📋</div>
+            <div class="quinzenal-info">
+              <div class="quinzenal-title">Check-in quinzenal disponível</div>
+              <div class="quinzenal-sub">Responda para o Dr. Roberto acompanhar sua evolução</div>
+            </div>
+            <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:var(--gold);fill:none;stroke-width:2;stroke-linecap:round;flex-shrink:0;"><polyline points="9,18 15,12 9,6"/></svg>
           </div>
-          <div class="progress-bg"><div class="progress-fill" id="week-bar" style="width:0%"></div></div>
         </div>
 
-        <!-- Água -->
-        <div class="card">
-          <div class="card-title">Hidratação</div>
-          <div class="cups-row" id="cups-row"></div>
-          <div class="water-total">Total: <span class="water-ml" id="water-total-ml">0 ml</span> de 2.000 ml</div>
+        <!-- Card do dia -->
+        <div class="card" id="hoje-card">
+          <div class="card-title-row">
+            <span class="card-title">Hoje</span>
+            <span class="hoje-data" id="hoje-data"></span>
+          </div>
+          <div class="hoje-habitos" id="hoje-habitos"></div>
+          <button class="btn-checkin-cta" id="btn-checkin-cta" onclick="switchTab('planner')">Fazer check-in de hoje →</button>
         </div>
 
-        <!-- Hábitos rápidos -->
+        <!-- Calendário mensal -->
         <div class="card">
-          <div class="card-title">Hábitos de hoje</div>
-          <div id="quick-habits"></div>
+          <div class="card-title-row">
+            <span class="card-title">Meu mês</span>
+            <span class="cal-legenda"><span class="cal-dot" style="background:#27AE60"></span>completo <span class="cal-dot" style="background:var(--gold);margin-left:6px;"></span>parcial</span>
+          </div>
+          <div class="cal-grid" id="cal-grid"></div>
         </div>
 
         <!-- Avisos -->
         <div id="notices-wrap"></div>
+
+        <!-- Próximo evento -->
+        <div id="evento-wrap" style="display:none;"></div>
+
+        <div style="height:8px;"></div>
       </div>
     </div>
 
-    <!-- ── PLANNER ── -->
+    <!-- ── CHECK-IN ── -->
     <div class="subscreen" id="tab-planner">
       <div class="hdr">
-        <div class="tag">Planner</div>
-        <div class="hdr-title">Hábitos do dia</div>
+        <div class="tag">Check-in</div>
+        <div class="hdr-title" id="checkin-date-title">Hoje</div>
       </div>
       <div class="scroll">
-        <div class="seg-tabs">
-          <div class="seg-tab on" onclick="setGoal('emagrecer',this)">Emagrecer</div>
-          <div class="seg-tab" onclick="setGoal('ganhar_massa',this)">Ganhar massa</div>
-          <div class="seg-tab" onclick="setGoal('saude',this)">Saúde</div>
+
+        <!-- Status do dia -->
+        <div class="card" id="checkin-status-card">
+          <div class="checkin-status-row">
+            <span class="checkin-status-label" id="checkin-status-label">0 de 6 hábitos registrados</span>
+            <span class="checkin-pct" id="checkin-pct">0%</span>
+          </div>
+          <div class="progress-bg"><div class="progress-fill" id="checkin-bar" style="width:0%"></div></div>
         </div>
-        <div id="planner-content"></div>
+
+        <!-- Treino -->
+        <div class="card checkin-card" id="ci-treino-card" onclick="toggleCheckin('treino')">
+          <div class="checkin-row">
+            <div class="checkin-ico">🏋️</div>
+            <div class="checkin-info">
+              <div class="checkin-name">Treino</div>
+              <div class="checkin-sub">Musculação, funcional ou similar</div>
+            </div>
+            <div class="checkin-toggle" id="ci-treino-toggle"></div>
+          </div>
+        </div>
+
+        <!-- Cardio -->
+        <div class="card">
+          <div class="checkin-row" style="margin-bottom:10px;">
+            <div class="checkin-ico">🏃</div>
+            <div class="checkin-info">
+              <div class="checkin-name">Cardio</div>
+              <div class="checkin-sub">Corrida, caminhada, bike...</div>
+            </div>
+            <div class="checkin-toggle on" id="ci-cardio-toggle" style="pointer-events:none;opacity:0;"></div>
+          </div>
+          <div class="cardio-input-row">
+            <button class="cardio-btn" onclick="adjustCardio(-5)">−</button>
+            <div class="cardio-display">
+              <span class="cardio-val" id="ci-cardio-val">0</span>
+              <span class="cardio-unit">min</span>
+            </div>
+            <button class="cardio-btn" onclick="adjustCardio(+5)">+</button>
+          </div>
+          <div style="font-size:10px;color:var(--muted);text-align:center;margin-top:6px;">Toque +/− para ajustar em 5 min</div>
+        </div>
+
+        <!-- Plano alimentar -->
+        <div class="card checkin-card" id="ci-plano-card" onclick="toggleCheckin('plano')">
+          <div class="checkin-row">
+            <div class="checkin-ico">🥗</div>
+            <div class="checkin-info">
+              <div class="checkin-name">Plano alimentar</div>
+              <div class="checkin-sub">Seguiu o plano hoje?</div>
+            </div>
+            <div class="checkin-toggle" id="ci-plano-toggle"></div>
+          </div>
+        </div>
+
+        <!-- Água -->
+        <div class="card">
+          <div class="checkin-row">
+            <div class="checkin-ico">💧</div>
+            <div class="checkin-info">
+              <div class="checkin-name">Hidratação</div>
+              <div class="checkin-sub">Registre na aba Início</div>
+            </div>
+            <div class="checkin-toggle" id="ci-agua-toggle" style="pointer-events:none;"></div>
+          </div>
+          <div style="margin-top:8px;">
+            <div class="cups-row" id="checkin-cups-row"></div>
+            <div class="water-total">Total: <span class="water-ml" id="checkin-water-ml">0 ml</span> de 2.000 ml</div>
+          </div>
+        </div>
+
+        <!-- Sono -->
+        <div class="card checkin-card" id="ci-sono-card" onclick="toggleCheckin('sono')">
+          <div class="checkin-row">
+            <div class="checkin-ico">😴</div>
+            <div class="checkin-info">
+              <div class="checkin-name">Higiene do sono</div>
+              <div class="checkin-sub">Dormiu bem e suficiente?</div>
+            </div>
+            <div class="checkin-toggle" id="ci-sono-toggle"></div>
+          </div>
+        </div>
+
+        <!-- Mente/Fé -->
+        <div class="card checkin-card" id="ci-mente-card" onclick="toggleCheckin('mente')">
+          <div class="checkin-row">
+            <div class="checkin-ico">🙏</div>
+            <div class="checkin-info">
+              <div class="checkin-name">Mente &amp; Fé</div>
+              <div class="checkin-sub">Momento de espiritualidade ou mentalidade</div>
+            </div>
+            <div class="checkin-toggle" id="ci-mente-toggle"></div>
+          </div>
+        </div>
+
+        <div style="height:8px;"></div>
       </div>
     </div>
 
@@ -698,6 +935,19 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
         <div class="hdr-title">Minha evolução</div>
       </div>
       <div class="scroll">
+
+        <!-- Minha Semana -->
+        <div class="card">
+          <div class="card-title">Minha semana</div>
+          <div class="perf-grid" id="perf-grid"></div>
+        </div>
+
+        <!-- Histórico de performance -->
+        <div class="card">
+          <div class="card-title">Histórico — últimas 4 semanas</div>
+          <div id="perf-history"></div>
+        </div>
+
         <div class="stat-grid" id="evol-stats"></div>
         <div class="chart-wrap">
           <div class="chart-title">Peso — últimas semanas</div>
@@ -858,12 +1108,40 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
         <div class="back-btn" onclick="hideSub()"><svg viewBox="0 0 24 24"><polyline points="15,18 9,12 15,6"/></svg><span>Voltar</span></div>
         <div class="tag" style="margin-bottom:4px;">Admin</div>
         <div class="hdr-title" style="font-size:20px;margin-bottom:14px;">Painel Admin</div>
-        <div class="admin-stat-row" id="admin-stats"></div>
-        <div class="card-title" style="margin-bottom:8px;">Pendentes de ativação</div>
-        <div id="admin-pending"></div>
-        <div class="divider"></div>
-        <div class="card-title" style="margin-bottom:8px;">Pacientes ativos</div>
-        <div id="admin-active"></div>
+
+        <div class="admin-tabs">
+          <div class="admin-tab on" onclick="switchAdminTab('pacientes',this)">Pacientes</div>
+          <div class="admin-tab" onclick="switchAdminTab('ranking',this)">Ranking</div>
+          <div class="admin-tab" onclick="switchAdminTab('eventos',this)">Eventos</div>
+        </div>
+
+        <div id="admin-tab-pacientes">
+          <div class="admin-stat-row" id="admin-stats"></div>
+          <div class="card-title" style="margin-bottom:8px;">Pendentes de ativação</div>
+          <div id="admin-pending"></div>
+          <div class="divider"></div>
+          <div class="card-title" style="margin-bottom:8px;">Pacientes ativos</div>
+          <div id="admin-active"></div>
+        </div>
+
+        <div id="admin-tab-ranking" style="display:none;">
+          <div class="card-title" style="margin-bottom:4px;">Pacientes mais ativos</div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:12px;" id="ranking-periodo"></div>
+          <div id="admin-ranking"></div>
+        </div>
+
+        <div id="admin-tab-eventos" style="display:none;">
+          <div class="card-title" style="margin-bottom:12px;">Novo evento</div>
+          <div class="card" style="margin-bottom:16px;">
+            <div class="inp-group"><label class="inp-label">Título</label><input class="inp" type="text" id="ev-title" placeholder="Ex: Desafio de Inverno 2026"></div>
+            <div class="inp-group" style="margin-top:8px;"><label class="inp-label">Descrição</label><textarea class="inp" id="ev-desc" placeholder="Detalhes do evento..." rows="3" style="resize:none;height:auto;"></textarea></div>
+            <div class="inp-group" style="margin-top:8px;"><label class="inp-label">Data do evento</label><input class="inp" type="date" id="ev-date"></div>
+            <div class="inp-group" style="margin-top:8px;"><label class="inp-label">Link de inscrição (opcional)</label><input class="inp" type="url" id="ev-link" placeholder="https://..."></div>
+            <button class="btn btn-gold" style="margin-top:12px;" onclick="saveEvent()">Publicar evento</button>
+          </div>
+          <div class="card-title" style="margin-bottom:8px;">Eventos publicados</div>
+          <div id="admin-eventos-list"></div>
+        </div>
       </div>
 
     </div>
@@ -876,7 +1154,7 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
       </div>
       <div class="bnav-item" id="nav-planner" onclick="switchTab('planner')">
         <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-        <span>Planner</span>
+        <span>Check-in</span>
       </div>
       <div class="bnav-item" id="nav-substitutos" onclick="switchTab('substitutos')">
         <svg viewBox="0 0 24 24"><polyline points="17,1 21,5 17,9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7,23 3,19 7,15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
@@ -1164,24 +1442,17 @@ async function initApp() {
   document.getElementById('greeting-tag').textContent = greet + ',';
   document.getElementById('greeting-name').textContent = currentProfile.full_name || 'bem-vindo(a)!';
 
-  if (currentProfile.goal) {
-    currentGoal = currentProfile.goal;
-    document.querySelectorAll('.seg-tab').forEach((t,i) => {
-      const goals = ['emagrecer','ganhar_massa','saude'];
-      t.classList.toggle('on', goals[i] === currentGoal);
-    });
-  }
-
   if (currentProfile.role === 'admin') {
     document.getElementById('admin-btn-wrap').style.display = 'block';
   }
 
-  await Promise.all([loadTodayLog(), loadHabitLogs(), loadNotices()]);
-  renderCups();
-  renderQuickHabits();
-  renderPlanner();
+  await Promise.all([loadTodayLog(), loadNotices(), loadNextEvent()]);
+  renderHome();
+  renderCheckin();
+  checkQuinzenal();
   renderSOS();
   loadEvolution();
+  loadPerformance();
   populateFoodList();
   loadAccount();
 }
@@ -1269,18 +1540,8 @@ async function ensureTodayLog() {
 
 // ── ÁGUA ──────────────────────────────────────────────────
 function renderCups() {
-  const ml = todayLog ? todayLog.water_ml : 0;
-  const filled = Math.round(ml / 250);
-  const wrap = document.getElementById('cups-row');
-  wrap.innerHTML = '';
-  for (let i = 0; i < 8; i++) {
-    const c = document.createElement('div');
-    c.className = 'cup' + (i < filled ? ' filled' : '');
-    c.innerHTML = '<div class="cup-fill"></div>';
-    c.onclick = () => toggleCup(i);
-    wrap.appendChild(c);
-  }
-  document.getElementById('water-total-ml').textContent = ml + ' ml';
+  // Delegado para renderCheckin (cups ficam na aba Check-in)
+  renderCheckin();
 }
 
 async function toggleCup(i) {
@@ -1289,77 +1550,342 @@ async function toggleCup(i) {
   const newFilled = i < currentFilled ? i : i + 1;
   const newMl = newFilled * 250;
   const { error } = await sb.from('daily_logs').update({ water_ml: newMl }).eq('id', todayLog.id);
-  if (!error) { todayLog.water_ml = newMl; renderCups(); updateWeekProgress(); }
+  if (!error) { todayLog.water_ml = newMl; renderCheckin(); updateWeekProgress(); }
 }
 
-// ── HABIT LOGS ────────────────────────────────────────────
-async function loadHabitLogs() {
-  const { data } = await sb.from('habit_logs').select('*').eq('user_id', currentUser.id).eq('log_date', TODAY);
-  habitLogs = data || [];
-}
+// ── TELA INÍCIO ───────────────────────────────────────────
+async function renderHome() {
+  const now = new Date();
+  const meses = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+  const dias = ['domingo','segunda','terça','quarta','quinta','sexta','sábado'];
+  const dataEl = document.getElementById('hoje-data');
+  if (dataEl) dataEl.textContent = dias[now.getDay()] + ', ' + now.getDate() + ' de ' + meses[now.getMonth()];
 
-function isHabitDone(key) { return habitLogs.some(h => h.habit_key === key && h.done); }
-
-async function toggleHabit(key) {
-  const done = isHabitDone(key);
-  if (done) {
-    await sb.from('habit_logs').delete().eq('user_id', currentUser.id).eq('log_date', TODAY).eq('habit_key', key);
-    habitLogs = habitLogs.filter(h => h.habit_key !== key);
-  } else {
-    const { data } = await sb.from('habit_logs').upsert({ user_id: currentUser.id, log_date: TODAY, habit_key: key, done: true }, { onConflict: 'user_id,log_date,habit_key' }).select().single();
-    if (data) habitLogs = [...habitLogs.filter(h => h.habit_key !== key), data];
+  const ml = todayLog ? (todayLog.water_ml || 0) : 0;
+  const habitos = [
+    { ico:'🏋️', lbl:'Treino',   done: todayLog?.treino_done },
+    { ico:'🏃', lbl:'Cardio',   done: (todayLog?.cardio_min||0) > 0 },
+    { ico:'🥗', lbl:'Plano',    done: todayLog?.plano_done },
+    { ico:'💧', lbl:'Água',     done: ml >= 2000 },
+    { ico:'😴', lbl:'Sono',     done: todayLog?.sono_done },
+    { ico:'🙏', lbl:'Mente',    done: todayLog?.mente_done },
+  ];
+  const doneCt = habitos.filter(h => h.done).length;
+  const habitosEl = document.getElementById('hoje-habitos');
+  if (habitosEl) {
+    habitosEl.innerHTML = habitos.map(h => `
+      <div class="hoje-hab ${h.done ? 'done' : ''}">
+        <span class="hoje-hab-ico">${h.ico}</span>
+        <span class="hoje-hab-lbl">${h.lbl}${h.done ? ' ✓' : ''}</span>
+      </div>
+    `).join('');
   }
-  renderQuickHabits();
-  renderPlanner();
+  const cta = document.getElementById('btn-checkin-cta');
+  if (cta) {
+    if (doneCt === 6) { cta.textContent = '✓ Check-in completo hoje!'; cta.classList.add('done'); }
+    else if (doneCt > 0) { cta.textContent = `Continuar check-in (${doneCt}/6) →`; cta.classList.remove('done'); }
+    else { cta.textContent = 'Fazer check-in de hoje →'; cta.classList.remove('done'); }
+  }
+  await renderCalendar();
+}
+
+async function renderCalendar() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+  const today = now.getDate();
+  const monthStart = `${year}-${String(month+1).padStart(2,'0')}-01`;
+  const monthEnd   = `${year}-${String(month+1).padStart(2,'0')}-${String(new Date(year,month+1,0).getDate()).padStart(2,'0')}`;
+  const { data } = await sb.from('daily_logs')
+    .select('log_date,treino_done,cardio_min,plano_done,water_ml,sono_done,mente_done')
+    .eq('user_id', currentUser.id)
+    .gte('log_date', monthStart)
+    .lte('log_date', monthEnd);
+  const logs = data || [];
+  const statusMap = {};
+  logs.forEach(l => {
+    const done = [l.treino_done, (l.cardio_min||0)>0, l.plano_done, (l.water_ml||0)>=2000, l.sono_done, l.mente_done].filter(Boolean).length;
+    statusMap[l.log_date] = done === 6 ? 'done' : done > 0 ? 'partial' : 'none';
+  });
+  const grid = document.getElementById('cal-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  ['D','S','T','Q','Q','S','S'].forEach(d => {
+    const lbl = document.createElement('div');
+    lbl.className = 'cal-day-label';
+    lbl.textContent = d;
+    grid.appendChild(lbl);
+  });
+  const firstDow = new Date(year, month, 1).getDay();
+  for (let i = 0; i < firstDow; i++) {
+    const empty = document.createElement('div');
+    empty.className = 'cal-day empty';
+    grid.appendChild(empty);
+  }
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const status = statusMap[dateStr] || 'none';
+    const isToday = d === today;
+    const isFuture = d > today;
+    const el = document.createElement('div');
+    el.className = 'cal-day' +
+      (isToday ? ' today' : '') +
+      (status === 'done' ? ' done' : '') +
+      (status === 'partial' ? ' partial' : '') +
+      (isFuture ? ' future' : '');
+    el.textContent = d;
+    grid.appendChild(el);
+  }
+}
+
+function checkQuinzenal() {
+  const wrap = document.getElementById('quinzenal-wrap');
+  if (wrap) wrap.style.display = 'none';
+}
+
+function renderHomeDayCard() {
+  const ml = todayLog ? (todayLog.water_ml || 0) : 0;
+  const habitos = [
+    { ico:'🏋️', lbl:'Treino', done: todayLog?.treino_done },
+    { ico:'🏃', lbl:'Cardio', done: (todayLog?.cardio_min||0) > 0 },
+    { ico:'🥗', lbl:'Plano',  done: todayLog?.plano_done },
+    { ico:'💧', lbl:'Água',   done: ml >= 2000 },
+    { ico:'😴', lbl:'Sono',   done: todayLog?.sono_done },
+    { ico:'🙏', lbl:'Mente',  done: todayLog?.mente_done },
+  ];
+  const doneCt = habitos.filter(h => h.done).length;
+  const habitosEl = document.getElementById('hoje-habitos');
+  if (habitosEl) {
+    habitosEl.innerHTML = habitos.map(h => `
+      <div class="hoje-hab ${h.done ? 'done' : ''}">
+        <span class="hoje-hab-ico">${h.ico}</span>
+        <span class="hoje-hab-lbl">${h.lbl}${h.done ? ' ✓' : ''}</span>
+      </div>
+    `).join('');
+  }
+  const cta = document.getElementById('btn-checkin-cta');
+  if (cta) {
+    if (doneCt === 6) { cta.textContent = '✓ Check-in completo hoje!'; cta.classList.add('done'); }
+    else if (doneCt > 0) { cta.textContent = `Continuar check-in (${doneCt}/6) →`; cta.classList.remove('done'); }
+    else { cta.textContent = 'Fazer check-in de hoje →'; cta.classList.remove('done'); }
+  }
+}
+
+// ── CHECK-IN ───────────────────────────────────────────────
+// Estado local do check-in do dia
+let checkinState = { treino: false, cardio_min: 0, plano: false, sono: false, mente: false };
+
+async function loadCheckin() {
+  await loadTodayLog();
+  if (todayLog) {
+    checkinState.treino    = !!todayLog.treino_done;
+    checkinState.cardio_min = todayLog.cardio_min || 0;
+    checkinState.plano     = !!todayLog.plano_done;
+    checkinState.sono      = !!todayLog.sono_done;
+    checkinState.mente     = !!todayLog.mente_done;
+  } else {
+    checkinState = { treino: false, cardio_min: 0, plano: false, sono: false, mente: false };
+  }
+  renderCheckin();
+}
+
+function renderCheckin() {
+  const now = new Date();
+  const dias = ['domingo','segunda','terça','quarta','quinta','sexta','sábado'];
+  const el = document.getElementById('checkin-date-title');
+  if (el) el.textContent = dias[now.getDay()] + ', ' + now.getDate() + '/' + (now.getMonth()+1);
+
+  setToggle('ci-treino-toggle', checkinState.treino);
+  setToggle('ci-plano-toggle',  checkinState.plano);
+  setToggle('ci-sono-toggle',   checkinState.sono);
+  setToggle('ci-mente-toggle',  checkinState.mente);
+
+  const cardioValEl = document.getElementById('ci-cardio-val');
+  if (cardioValEl) cardioValEl.textContent = checkinState.cardio_min;
+  const cardioToggle = document.getElementById('ci-cardio-toggle');
+  if (cardioToggle) cardioToggle.classList.toggle('on', checkinState.cardio_min > 0);
+
+  const ml = todayLog ? (todayLog.water_ml || 0) : 0;
+  const filled = Math.round(ml / 250);
+  const cupsRow = document.getElementById('checkin-cups-row');
+  if (cupsRow) {
+    cupsRow.innerHTML = '';
+    for (let i = 0; i < 8; i++) {
+      const c = document.createElement('div');
+      c.className = 'cup' + (i < filled ? ' filled' : '');
+      c.innerHTML = '<div class="cup-fill"></div>';
+      c.onclick = () => toggleCup(i);
+      cupsRow.appendChild(c);
+    }
+    const wmlEl = document.getElementById('checkin-water-ml');
+    if (wmlEl) wmlEl.textContent = ml + ' ml';
+  }
+  const aguaOk = ml >= 2000;
+  setToggle('ci-agua-toggle', aguaOk);
+
+  const items = [checkinState.treino, checkinState.cardio_min > 0, checkinState.plano, aguaOk, checkinState.sono, checkinState.mente];
+  const done = items.filter(Boolean).length;
+  const pct = Math.round((done / 6) * 100);
+  const slEl = document.getElementById('checkin-status-label');
+  if (slEl) slEl.textContent = done + ' de 6 hábitos registrados';
+  const pctEl = document.getElementById('checkin-pct');
+  if (pctEl) pctEl.textContent = pct + '%';
+  const barEl = document.getElementById('checkin-bar');
+  if (barEl) barEl.style.width = pct + '%';
+
   updateWeekProgress();
 }
 
-function renderQuickHabits() {
-  const habits = HABITS[currentGoal].slice(0, 4);
-  const wrap = document.getElementById('quick-habits');
-  wrap.innerHTML = habits.map(h => `
-    <div class="habit-row" onclick="toggleHabit('${h.key}')">
-      <div class="h-check ${isHabitDone(h.key) ? 'on' : ''}">
-        <svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg>
-      </div>
-      <span class="h-text">${h.label}</span>
-    </div>
-  `).join('');
+function setToggle(id, on) {
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle('on', on);
 }
+
+async function toggleCheckin(key) {
+  checkinState[key] = !checkinState[key];
+  await saveCheckin();
+  renderCheckin();
+}
+
+async function adjustCardio(delta) {
+  checkinState.cardio_min = Math.max(0, checkinState.cardio_min + delta);
+  await saveCheckin();
+  renderCheckin();
+}
+
+async function saveCheckin() {
+  await ensureTodayLog();
+  const payload = {
+    treino_done:  checkinState.treino,
+    cardio_min:   checkinState.cardio_min,
+    plano_done:   checkinState.plano,
+    sono_done:    checkinState.sono,
+    mente_done:   checkinState.mente
+  };
+  const { error } = await sb.from('daily_logs').update(payload).eq('id', todayLog.id);
+  if (!error) {
+    Object.assign(todayLog, { treino_done: payload.treino_done, cardio_min: payload.cardio_min, plano_done: payload.plano_done, sono_done: payload.sono_done, mente_done: payload.mente_done });
+    renderHomeDayCard();
+  }
+}
+
+// Mantida para compatibilidade (chamada em toggleCup)
+function renderQuickHabits() { renderCheckin(); }
 
 function updateWeekProgress() {
-  const habits = HABITS[currentGoal];
-  const done = habits.filter(h => isHabitDone(h.key)).length;
-  const pct = Math.round((done / habits.length) * 100);
-  document.getElementById('week-pct').textContent = pct + '%';
-  document.getElementById('week-bar').style.width = pct + '%';
+  const ml = todayLog ? (todayLog.water_ml || 0) : 0;
+  const items = [checkinState.treino, checkinState.cardio_min > 0, checkinState.plano, ml >= 2000, checkinState.sono, checkinState.mente];
+  const done = items.filter(Boolean).length;
+  const pct = Math.round((done / 6) * 100);
+  const pctEl = document.getElementById('week-pct');
+  const barEl = document.getElementById('week-bar');
+  if (pctEl) pctEl.textContent = pct + '%';
+  if (barEl) barEl.style.width = pct + '%';
 }
 
-// ── PLANNER ───────────────────────────────────────────────
-function setGoal(goal, el) {
-  currentGoal = goal;
-  document.querySelectorAll('.seg-tab').forEach(t => t.classList.remove('on'));
-  el.classList.add('on');
-  renderPlanner();
-  renderQuickHabits();
-  updateWeekProgress();
+// ── PERFORMANCE SEMANAL ────────────────────────────────────
+async function loadPerformance() {
+  const from = new Date();
+  from.setDate(from.getDate() - 27);
+  const fromStr = from.toISOString().slice(0, 10);
+
+  const { data } = await sb.from('daily_logs')
+    .select('log_date,treino_done,cardio_min,plano_done,water_ml,sono_done,mente_done')
+    .eq('user_id', currentUser.id)
+    .gte('log_date', fromStr)
+    .order('log_date', { ascending: true });
+
+  const logs = data || [];
+  const semanaStart = new Date();
+  semanaStart.setDate(semanaStart.getDate() - 6);
+  const semanaLogs = logs.filter(l => l.log_date >= semanaStart.toISOString().slice(0,10));
+
+  const metricas = [
+    { ico:'🏋️', label:'Treino',         key:'treino_done',  tipo:'bool' },
+    { ico:'🏃', label:'Cardio (min)',    key:'cardio_min',   tipo:'minutos' },
+    { ico:'🥗', label:'Plano alimentar', key:'plano_done',   tipo:'bool' },
+    { ico:'💧', label:'Hidratação 2L',   key:'water_ml',     tipo:'agua' },
+    { ico:'😴', label:'Sono',            key:'sono_done',    tipo:'bool' },
+    { ico:'🙏', label:'Mente & Fé',      key:'mente_done',   tipo:'bool' },
+  ];
+
+  const grid = document.getElementById('perf-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+
+  metricas.forEach(m => {
+    let valor, texto, pct;
+    if (m.tipo === 'bool') {
+      valor = semanaLogs.filter(l => l[m.key]).length;
+      texto = valor + '/7 dias';
+      pct = (valor / 7) * 100;
+    } else if (m.tipo === 'agua') {
+      valor = semanaLogs.filter(l => (l[m.key] || 0) >= 2000).length;
+      texto = valor + '/7 dias';
+      pct = (valor / 7) * 100;
+    } else if (m.tipo === 'minutos') {
+      valor = semanaLogs.reduce((s, l) => s + (l[m.key] || 0), 0);
+      texto = valor + ' min';
+      pct = Math.min((valor / 150) * 100, 100);
+    }
+    const item = document.createElement('div');
+    item.className = 'perf-item';
+    item.innerHTML = `
+      <span class="perf-ico">${m.ico}</span>
+      <span class="perf-label">${m.label}</span>
+      <div class="perf-bar-wrap"><div class="perf-bar-fill" style="width:${pct.toFixed(0)}%"></div></div>
+      <span class="perf-val">${texto}</span>
+    `;
+    grid.appendChild(item);
+  });
+
+  renderPerfHistory(logs);
 }
 
-function renderPlanner() {
-  const habits = HABITS[currentGoal];
-  const cats = [...new Set(habits.map(h => h.cat))];
-  document.getElementById('planner-content').innerHTML = cats.map(cat => `
-    <div class="section-label">${cat}</div>
-    ${habits.filter(h => h.cat === cat).map(h => `
-      <div class="habit-row" onclick="toggleHabit('${h.key}')">
-        <div class="h-check ${isHabitDone(h.key) ? 'on' : ''}">
-          <svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg>
-        </div>
-        <span class="h-text">${h.label}</span>
-      </div>
-    `).join('')}
-  `).join('');
-  updateWeekProgress();
+function renderPerfHistory(logs) {
+  const wrap = document.getElementById('perf-history');
+  if (!wrap) return;
+  wrap.innerHTML = '';
+  for (let w = 3; w >= 0; w--) {
+    const wStart = new Date();
+    wStart.setDate(wStart.getDate() - (w * 7) - 6);
+    const wEnd = new Date();
+    wEnd.setDate(wEnd.getDate() - (w * 7));
+    const wStartStr = wStart.toISOString().slice(0,10);
+    const wEndStr = wEnd.toISOString().slice(0,10);
+    const wLogs = logs.filter(l => l.log_date >= wStartStr && l.log_date <= wEndStr);
+    const label = w === 0 ? 'Esta semana' : `Semana -${w}`;
+    const pcts = [];
+    for (let d = 0; d <= 6; d++) {
+      const dd = new Date(wStart);
+      dd.setDate(dd.getDate() + d);
+      const ddStr = dd.toISOString().slice(0,10);
+      const log = wLogs.find(l => l.log_date === ddStr);
+      if (log) {
+        const done = [log.treino_done, (log.cardio_min||0)>0, log.plano_done, (log.water_ml||0)>=2000, log.sono_done, log.mente_done].filter(Boolean).length;
+        pcts.push(Math.round((done/6)*100));
+      } else {
+        pcts.push(0);
+      }
+    }
+    const dias = ['D','S','T','Q','Q','S','S'];
+    const rowEl = document.createElement('div');
+    rowEl.className = 'perf-week-row';
+    rowEl.innerHTML = `<div class="perf-week-label">${label}</div>`;
+    const barsEl = document.createElement('div');
+    barsEl.className = 'perf-week-bars';
+    pcts.forEach((p, i) => {
+      const h = Math.round((p / 100) * 36);
+      const bar = document.createElement('div');
+      bar.className = 'perf-week-bar' + (p > 0 ? ' filled' : '');
+      bar.style.height = Math.max(h, 3) + 'px';
+      bar.innerHTML = `<span class="perf-week-bar-lbl">${dias[i]}</span>`;
+      barsEl.appendChild(bar);
+    });
+    rowEl.appendChild(barsEl);
+    wrap.appendChild(rowEl);
+  }
 }
 
 // ── NOTICES ───────────────────────────────────────────────
@@ -1745,6 +2271,170 @@ function requestDelete() {
   toast('Envie um e-mail para privacidade@kairos.com.br');
 }
 
+// ── EVENTOS ───────────────────────────────────────────────
+async function loadNextEvent() {
+  const { data } = await sb.from('events')
+    .select('*')
+    .eq('published', true)
+    .gte('event_date', TODAY)
+    .order('event_date', { ascending: true })
+    .limit(1);
+
+  const wrap = document.getElementById('evento-wrap');
+  if (!wrap) return;
+  if (!data || data.length === 0) { wrap.style.display = 'none'; return; }
+
+  const ev = data[0];
+  const dt = new Date(ev.event_date + 'T12:00:00');
+  const dtStr = dt.toLocaleDateString('pt-BR', { day:'2-digit', month:'long', year:'numeric' });
+  const diasRestantes = Math.ceil((dt - new Date()) / (1000*60*60*24));
+  const diasTxt = diasRestantes === 0 ? 'Hoje!' : diasRestantes === 1 ? 'Amanhã!' : `em ${diasRestantes} dias`;
+
+  wrap.style.display = 'block';
+  wrap.innerHTML = `
+    <div class="evento-card" ${ev.link_url ? `onclick="window.open('${sanitize(ev.link_url)}','_blank')"` : ''}>
+      <div class="evento-card-tag">🗓 Próximo evento · ${diasTxt}</div>
+      <div class="evento-card-title">${sanitize(ev.title)}</div>
+      <div class="evento-card-date">${dtStr}</div>
+      ${ev.description ? `<div style="font-size:12px;color:var(--muted);margin-top:6px;line-height:1.5;">${sanitize(ev.description)}</div>` : ''}
+      ${ev.link_url ? `<div class="evento-card-link">Saiba mais →</div>` : ''}
+    </div>
+  `;
+}
+
+async function saveEvent() {
+  const title = document.getElementById('ev-title').value.trim();
+  const desc  = document.getElementById('ev-desc').value.trim();
+  const date  = document.getElementById('ev-date').value;
+  const link  = document.getElementById('ev-link').value.trim();
+
+  if (!title) { toast('Preencha o título do evento.'); return; }
+  if (!date)  { toast('Preencha a data do evento.'); return; }
+  if (link && !safeUrl(link)) { toast('Link inválido. Use https://...'); return; }
+
+  const { error } = await sb.from('events').insert({
+    title, description: desc || null,
+    event_date: date, link_url: link || null, published: true
+  });
+  if (error) { toast('Erro ao salvar evento.'); return; }
+  toast('Evento publicado! ✓');
+  document.getElementById('ev-title').value = '';
+  document.getElementById('ev-desc').value = '';
+  document.getElementById('ev-date').value = '';
+  document.getElementById('ev-link').value = '';
+  await loadAdminEventos();
+  await loadNextEvent();
+}
+
+async function deleteEvent(id) {
+  if (!confirm('Remover este evento?')) return;
+  await sb.from('events').delete().eq('id', id);
+  toast('Evento removido.');
+  await loadAdminEventos();
+  await loadNextEvent();
+}
+
+async function loadAdminEventos() {
+  const { data } = await sb.from('events')
+    .select('*').order('event_date', { ascending: true });
+  const el = document.getElementById('admin-eventos-list');
+  el.innerHTML = '';
+  if (!data || data.length === 0) {
+    const p = document.createElement('p');
+    p.style.cssText = 'font-size:12px;color:var(--muted);padding:8px 0;';
+    p.textContent = 'Nenhum evento publicado.';
+    el.appendChild(p); return;
+  }
+  data.forEach(ev => {
+    const dt = new Date(ev.event_date + 'T12:00:00').toLocaleDateString('pt-BR');
+    const row = document.createElement('div');
+    row.className = 'evento-admin-row';
+    row.innerHTML = `
+      <div class="evento-admin-title">${sanitize(ev.title)}</div>
+      <div class="evento-admin-date">📅 ${dt}</div>
+      ${ev.description ? `<div class="evento-admin-desc">${sanitize(ev.description)}</div>` : ''}
+      ${ev.link_url ? `<div style="font-size:11px;color:var(--gold);margin-top:4px;">🔗 ${sanitize(ev.link_url)}</div>` : ''}
+      <div class="evento-admin-actions">
+        <button class="evento-del-btn">Remover</button>
+      </div>
+    `;
+    row.querySelector('.evento-del-btn').onclick = () => deleteEvent(ev.id);
+    el.appendChild(row);
+  });
+}
+
+// ── RANKING ADMIN ─────────────────────────────────────────
+async function loadAdminRanking() {
+  const now = new Date();
+  const mesStart = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-01`;
+  const mesEnd   = TODAY;
+
+  const { data: logs } = await sb.from('daily_logs')
+    .select('user_id, log_date, treino_done, cardio_min, plano_done, water_ml, sono_done, mente_done')
+    .gte('log_date', mesStart)
+    .lte('log_date', mesEnd);
+
+  const { data: profiles } = await sb.from('profiles')
+    .select('id, full_name').eq('status','active').neq('role','admin');
+
+  if (!logs || !profiles) return;
+
+  const contagem = {};
+  logs.forEach(l => {
+    const temAlgo = l.treino_done || (l.cardio_min||0)>0 || l.plano_done || (l.water_ml||0)>=2000 || l.sono_done || l.mente_done;
+    if (temAlgo) contagem[l.user_id] = (contagem[l.user_id] || 0) + 1;
+  });
+
+  const ranking = profiles.map(p => ({
+    name: p.full_name || '(sem nome)',
+    dias: contagem[p.id] || 0
+  })).sort((a,b) => b.dias - a.dias);
+
+  const maxDias = ranking[0]?.dias || 1;
+  const diasNoMes = now.getDate();
+
+  const periodoEl = document.getElementById('ranking-periodo');
+  if (periodoEl) periodoEl.textContent = `${now.toLocaleString('pt-BR',{month:'long'})} · ${diasNoMes} dias decorridos`;
+
+  const el = document.getElementById('admin-ranking');
+  el.innerHTML = '';
+
+  if (ranking.length === 0) {
+    const p = document.createElement('p');
+    p.style.cssText = 'font-size:12px;color:var(--muted);padding:8px 0;';
+    p.textContent = 'Nenhum paciente ativo ainda.';
+    el.appendChild(p); return;
+  }
+
+  ranking.forEach((r, i) => {
+    const medals = ['🥇','🥈','🥉'];
+    const posClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+    const pct = Math.round((r.dias / maxDias) * 100);
+    const row = document.createElement('div');
+    row.className = 'ranking-row';
+    row.innerHTML = `
+      <div class="ranking-pos ${posClass}">${i < 3 ? medals[i] : i+1}</div>
+      <div class="ranking-info">
+        <div class="ranking-name">${sanitize(r.name)}</div>
+        <div class="ranking-bar-wrap"><div class="ranking-bar-fill" style="width:${pct}%"></div></div>
+      </div>
+      <div class="ranking-dias">${r.dias}/${diasNoMes}<br><span style="font-size:9px;font-weight:400;color:var(--muted);">dias</span></div>
+    `;
+    el.appendChild(row);
+  });
+}
+
+// ── ADMIN TABS ────────────────────────────────────────────
+function switchAdminTab(tab, el) {
+  ['pacientes','ranking','eventos'].forEach(t => {
+    document.getElementById('admin-tab-' + t).style.display = t === tab ? 'block' : 'none';
+  });
+  document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('on'));
+  el.classList.add('on');
+  if (tab === 'ranking') loadAdminRanking();
+  if (tab === 'eventos') loadAdminEventos();
+}
+
 // ── ADMIN ─────────────────────────────────────────────────
 async function loadAdmin() {
   const { data: all } = await sb.from('profiles').select('*').neq('role','admin').order('created_at', { ascending: false });
@@ -1831,6 +2521,9 @@ function switchTab(tab) {
   document.getElementById('tab-' + tab).classList.add('active');
   document.getElementById('nav-' + tab).classList.add('on');
   hideSub();
+  if (tab === 'inicio') renderHome();
+  if (tab === 'planner') loadCheckin();
+  if (tab === 'evolucao') { loadEvolution(); loadPerformance(); }
 }
 
 function showMais() { switchTab('mais'); }
