@@ -143,7 +143,7 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
 
 /* ── LOADING ── */
 #loading{
-  position:fixed;inset:0;background:var(--bg);
+  position:fixed;top:0;left:0;right:0;bottom:0;background:var(--bg);
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:1000;
 }
 #loading .logo-big{font-family:'Cormorant Garamond',serif;font-size:48px;color:var(--gold);letter-spacing:.2em;}
@@ -1372,35 +1372,54 @@ window.onload = async function() {
   updateClock();
   setInterval(updateClock, 30000);
 
-  // Captura retorno de confirmacao de e-mail (token na URL)
-  const hash = window.location.hash;
-  if (hash && (hash.includes('access_token') || hash.includes('type=signup'))) {
-    const { data } = await sb.auth.getSession();
-    if (data && data.session) {
-      currentUser = data.session.user;
-      window.history.replaceState(null, '', window.location.pathname);
-      await loadProfile();
-      return;
-    }
-  }
-
-  // Listener para mudancas de estado de autenticacao
-  sb.auth.onAuthStateChange(async (event, session) => {
-    if (event === 'SIGNED_IN' && session && !currentUser) {
-      currentUser = session.user;
-      await loadProfile();
-    } else if (event === 'SIGNED_OUT') {
-      currentUser = null;
-      currentProfile = null;
+  // Fallback: se em 8 segundos ainda estiver no loading, força tela de auth
+  const loadingTimeout = setTimeout(() => {
+    const loading = document.getElementById('loading');
+    if (loading && loading.style.display !== 'none') {
+      console.warn('[Kairós] timeout de carregamento — forçando tela de auth');
       showScreen('auth');
     }
-  });
+  }, 8000);
 
-  const { data: { session } } = await sb.auth.getSession();
-  if (session) {
-    currentUser = session.user;
-    await loadProfile();
-  } else {
+  try {
+    // Captura retorno de confirmacao de e-mail (token na URL)
+    const hash = window.location.hash;
+    if (hash && (hash.includes('access_token') || hash.includes('type=signup'))) {
+      const { data } = await sb.auth.getSession();
+      if (data && data.session) {
+        currentUser = data.session.user;
+        window.history.replaceState(null, '', window.location.pathname);
+        clearTimeout(loadingTimeout);
+        await loadProfile();
+        return;
+      }
+    }
+
+    // Listener para mudancas de estado de autenticacao
+    sb.auth.onAuthStateChange(async (event, session) => {
+      try {
+        if (event === 'SIGNED_IN' && session && !currentUser) {
+          currentUser = session.user;
+          await loadProfile();
+        } else if (event === 'SIGNED_OUT') {
+          currentUser = null;
+          currentProfile = null;
+          showScreen('auth');
+        }
+      } catch(e) { console.error('[Kairós] onAuthStateChange error:', e); showScreen('auth'); }
+    });
+
+    const { data: { session } } = await sb.auth.getSession();
+    clearTimeout(loadingTimeout);
+    if (session) {
+      currentUser = session.user;
+      await loadProfile();
+    } else {
+      showScreen('auth');
+    }
+  } catch(e) {
+    clearTimeout(loadingTimeout);
+    console.error('[Kairós] erro no carregamento inicial:', e);
     showScreen('auth');
   }
 };
@@ -1415,12 +1434,13 @@ function updateClock() {
 
 // ── PROFILE & ROUTING ─────────────────────────────────────
 async function loadProfile() {
+  try {
   console.log('[Kairós] loadProfile - user id:', currentUser.id);
   const { data, error } = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
   console.log('[Kairós] profiles result - data:', JSON.stringify(data), '| error:', JSON.stringify(error));
-  if (error || !data) { 
+  if (error || !data) {
     console.log('[Kairós] erro no perfil, voltando para auth');
-    showScreen('auth'); return; 
+    showScreen('auth'); return;
   }
   currentProfile = data;
 
@@ -1434,6 +1454,10 @@ async function loadProfile() {
 
   showScreen('app');
   initApp();
+  } catch(e) {
+    console.error('[Kairós] loadProfile error:', e);
+    showScreen('auth');
+  }
 }
 
 async function initApp() {
