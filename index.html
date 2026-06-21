@@ -1590,7 +1590,8 @@ async function loadEvolution() {
       <div class="stat-box"><span class="stat-val">0</span><span class="stat-lbl">registros</span></div>
     `;
   }
-  document.getElementById('evol-stats').innerHTML = statsHtml;
+  const evolStats = document.getElementById('evol-stats');
+  if (evolStats) evolStats.innerHTML = statsHtml;
 
   // Mini chart
   const chartData = records.slice().reverse().slice(-7);
@@ -1598,14 +1599,16 @@ async function loadEvolution() {
   const minW = Math.min(...chartData.map(r => r.weight_kg || 0)) || 0;
   const range = maxW - minW || 1;
   const chartEl = document.getElementById('weight-chart');
-  if (chartData.length > 0) {
-    chartEl.innerHTML = chartData.map((r, i) => {
-      const h = Math.round(((r.weight_kg - minW) / range) * 40 + 10);
-      const isLast = i === chartData.length - 1;
-      return `<div class="bar ${isLast ? 'hi' : ''}" style="height:${h}px"><span class="bar-lbl">${r.record_date.slice(5)}</span></div>`;
-    }).join('');
-  } else {
-    chartEl.innerHTML = '<p style="font-size:12px;color:var(--muted);text-align:center;width:100%;padding:10px 0;">Registre seu primeiro peso para ver o gráfico.</p>';
+  if (chartEl) {
+    if (chartData.length > 0) {
+      chartEl.innerHTML = chartData.map((r, i) => {
+        const h = Math.round(((r.weight_kg - minW) / range) * 40 + 10);
+        const isLast = i === chartData.length - 1;
+        return `<div class="bar ${isLast ? 'hi' : ''}" style="height:${h}px"><span class="bar-lbl">${r.record_date.slice(5)}</span></div>`;
+      }).join('');
+    } else {
+      chartEl.innerHTML = '<p style="font-size:12px;color:var(--muted);text-align:center;width:100%;padding:10px 0;">Registre seu primeiro peso para ver o gráfico.</p>';
+    }
   }
 }
 
