@@ -2313,13 +2313,14 @@ async function loadNextEvent() {
   const diasRestantes = Math.ceil((dt - new Date()) / (1000*60*60*24));
   const diasTxt = diasRestantes === 0 ? 'Hoje!' : diasRestantes === 1 ? 'Amanhã!' : `em ${diasRestantes} dias`;
 
+  const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   wrap.style.display = 'block';
   wrap.innerHTML = `
-    <div class="evento-card" ${ev.link_url ? `onclick="window.open('${sanitize(ev.link_url)}','_blank')"` : ''}>
+    <div class="evento-card" ${ev.link_url ? `onclick="window.open('${esc(ev.link_url)}','_blank')"` : ''}>
       <div class="evento-card-tag">🗓 Próximo evento · ${diasTxt}</div>
-      <div class="evento-card-title">${sanitize(ev.title)}</div>
+      <div class="evento-card-title">${esc(ev.title)}</div>
       <div class="evento-card-date">${dtStr}</div>
-      ${ev.description ? `<div style="font-size:12px;color:var(--muted);margin-top:6px;line-height:1.5;">${sanitize(ev.description)}</div>` : ''}
+      ${ev.description ? `<div style="font-size:12px;color:var(--muted);margin-top:6px;line-height:1.5;">${esc(ev.description)}</div>` : ''}
       ${ev.link_url ? `<div class="evento-card-link">Saiba mais →</div>` : ''}
     </div>
   `;
