@@ -37,9 +37,11 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
 }
 /* iOS Safari: height explícito necessário para flex:1 funcionar em filhos */
 @media(max-width:499px){
-  html,body{height:100%;}
-  #app{height:100%;min-height:100vh;align-items:flex-start;}
-  .phone{height:100%;min-height:100vh;}
+  html,body{height:100%;overflow:hidden;}
+  #app{height:100%;min-height:100vh;align-items:flex-start;overflow:hidden;}
+  .phone{height:100%;min-height:100vh;flex-direction:column !important;width:100% !important;max-width:100% !important;}
+  .screen{width:100% !important;max-width:100% !important;}
+  .auth-wrap{width:100% !important;box-sizing:border-box !important;}
 }
 @media(min-width:900px){
   body{background:radial-gradient(ellipse at 50% 0%, #0D1B2A 0%, #070F18 70%);}
@@ -64,8 +66,8 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
 .sbar-icons span{font-size:11px;color:var(--muted);}
 
 /* ── SCREENS ── */
-.screen{display:none;flex-direction:column;flex:1;min-height:0;overflow:hidden;}
-.screen.active{display:flex;}
+.screen{display:none;flex-direction:column;flex:1;min-height:0;overflow:hidden;width:100%;box-sizing:border-box;}
+.screen.active{display:flex;flex-direction:column;}
 
 /* ── SCROLL AREA ── */
 .scroll{overflow-y:auto;flex:1;padding:16px 18px 24px;}
@@ -1395,13 +1397,10 @@ window.onload = async function() {
       }
     }
 
-    // Listener para mudancas de estado de autenticacao
+    // Listener para mudancas de estado de autenticacao (apenas logout — evita race condition)
     sb.auth.onAuthStateChange(async (event, session) => {
       try {
-        if (event === 'SIGNED_IN' && session && !currentUser) {
-          currentUser = session.user;
-          await loadProfile();
-        } else if (event === 'SIGNED_OUT') {
+        if (event === 'SIGNED_OUT') {
           currentUser = null;
           currentProfile = null;
           showScreen('auth');
