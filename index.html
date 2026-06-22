@@ -1152,6 +1152,7 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
           <div class="admin-tab" onclick="switchAdminTab('ranking',this)">Ranking</div>
           <div class="admin-tab" onclick="switchAdminTab('eventos',this)">Eventos</div>
           <div class="admin-tab" onclick="switchAdminTab('receitas',this)">Receitas</div>
+          <div class="admin-tab" onclick="switchAdminTab('conteudo',this)">Conteúdo</div>
         </div>
 
         <div id="admin-tab-pacientes">
@@ -1213,6 +1214,24 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
           </div>
           <div class="card-title" style="margin-bottom:8px;">Receitas cadastradas</div>
           <div id="admin-receitas-list"></div>
+        </div>
+
+        <div id="admin-tab-conteudo" style="display:none;">
+          <div class="card-title" style="margin-bottom:12px;">Novo conteúdo</div>
+          <div class="card" style="margin-bottom:16px;">
+            <div class="inp-group"><label class="inp-label">Título</label><input class="inp" type="text" id="cnt-title" placeholder="Ex: Aula 1 — Boas-vindas"></div>
+            <div class="inp-group" style="margin-top:8px;"><label class="inp-label">Descrição (opcional)</label><input class="inp" type="text" id="cnt-desc" placeholder="Breve descrição do conteúdo"></div>
+            <div class="inp-group" style="margin-top:8px;"><label class="inp-label">Link do YouTube</label><input class="inp" type="url" id="cnt-youtube" placeholder="https://youtu.be/..."></div>
+            <div class="inp-group" style="margin-top:8px;"><label class="inp-label">Material em PDF (opcional)</label><input class="inp" type="file" id="cnt-pdf" accept="application/pdf"></div>
+            <div style="display:flex;align-items:center;gap:10px;margin-top:12px;">
+              <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);cursor:pointer;">
+                <input type="checkbox" id="cnt-published" checked> Publicar imediatamente
+              </label>
+            </div>
+            <button class="btn btn-gold" style="margin-top:12px;" onclick="saveAdminContent()">Salvar conteúdo</button>
+          </div>
+          <div class="card-title" style="margin-bottom:8px;">Conteúdos cadastrados</div>
+          <div id="admin-conteudo-list"></div>
         </div>
       </div>
       </div>
@@ -2511,10 +2530,20 @@ function openContentDetail(v) {
   document.getElementById('content-detail-body').innerHTML = `
     ${mediaHtml}
     <div class="hdr-title" style="font-size:20px;margin-bottom:6px;">${esc(v.title)}</div>
-    ${v.description ? `<div style="color:var(--muted);font-size:14px;line-height:1.5;">${esc(v.description)}</div>` : ''}
+    ${v.description ? `<div style="color:var(--muted);font-size:14px;line-height:1.5;margin-bottom:12px;">${esc(v.description)}</div>` : ''}
+    ${v.pdf_path ? `<button class="btn btn-outline" style="width:100%;margin-top:8px;" id="btn-pdf-download" onclick="downloadContentPdf('${esc(v.pdf_path)}')">📄 Baixar material complementar</button>` : ''}
     <div style="height:24px;"></div>
   `;
   showSub('conteudo-detail');
+}
+
+async function downloadContentPdf(path) {
+  const btn = document.getElementById('btn-pdf-download');
+  if (btn) btn.textContent = 'Gerando link...';
+  const { data, error } = await sb.storage.from('content-pdfs').createSignedUrl(path, 300);
+  if (error || !data?.signedUrl) { toast('Erro ao abrir PDF.'); if (btn) btn.textContent = '📄 Baixar material complementar'; return; }
+  window.open(data.signedUrl, '_blank');
+  if (btn) btn.textContent = '📄 Baixar material complementar';
 }
 
 // ── SOS ───────────────────────────────────────────────────
@@ -2804,6 +2833,73 @@ async function deleteAdminRecipe(id) {
   await loadAdminRecipes();
 }
 
+// ── ADMIN CONTEÚDO ────────────────────────────────────────
+async function loadAdminContent() {
+  const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  const { data } = await sb.from('content_items').select('*').order('created_at', { ascending: false });
+  const el = document.getElementById('admin-conteudo-list');
+  if (!data || data.length === 0) { el.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:8px 0;">Nenhum conteúdo cadastrado.</div>'; return; }
+  el.innerHTML = data.map(c => `
+    <div class="card" style="margin-bottom:10px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:13px;font-weight:500;color:var(--cream);">${esc(c.title)}</div>
+        ${c.youtube_url ? `<div style="font-size:11px;color:var(--muted);margin-top:2px;">▶ ${esc(c.youtube_url)}</div>` : ''}
+        ${c.pdf_path ? `<div style="font-size:11px;color:var(--gold);margin-top:2px;">📄 PDF anexado</div>` : ''}
+        <div style="font-size:11px;color:${c.published ? 'var(--success)' : 'var(--muted)'};margin-top:4px;">${c.published ? '● Publicado' : '○ Rascunho'}</div>
+      </div>
+      <div style="display:flex;gap:6px;flex-shrink:0;">
+        <button class="activate-btn" style="padding:4px 10px;font-size:11px;" onclick="togglePublishContent('${esc(c.id)}',${c.published})">${c.published ? 'Ocultar' : 'Publicar'}</button>
+        <button class="activate-btn" style="padding:4px 10px;font-size:11px;background:var(--danger);border-color:var(--danger);" onclick="deleteAdminContent('${esc(c.id)}')">Remover</button>
+      </div>
+    </div>`).join('');
+}
+
+async function saveAdminContent() {
+  const title = document.getElementById('cnt-title').value.trim();
+  const desc = document.getElementById('cnt-desc').value.trim();
+  const youtubeUrl = document.getElementById('cnt-youtube').value.trim();
+  const pdfFile = document.getElementById('cnt-pdf').files[0];
+  const published = document.getElementById('cnt-published').checked;
+
+  if (!title) { toast('Título obrigatório.'); return; }
+
+  let pdf_path = null;
+  if (pdfFile) {
+    if (pdfFile.type !== 'application/pdf') { toast('Arquivo deve ser PDF.'); return; }
+    if (pdfFile.size > 20 * 1024 * 1024) { toast('PDF maior que 20MB.'); return; }
+    const path = `${Date.now()}_${pdfFile.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;
+    const { error: upErr } = await sb.storage.from('content-pdfs').upload(path, pdfFile, { contentType: 'application/pdf' });
+    if (upErr) { toast('Erro ao enviar PDF.'); return; }
+    pdf_path = path;
+  }
+
+  const { error } = await sb.from('content_items').insert({
+    title, description: desc || null, youtube_url: youtubeUrl || null,
+    type: 'video', pdf_path, published,
+    created_by: currentUser.id
+  });
+  if (error) { toast('Erro ao salvar.'); return; }
+  toast('Conteúdo salvo! ✓');
+  document.getElementById('cnt-title').value = '';
+  document.getElementById('cnt-desc').value = '';
+  document.getElementById('cnt-youtube').value = '';
+  document.getElementById('cnt-pdf').value = '';
+  await loadAdminContent();
+}
+
+async function togglePublishContent(id, currentlyPublished) {
+  const { error } = await sb.from('content_items').update({ published: !currentlyPublished }).eq('id', id);
+  if (error) { toast('Erro ao atualizar.'); return; }
+  await loadAdminContent();
+}
+
+async function deleteAdminContent(id) {
+  if (!confirm('Remover este conteúdo?')) return;
+  await sb.from('content_items').delete().eq('id', id);
+  toast('Conteúdo removido.');
+  await loadAdminContent();
+}
+
 // ── ADMIN TABS ────────────────────────────────────────────
 function switchAdminTab(tab, el) {
   document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('on'));
@@ -2814,6 +2910,7 @@ function switchAdminTab(tab, el) {
   });
   if (tab === 'ranking') loadAdminRanking();
   if (tab === 'receitas') loadAdminRecipes();
+  if (tab === 'conteudo') loadAdminContent();
 }
 
 // ── ADMIN ─────────────────────────────────────────────────────
