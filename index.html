@@ -828,27 +828,14 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
           </div>
           <!-- Detalhes opcionais — não influenciam o check -->
           <div id="ci-cardio-details" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);" onclick="event.stopPropagation()">
-            <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">Opcional — não influencia o check-in</div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-              <div>
-                <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">Tempo (min)</div>
-                <div class="cardio-input-row" style="justify-content:flex-start;gap:8px;">
-                  <button class="cardio-btn" onclick="adjustCardio(-5)">−</button>
-                  <div class="cardio-display" style="min-width:44px;">
-                    <span class="cardio-val" id="ci-cardio-val" style="font-size:26px;">0</span>
-                  </div>
-                  <button class="cardio-btn" onclick="adjustCardio(+5)">+</button>
-                </div>
+              <div class="inp-group">
+                <label class="inp-label">Tempo (min)</label>
+                <input class="inp" type="number" id="ci-cardio-val" min="0" max="999" placeholder="0" inputmode="numeric" oninput="onCardioInput()" style="text-align:center;">
               </div>
-              <div>
-                <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">Distância (km)</div>
-                <div class="cardio-input-row" style="justify-content:flex-start;gap:8px;">
-                  <button class="cardio-btn" onclick="adjustCardioKm(-0.5)">−</button>
-                  <div class="cardio-display" style="min-width:44px;">
-                    <span class="cardio-val" id="ci-cardio-km" style="font-size:26px;">0</span>
-                  </div>
-                  <button class="cardio-btn" onclick="adjustCardioKm(+0.5)">+</button>
-                </div>
+              <div class="inp-group">
+                <label class="inp-label">Distância (km)</label>
+                <input class="inp" type="number" id="ci-cardio-km" min="0" max="999" step="0.1" placeholder="0" inputmode="decimal" oninput="onCardioInput()" style="text-align:center;">
               </div>
             </div>
           </div>
@@ -1839,9 +1826,9 @@ function renderCheckin() {
   setToggle('ci-mente-toggle',  checkinState.mente);
 
   const cardioValEl = document.getElementById('ci-cardio-val');
-  if (cardioValEl) cardioValEl.textContent = checkinState.cardio_min;
+  if (cardioValEl) cardioValEl.value = checkinState.cardio_min || '';
   const cardioKmEl = document.getElementById('ci-cardio-km');
-  if (cardioKmEl) cardioKmEl.textContent = checkinState.cardio_km % 1 === 0 ? checkinState.cardio_km : checkinState.cardio_km.toFixed(1);
+  if (cardioKmEl) cardioKmEl.value = checkinState.cardio_km || '';
   const cardioDetails = document.getElementById('ci-cardio-details');
   if (cardioDetails) cardioDetails.style.display = checkinState.cardio ? 'block' : 'none';
   const cardioCard = document.getElementById('ci-cardio-card');
@@ -1889,18 +1876,14 @@ async function toggleCheckin(key) {
   renderCheckin();
 }
 
-async function adjustCardio(delta) {
-  checkinState.cardio_min = Math.max(0, checkinState.cardio_min + delta);
-  await saveCheckin();
-  const el = document.getElementById('ci-cardio-val');
-  if (el) el.textContent = checkinState.cardio_min;
-}
-
-async function adjustCardioKm(delta) {
-  checkinState.cardio_km = Math.max(0, Math.round((checkinState.cardio_km + delta) * 10) / 10);
-  await saveCheckin();
-  const el = document.getElementById('ci-cardio-km');
-  if (el) el.textContent = checkinState.cardio_km % 1 === 0 ? checkinState.cardio_km : checkinState.cardio_km.toFixed(1);
+let cardioInputTimer = null;
+function onCardioInput() {
+  const minEl = document.getElementById('ci-cardio-val');
+  const kmEl  = document.getElementById('ci-cardio-km');
+  checkinState.cardio_min = parseInt(minEl?.value) || 0;
+  checkinState.cardio_km  = parseFloat(kmEl?.value)  || 0;
+  clearTimeout(cardioInputTimer);
+  cardioInputTimer = setTimeout(() => saveCheckin(), 800);
 }
 
 async function saveCheckin() {
