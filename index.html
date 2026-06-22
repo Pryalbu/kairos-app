@@ -2907,10 +2907,15 @@ function showMais() { switchTab('mais'); }
 
 function showSub(name) {
   document.getElementById('mais-main').style.display = 'none';
-  ['receitas','conteudo','sos','conta','admin','jornada','recipe-detail'].forEach(s => {
+  ['receitas','conteudo','conteudo-detail','sos','conta','admin','jornada','recipe-detail'].forEach(s => {
     const el = document.getElementById('sub-' + s);
     if (el) el.style.display = 'none';
   });
+  // Limpar iframe ao sair do detalhe de conteúdo (para o vídeo parar)
+  if (name !== 'conteudo-detail') {
+    const detailBody = document.getElementById('content-detail-body');
+    if (detailBody) detailBody.innerHTML = '';
+  }
   const target = document.getElementById('sub-' + name);
   if (target) target.style.display = 'block';
   if (name === 'receitas') loadRecipes();
@@ -2921,10 +2926,12 @@ function showSub(name) {
 
 function hideSub() {
   document.getElementById('mais-main').style.display = 'block';
-  ['receitas','conteudo','sos','conta','admin','jornada','recipe-detail'].forEach(s => {
+  ['receitas','conteudo','conteudo-detail','sos','conta','admin','jornada','recipe-detail'].forEach(s => {
     const el = document.getElementById('sub-' + s);
     if (el) el.style.display = 'none';
   });
+  const detailBody = document.getElementById('content-detail-body');
+  if (detailBody) detailBody.innerHTML = '';
 }
 
 // ── JORNADA ─────────────────────────────────────────────────────
