@@ -2706,7 +2706,7 @@ async function loadAdminRecipes() {
     row.className = 'evento-admin-row';
     row.innerHTML = `
       <div class="evento-admin-title">${esc(r.title)}</div>
-      <div class="evento-admin-date">${esc(r.category || '—')}</div>
+      <div class="evento-admin-date">${esc(MEAL_LABELS[r.meal_type] || r.meal_type || '—')}</div>
       <div class="evento-admin-actions">
         <button class="activate-btn" style="padding:4px 10px;" onclick="togglePublishRecipe('${esc(r.id)}', ${r.published})">
           ${r.published ? 'Despublicar' : 'Publicar'}
@@ -2720,15 +2720,13 @@ async function loadAdminRecipes() {
 
 async function saveAdminRecipe() {
   const title = document.getElementById('rec-title').value.trim();
-  const category = document.getElementById('rec-category').value;
+  const meal_type = document.getElementById('rec-category').value;
   const ingredients = document.getElementById('rec-ingredients').value.trim();
   const instructions = document.getElementById('rec-instructions').value.trim();
-  const macros = {
-    kcal: parseFloat(document.getElementById('rec-calories').value) || null,
-    prot: parseFloat(document.getElementById('rec-protein').value) || null,
-    carb: parseFloat(document.getElementById('rec-carbs').value) || null,
-    fat:  parseFloat(document.getElementById('rec-fat').value)  || null
-  };
+  const calories = parseInt(document.getElementById('rec-calories').value) || null;
+  const protein_g = parseFloat(document.getElementById('rec-protein').value) || null;
+  const carbs_g = parseFloat(document.getElementById('rec-carbs').value) || null;
+  const fat_g = parseFloat(document.getElementById('rec-fat').value) || null;
   const published = document.getElementById('rec-published').checked;
   const file = document.getElementById('rec-photo').files[0];
 
@@ -2749,8 +2747,8 @@ async function saveAdminRecipe() {
   }
 
   const { error } = await sb.from('recipes').insert({
-    title, category, ingredients, instructions,
-    macros, published, photo_path
+    title, meal_type, ingredients, instructions,
+    calories, protein_g, carbs_g, fat_g, published, photo_path
   });
   if (error) { toast('Erro ao salvar receita.'); return; }
   toast('Receita salva! ✓');
