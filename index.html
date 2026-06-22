@@ -1069,11 +1069,9 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
         <div class="hdr-title" style="font-size:20px;margin-bottom:12px;">Banco de receitas</div>
         <div class="recipe-filters" id="recipe-filters">
           <div class="recipe-filter-chip on" onclick="filterRecipes('todos',this)">Todos</div>
-          <div class="recipe-filter-chip" onclick="filterRecipes('cafe',this)">☕ Café</div>
-          <div class="recipe-filter-chip" onclick="filterRecipes('almoco',this)">🍽️ Almoço</div>
-          <div class="recipe-filter-chip" onclick="filterRecipes('lanche',this)">🥗 Lanche</div>
-          <div class="recipe-filter-chip" onclick="filterRecipes('jantar',this)">🌙 Jantar</div>
-          <div class="recipe-filter-chip" onclick="filterRecipes('sobremesa',this)">🍮 Sobremesa</div>
+          <div class="recipe-filter-chip" onclick="filterRecipes('prato',this)">🍽️ Pratos</div>
+          <div class="recipe-filter-chip" onclick="filterRecipes('lanche',this)">🥗 Lanches</div>
+          <div class="recipe-filter-chip" onclick="filterRecipes('sobremesa',this)">🍮 Sobremesas</div>
         </div>
         <button id="fav-toggle-btn" class="recipe-fav-toggle" onclick="toggleFavView()">♡ Favoritas</button>
         <div id="recipes-list"><div style="text-align:center;padding:40px;color:var(--muted);font-size:13px;">Carregando receitas...</div></div>
@@ -2321,8 +2319,9 @@ let recipeFavIds = new Set();
 let recipeFilter = 'todos';
 let recipeFavOnly = false;
 
-const MEAL_EMOJIS = { cafe:'☕', almoco:'🍽️', lanche:'🥗', jantar:'🌙', sobremesa:'🍮' };
-const MEAL_LABELS = { cafe:'Café da manhã', almoco:'Almoço', lanche:'Lanche', jantar:'Jantar', sobremesa:'Sobremesa' };
+const MEAL_EMOJIS = { cafe:'🍽️', almoco:'🍽️', lanche:'🥗', jantar:'🍽️', sobremesa:'🍮' };
+const MEAL_LABELS = { cafe:'Prato', almoco:'Prato', lanche:'Lanche', jantar:'Prato', sobremesa:'Sobremesa' };
+const MEAL_FILTER_MAP = { prato: ['cafe','almoco','jantar'], lanche: ['lanche'], sobremesa: ['sobremesa'] };
 
 async function loadRecipes() {
   if (!currentUser) return;
@@ -2354,7 +2353,10 @@ function renderRecipes() {
   const el = document.getElementById('recipes-list');
 
   let list = recipesAll;
-  if (recipeFilter !== 'todos') list = list.filter(r => r.meal_type === recipeFilter);
+  if (recipeFilter !== 'todos') {
+    const types = MEAL_FILTER_MAP[recipeFilter] || [recipeFilter];
+    list = list.filter(r => types.includes(r.meal_type));
+  }
   if (recipeFavOnly) list = list.filter(r => recipeFavIds.has(r.id));
 
   if (list.length === 0) {
@@ -2429,8 +2431,7 @@ async function openRecipeDetail(id) {
   document.getElementById('recipe-detail-content').innerHTML = `
     ${photoHtml}
     <div style="margin-bottom:8px;">
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
-        <span class="recipe-tag">${esc(MEAL_LABELS[r.meal_type] || r.meal_type)}</span>
+      <div style="display:flex;align-items:center;justify-content:flex-end;gap:8px;">
         <button id="detail-fav-btn" data-id="${esc(id)}" class="btn btn-outline ${isFav ? 'on' : ''}" style="font-size:12px;flex-shrink:0;"
           onclick="toggleFavoriteDetail('${esc(id)}',this)">${isFav ? '❤️ Favoritada' : '🤍 Favoritar'}</button>
       </div>
