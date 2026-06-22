@@ -2196,6 +2196,9 @@ function triggerPhoto(slot) {
 async function uploadPhoto(input) {
   const file = input.files[0];
   if (!file) return;
+  const allowed = ['image/jpeg','image/png','image/webp','image/heic','image/heif'];
+  if (!allowed.includes(file.type)) { toast('Formato inválido. Use JPG, PNG ou WebP.'); input.value = ''; return; }
+  if (file.size > 10 * 1024 * 1024) { toast('Foto muito grande. Máximo 10MB.'); input.value = ''; return; }
   toast('Enviando foto...');
   const ext = file.name.split('.').pop();
   const path = `${currentUser.id}/${currentPhotoSlot}_${TODAY}.${ext}`;
@@ -2471,6 +2474,7 @@ async function loadAdminRanking() {
     el.appendChild(p); return;
   }
 
+  const escR = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   ranking.forEach((r, i) => {
     const medals = ['🥇','🥈','🥉'];
     const posClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
@@ -2480,7 +2484,7 @@ async function loadAdminRanking() {
     row.innerHTML = `
       <div class="ranking-pos ${posClass}">${i < 3 ? medals[i] : i+1}</div>
       <div class="ranking-info">
-        <div class="ranking-name">${sanitize(r.name)}</div>
+        <div class="ranking-name">${escR(r.name)}</div>
         <div class="ranking-bar-wrap"><div class="ranking-bar-fill" style="width:${pct}%"></div></div>
       </div>
       <div class="ranking-dias">${r.dias}/${diasNoMes}<br><span style="font-size:9px;font-weight:400;color:var(--muted);">dias</span></div>
@@ -2507,6 +2511,7 @@ async function loadAdmin() {
   const pending = all.filter(p => p.status === 'pending');
   const active = all.filter(p => p.status === 'active');
   const suspended = all.filter(p => p.status === 'suspended');
+  const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 
   document.getElementById('admin-stats').innerHTML = `
     <div class="admin-stat"><div class="admin-stat-n">${pending.length}</div><div class="admin-stat-l">Pendentes</div></div>
@@ -2519,17 +2524,17 @@ async function loadAdmin() {
   } else {
     pendingEl.innerHTML = pending.map(p => `
       <div class="patient-row">
-        <div class="patient-name">${p.full_name || '(sem nome)'}</div>
-        <div class="patient-email">${p.email}</div>
+        <div class="patient-name">${esc(p.full_name) || '(sem nome)'}</div>
+        <div class="patient-email">${esc(p.email)}</div>
         <div class="patient-meta">
           <span class="status-badge status-pending">Pendente</span>
-          <select class="plan-select" id="plan-${p.id}">
+          <select class="plan-select" id="plan-${esc(p.id)}">
             <option value="">Plano</option>
             <option value="trimestral">Trimestral (90d)</option>
             <option value="semestral">Semestral (180d)</option>
             <option value="anual">Anual (365d)</option>
           </select>
-          <button class="activate-btn" onclick="activatePatient('${p.id}')">Ativar</button>
+          <button class="activate-btn" onclick="activatePatient('${esc(p.id)}')">Ativar</button>
         </div>
       </div>
     `).join('');
@@ -2543,12 +2548,12 @@ async function loadAdmin() {
       const expires = p.subscription_expires_at ? new Date(p.subscription_expires_at).toLocaleDateString('pt-BR') : '—';
       return `
         <div class="patient-row">
-          <div class="patient-name">${p.full_name || '(sem nome)'}</div>
-          <div class="patient-email">${p.email}</div>
+          <div class="patient-name">${esc(p.full_name) || '(sem nome)'}</div>
+          <div class="patient-email">${esc(p.email)}</div>
           <div class="patient-meta">
             <span class="status-badge status-active">Ativo</span>
             <span style="font-size:11px;color:var(--muted);">até ${expires}</span>
-            <button class="suspend-btn" onclick="suspendPatient('${p.id}')">Suspender</button>
+            <button class="suspend-btn" onclick="suspendPatient('${esc(p.id)}')">Suspender</button>
           </div>
         </div>
       `;
