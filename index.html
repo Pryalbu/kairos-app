@@ -2490,7 +2490,7 @@ async function toggleFavoriteDetail(recipeId, btn) {
 
 // ── CONTEÚDO ──────────────────────────────────────────────
 async function loadContent() {
-  const { data } = await sb.from('content_items').select('*').eq('published', true).neq('type','sos').order('created_at', { ascending: false });
+  const { data } = await sb.from('content_items').select('*').eq('published', true).neq('type','sos').order('created_at', { ascending: true });
   const el = document.getElementById('content-list');
   if (!data || data.length === 0) {
     el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);font-size:13px;">Em breve novos conteúdos do Dr. Roberto!</div>';
