@@ -421,6 +421,23 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
 .recipe-name{font-size:13px;font-weight:500;color:var(--cream);}
 .recipe-meta{font-size:11px;color:var(--muted);margin-top:2px;}
 .recipe-tag{display:inline-block;font-size:9px;padding:2px 7px;border-radius:20px;background:var(--gold-faint);border:0.5px solid var(--gold-dim);color:var(--gold);margin-top:4px;}
+.recipe-filters{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:10px;scrollbar-width:none;}
+.recipe-filters::-webkit-scrollbar{display:none;}
+.recipe-filter-chip{flex-shrink:0;font-size:11px;padding:5px 12px;border-radius:20px;background:var(--surface2);border:0.5px solid var(--border);color:var(--muted);cursor:pointer;transition:all .2s;}
+.recipe-filter-chip.on{background:var(--gold-dim);border-color:var(--gold);color:var(--gold);}
+.recipe-fav-toggle{font-size:11px;padding:5px 14px;border-radius:20px;background:var(--surface2);border:0.5px solid var(--border);color:var(--muted);cursor:pointer;transition:all .2s;margin-bottom:12px;}
+.recipe-fav-toggle.on{background:rgba(231,76,60,.12);border-color:#e74c3c;color:#e74c3c;}
+.recipe-fav-btn{background:none;border:none;padding:4px 6px;cursor:pointer;font-size:17px;line-height:1;color:var(--muted);flex-shrink:0;transition:transform .15s;}
+.recipe-fav-btn.on{color:#e74c3c;}
+.recipe-fav-btn:active{transform:scale(1.3);}
+.recipe-img{width:54px;height:54px;border-radius:8px;object-fit:cover;flex-shrink:0;}
+.recipe-detail-photo{width:100%;height:180px;object-fit:cover;border-radius:var(--r);margin-bottom:14px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:48px;}
+.macro-row{display:flex;gap:6px;margin:12px 0;}
+.macro-pill{flex:1;background:var(--surface2);border:0.5px solid var(--border);border-radius:8px;padding:8px 4px;text-align:center;}
+.macro-pill-val{font-size:14px;font-weight:600;color:var(--cream);}
+.macro-pill-lbl{font-size:10px;color:var(--muted);margin-top:2px;}
+.recipe-section-title{font-size:11px;font-weight:600;color:var(--gold);text-transform:uppercase;letter-spacing:.5px;margin:16px 0 6px;}
+.recipe-section-body{font-size:13px;color:var(--cream);line-height:1.7;white-space:pre-line;}
 
 /* Video card */
 .video-card{background:var(--surface2);border:0.5px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:10px;cursor:pointer;transition:border-color .2s;}
@@ -1049,8 +1066,23 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
       <div class="scroll" id="sub-receitas" style="display:none;padding-top:14px;">
         <div class="back-btn" onclick="hideSub()"><svg viewBox="0 0 24 24"><polyline points="15,18 9,12 15,6"/></svg><span>Voltar</span></div>
         <div class="tag" style="margin-bottom:4px;">Receitas</div>
-        <div class="hdr-title" style="font-size:20px;margin-bottom:14px;">Banco de receitas</div>
+        <div class="hdr-title" style="font-size:20px;margin-bottom:12px;">Banco de receitas</div>
+        <div class="recipe-filters" id="recipe-filters">
+          <div class="recipe-filter-chip on" onclick="filterRecipes('todos',this)">Todos</div>
+          <div class="recipe-filter-chip" onclick="filterRecipes('cafe',this)">☕ Café</div>
+          <div class="recipe-filter-chip" onclick="filterRecipes('almoco',this)">🍽️ Almoço</div>
+          <div class="recipe-filter-chip" onclick="filterRecipes('lanche',this)">🥗 Lanche</div>
+          <div class="recipe-filter-chip" onclick="filterRecipes('jantar',this)">🌙 Jantar</div>
+          <div class="recipe-filter-chip" onclick="filterRecipes('sobremesa',this)">🍮 Sobremesa</div>
+        </div>
+        <button id="fav-toggle-btn" class="recipe-fav-toggle" onclick="toggleFavView()">♡ Favoritas</button>
         <div id="recipes-list"><div style="text-align:center;padding:40px;color:var(--muted);font-size:13px;">Carregando receitas...</div></div>
+      </div>
+
+      <!-- Sub: Detalhe da receita -->
+      <div class="scroll" id="sub-recipe-detail" style="display:none;padding-top:14px;">
+        <div class="back-btn" onclick="showSub('receitas')"><svg viewBox="0 0 24 24"><polyline points="15,18 9,12 15,6"/></svg><span>Receitas</span></div>
+        <div id="recipe-detail-content"></div>
       </div>
 
       <!-- Sub: Conteudo -->
@@ -1115,6 +1147,7 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
           <div class="admin-tab on" onclick="switchAdminTab('pacientes',this)">Pacientes</div>
           <div class="admin-tab" onclick="switchAdminTab('ranking',this)">Ranking</div>
           <div class="admin-tab" onclick="switchAdminTab('eventos',this)">Eventos</div>
+          <div class="admin-tab" onclick="switchAdminTab('receitas',this)">Receitas</div>
         </div>
 
         <div id="admin-tab-pacientes">
@@ -1144,6 +1177,40 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
           <div class="card-title" style="margin-bottom:8px;">Eventos publicados</div>
           <div id="admin-eventos-list"></div>
         </div>
+
+        <div id="admin-tab-receitas" style="display:none;">
+          <div class="card-title" style="margin-bottom:12px;">Nova receita</div>
+          <div class="card" style="margin-bottom:16px;">
+            <div class="inp-group"><label class="inp-label">Título</label><input class="inp" type="text" id="rec-title" placeholder="Ex: Omelete fit com espinafre"></div>
+            <div class="inp-group" style="margin-top:8px;"><label class="inp-label">Categoria</label>
+              <select class="inp" id="rec-category">
+                <option value="cafe">☕ Café da manhã</option>
+                <option value="almoco">🍽️ Almoço</option>
+                <option value="lanche">🥗 Lanche</option>
+                <option value="jantar">🌙 Jantar</option>
+                <option value="sobremesa">🍮 Sobremesa</option>
+              </select>
+            </div>
+            <div class="inp-group" style="margin-top:8px;"><label class="inp-label">Ingredientes</label><textarea class="inp" id="rec-ingredients" placeholder="Liste os ingredientes e quantidades..." rows="4" style="resize:none;height:auto;"></textarea></div>
+            <div class="inp-group" style="margin-top:8px;"><label class="inp-label">Modo de preparo</label><textarea class="inp" id="rec-instructions" placeholder="Descreva o passo a passo..." rows="4" style="resize:none;height:auto;"></textarea></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">
+              <div class="inp-group"><label class="inp-label">Calorias (kcal)</label><input class="inp" type="number" id="rec-calories" placeholder="Ex: 320"></div>
+              <div class="inp-group"><label class="inp-label">Proteína (g)</label><input class="inp" type="number" step="0.1" id="rec-protein" placeholder="Ex: 28"></div>
+              <div class="inp-group"><label class="inp-label">Carboidratos (g)</label><input class="inp" type="number" step="0.1" id="rec-carbs" placeholder="Ex: 12"></div>
+              <div class="inp-group"><label class="inp-label">Gordura (g)</label><input class="inp" type="number" step="0.1" id="rec-fat" placeholder="Ex: 18"></div>
+            </div>
+            <div class="inp-group" style="margin-top:8px;"><label class="inp-label">Foto da receita</label><input class="inp" type="file" id="rec-photo" accept="image/jpeg,image/png,image/webp"></div>
+            <div style="display:flex;align-items:center;gap:10px;margin-top:12px;">
+              <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);cursor:pointer;">
+                <input type="checkbox" id="rec-published"> Publicar imediatamente
+              </label>
+            </div>
+            <button class="btn btn-gold" style="margin-top:12px;" onclick="saveAdminRecipe()">Salvar receita</button>
+          </div>
+          <div class="card-title" style="margin-bottom:8px;">Receitas cadastradas</div>
+          <div id="admin-receitas-list"></div>
+        </div>
+      </div>
       </div>
 
     </div>
@@ -2243,25 +2310,156 @@ async function loadPhotos() {
 }
 
 // ── RECEITAS ──────────────────────────────────────────────
+let recipesAll = [];
+let recipeFavIds = new Set();
+let recipeFilter = 'todos';
+let recipeFavOnly = false;
+
+const MEAL_EMOJIS = { cafe:'☕', almoco:'🍽️', lanche:'🥗', jantar:'🌙', sobremesa:'🍮' };
+const MEAL_LABELS = { cafe:'Café da manhã', almoco:'Almoço', lanche:'Lanche', jantar:'Jantar', sobremesa:'Sobremesa' };
+
 async function loadRecipes() {
-  const { data } = await sb.from('recipes').select('*').eq('published', true).order('created_at', { ascending: false });
+  if (!currentUser) return;
+  const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   const el = document.getElementById('recipes-list');
-  if (!data || data.length === 0) {
-    el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);font-size:13px;">Em breve novas receitas do Dr. Roberto!</div>';
+  el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);font-size:13px;">Carregando...</div>';
+
+  const [recRes, favRes] = await Promise.allSettled([
+    sb.from('recipes').select('*').eq('published', true).order('created_at', { ascending: false }),
+    sb.from('recipe_favorites').select('recipe_id').eq('user_id', currentUser.id)
+  ]);
+
+  recipesAll = recRes.status === 'fulfilled' ? (recRes.value.data || []) : [];
+  recipeFavIds = new Set((favRes.status === 'fulfilled' ? (favRes.value.data || []) : []).map(f => f.recipe_id));
+
+  // Carregar signed URLs das fotos
+  for (const r of recipesAll) {
+    if (r.photo_path) {
+      const { data: su } = await sb.storage.from('recipes-photos').createSignedUrl(r.photo_path, 3600);
+      r._signedUrl = su?.signedUrl || null;
+    }
+  }
+
+  renderRecipes();
+}
+
+function renderRecipes() {
+  const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  const el = document.getElementById('recipes-list');
+
+  let list = recipesAll;
+  if (recipeFilter !== 'todos') list = list.filter(r => r.meal_type === recipeFilter);
+  if (recipeFavOnly) list = list.filter(r => recipeFavIds.has(r.id));
+
+  if (list.length === 0) {
+    el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);font-size:13px;">' +
+      (recipeFavOnly ? 'Nenhuma receita favoritada ainda.' : 'Em breve novas receitas do Dr. Roberto!') + '</div>';
     return;
   }
-  const emojis = { cafe:'☕', almoco:'🍽️', lanche:'🥗', jantar:'🌙', sobremesa:'🍮' };
-  const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  el.innerHTML = data.map(r => `
-    <div class="recipe-card">
-      <div class="recipe-thumb">${emojis[r.meal_type] || '🍴'}</div>
-      <div>
+
+  el.innerHTML = list.map(r => {
+    const thumb = r._signedUrl
+      ? `<img class="recipe-img" src="${esc(r._signedUrl)}" alt="${esc(r.title)}" loading="lazy">`
+      : `<div class="recipe-thumb">${MEAL_EMOJIS[r.meal_type] || '🍴'}</div>`;
+    const isFav = recipeFavIds.has(r.id);
+    return `
+    <div class="recipe-card" onclick="openRecipeDetail('${esc(r.id)}')">
+      ${thumb}
+      <div style="flex:1;min-width:0;">
         <div class="recipe-name">${esc(r.title)}</div>
         <div class="recipe-meta">${esc(r.calories || '—')} kcal · ${esc(r.protein_g || '—')}g prot</div>
-        <span class="recipe-tag">${esc(r.meal_type)}</span>
+        <span class="recipe-tag">${esc(MEAL_LABELS[r.meal_type] || r.meal_type)}</span>
       </div>
+      <button class="recipe-fav-btn ${isFav ? 'on' : ''}" onclick="event.stopPropagation();toggleFavorite('${esc(r.id)}',this)" title="Favoritar">${isFav ? '❤️' : '🤍'}</button>
+    </div>`;
+  }).join('');
+}
+
+function filterRecipes(type, el) {
+  recipeFilter = type;
+  document.querySelectorAll('.recipe-filter-chip').forEach(c => c.classList.remove('on'));
+  el.classList.add('on');
+  renderRecipes();
+}
+
+function toggleFavView() {
+  recipeFavOnly = !recipeFavOnly;
+  const btn = document.getElementById('fav-toggle-btn');
+  if (btn) { btn.classList.toggle('on', recipeFavOnly); btn.textContent = recipeFavOnly ? '❤️ Favoritas' : '♡ Favoritas'; }
+  renderRecipes();
+}
+
+async function toggleFavorite(recipeId, btn) {
+  if (!currentUser) return;
+  const isFav = recipeFavIds.has(recipeId);
+  if (isFav) {
+    await sb.from('recipe_favorites').delete().eq('user_id', currentUser.id).eq('recipe_id', recipeId);
+    recipeFavIds.delete(recipeId);
+  } else {
+    await sb.from('recipe_favorites').insert({ user_id: currentUser.id, recipe_id: recipeId });
+    recipeFavIds.add(recipeId);
+  }
+  const newFav = !isFav;
+  btn.classList.toggle('on', newFav);
+  btn.textContent = newFav ? '❤️' : '🤍';
+  // Atualizar botão no detalhe se estiver aberto
+  const detailFavBtn = document.getElementById('detail-fav-btn');
+  if (detailFavBtn && detailFavBtn.dataset.id === recipeId) {
+    detailFavBtn.classList.toggle('on', newFav);
+    detailFavBtn.textContent = newFav ? '❤️ Favoritada' : '🤍 Favoritar';
+  }
+}
+
+async function openRecipeDetail(id) {
+  const r = recipesAll.find(x => x.id === id);
+  if (!r) return;
+  const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  const isFav = recipeFavIds.has(id);
+
+  const photoHtml = r._signedUrl
+    ? `<img class="recipe-detail-photo" src="${esc(r._signedUrl)}" alt="${esc(r.title)}">`
+    : `<div class="recipe-detail-photo">${MEAL_EMOJIS[r.meal_type] || '🍴'}</div>`;
+
+  document.getElementById('recipe-detail-content').innerHTML = `
+    ${photoHtml}
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px;">
+      <div>
+        <span class="recipe-tag">${esc(MEAL_LABELS[r.meal_type] || r.meal_type)}</span>
+        <div class="hdr-title" style="font-size:20px;margin-top:6px;">${esc(r.title)}</div>
+      </div>
+      <button id="detail-fav-btn" data-id="${esc(id)}" class="btn btn-outline ${isFav ? 'on' : ''}" style="font-size:12px;flex-shrink:0;margin-top:18px;"
+        onclick="toggleFavoriteDetail('${esc(id)}',this)">${isFav ? '❤️ Favoritada' : '🤍 Favoritar'}</button>
     </div>
-  `).join('');
+    <div class="macro-row">
+      <div class="macro-pill"><div class="macro-pill-val">${esc(r.calories || '—')}</div><div class="macro-pill-lbl">kcal</div></div>
+      <div class="macro-pill"><div class="macro-pill-val">${esc(r.protein_g || '—')}g</div><div class="macro-pill-lbl">Proteína</div></div>
+      <div class="macro-pill"><div class="macro-pill-val">${esc(r.carbs_g || '—')}g</div><div class="macro-pill-lbl">Carbo</div></div>
+      <div class="macro-pill"><div class="macro-pill-val">${esc(r.fat_g || '—')}g</div><div class="macro-pill-lbl">Gordura</div></div>
+    </div>
+    <div class="recipe-section-title">Ingredientes</div>
+    <div class="recipe-section-body">${esc(r.ingredients)}</div>
+    <div class="recipe-section-title">Modo de preparo</div>
+    <div class="recipe-section-body">${esc(r.instructions)}</div>
+    <div style="height:24px;"></div>
+  `;
+
+  showSub('recipe-detail');
+}
+
+async function toggleFavoriteDetail(recipeId, btn) {
+  if (!currentUser) return;
+  const isFav = recipeFavIds.has(recipeId);
+  if (isFav) {
+    await sb.from('recipe_favorites').delete().eq('user_id', currentUser.id).eq('recipe_id', recipeId);
+    recipeFavIds.delete(recipeId);
+  } else {
+    await sb.from('recipe_favorites').insert({ user_id: currentUser.id, recipe_id: recipeId });
+    recipeFavIds.add(recipeId);
+  }
+  const newFav = !isFav;
+  recipeFavIds[newFav ? 'add' : 'delete'](recipeId);
+  btn.classList.toggle('on', newFav);
+  btn.textContent = newFav ? '❤️ Favoritada' : '🤍 Favoritar';
 }
 
 // ── CONTEÚDO ──────────────────────────────────────────────
@@ -2388,7 +2586,7 @@ async function saveEvent() {
   document.getElementById('ev-title').value = '';
   document.getElementById('ev-desc').value = '';
   document.getElementById('ev-date').value = '';
-  document.getElementById('ev-link').value = '';
+
   await loadAdminEventos();
   await loadNextEvent();
 }
@@ -2419,9 +2617,9 @@ async function loadAdminEventos() {
     const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     row.innerHTML = `
       <div class="evento-admin-title">${esc(ev.title)}</div>
-      <div class="evento-admin-date">📅 ${dt}</div>
+      <div class="evento-admin-date">\u{1F4C5} ${dt}</div>
       ${ev.description ? `<div class="evento-admin-desc">${esc(ev.description)}</div>` : ''}
-      ${ev.link_url ? `<div style="font-size:11px;color:var(--gold);margin-top:4px;">🔗 ${esc(ev.link_url)}</div>` : ''}
+      ${ev.link_url ? `<div style="font-size:11px;color:var(--gold);margin-top:4px;">\u{1F517} ${esc(ev.link_url)}</div>` : ''}
       <div class="evento-admin-actions">
         <button class="evento-del-btn">Remover</button>
       </div>
@@ -2476,7 +2674,7 @@ async function loadAdminRanking() {
 
   const escR = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   ranking.forEach((r, i) => {
-    const medals = ['🥇','🥈','🥉'];
+    const medals = ['\u{1F947}','\u{1F948}','\u{1F949}'];
     const posClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
     const pct = Math.round((r.dias / maxDias) * 100);
     const row = document.createElement('div');
@@ -2493,24 +2691,109 @@ async function loadAdminRanking() {
   });
 }
 
-// ── ADMIN TABS ────────────────────────────────────────────
-function switchAdminTab(tab, el) {
-  ['pacientes','ranking','eventos'].forEach(t => {
-    document.getElementById('admin-tab-' + t).style.display = t === tab ? 'block' : 'none';
+// ── ADMIN RECEITAS ────────────────────────────────────────
+async function loadAdminRecipes() {
+  const { data } = await sb.from('recipes').select('*').order('created_at', { ascending: false });
+  const el = document.getElementById('admin-receitas-list');
+  el.innerHTML = '';
+  if (!data || data.length === 0) {
+    el.innerHTML = '<p style="font-size:12px;color:var(--muted);padding:8px 0;">Nenhuma receita cadastrada.</p>';
+    return;
+  }
+  const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  data.forEach(r => {
+    const row = document.createElement('div');
+    row.className = 'evento-admin-row';
+    row.innerHTML = `
+      <div class="evento-admin-title">${esc(r.title)}</div>
+      <div class="evento-admin-date">${esc(r.category || '—')}</div>
+      <div class="evento-admin-actions">
+        <button class="activate-btn" style="padding:4px 10px;" onclick="togglePublishRecipe('${esc(r.id)}', ${r.published})">
+          ${r.published ? 'Despublicar' : 'Publicar'}
+        </button>
+        <button class="suspend-btn" style="padding:4px 10px;" onclick="deleteAdminRecipe('${esc(r.id)}')">Remover</button>
+      </div>
+    `;
+    el.appendChild(row);
   });
-  document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('on'));
-  el.classList.add('on');
-  if (tab === 'ranking') loadAdminRanking();
-  if (tab === 'eventos') loadAdminEventos();
 }
 
-// ── ADMIN ─────────────────────────────────────────────────
+async function saveAdminRecipe() {
+  const title = document.getElementById('rec-title').value.trim();
+  const category = document.getElementById('rec-category').value;
+  const ingredients = document.getElementById('rec-ingredients').value.trim();
+  const instructions = document.getElementById('rec-instructions').value.trim();
+  const macros = {
+    kcal: parseFloat(document.getElementById('rec-calories').value) || null,
+    prot: parseFloat(document.getElementById('rec-protein').value) || null,
+    carb: parseFloat(document.getElementById('rec-carbs').value) || null,
+    fat:  parseFloat(document.getElementById('rec-fat').value)  || null
+  };
+  const published = document.getElementById('rec-published').checked;
+  const file = document.getElementById('rec-photo').files[0];
+
+  if (!title) { toast('Título obrigatório.'); return; }
+  if (!ingredients) { toast('Ingredientes obrigatórios.'); return; }
+  if (!instructions) { toast('Modo de preparo obrigatório.'); return; }
+
+  let photo_path = null;
+  if (file) {
+    const allowed = ['image/jpeg','image/png','image/webp'];
+    if (!allowed.includes(file.type)) { toast('Foto deve ser JPG, PNG ou WebP.'); return; }
+    if (file.size > 5 * 1024 * 1024) { toast('Foto maior que 5MB.'); return; }
+    const ext = file.name.split('.').pop();
+    const path = `${Date.now()}.${ext}`;
+    const { error: upErr } = await sb.storage.from('recipes-photos').upload(path, file, { contentType: file.type });
+    if (upErr) { toast('Erro ao enviar foto.'); return; }
+    photo_path = path;
+  }
+
+  const { error } = await sb.from('recipes').insert({
+    title, category, ingredients, instructions,
+    macros, published, photo_path
+  });
+  if (error) { toast('Erro ao salvar receita.'); return; }
+  toast('Receita salva! ✓');
+  ['rec-title','rec-category','rec-ingredients','rec-instructions','rec-calories','rec-protein','rec-carbs','rec-fat','rec-photo'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('rec-published').checked = false;
+  await loadAdminRecipes();
+}
+
+async function togglePublishRecipe(id, currentlyPublished) {
+  const { error } = await sb.from('recipes').update({ published: !currentlyPublished }).eq('id', id);
+  if (error) { toast('Erro ao atualizar.'); return; }
+  toast(currentlyPublished ? 'Receita despublicada.' : 'Receita publicada! ✓');
+  await loadAdminRecipes();
+}
+
+async function deleteAdminRecipe(id) {
+  if (!confirm('Remover esta receita?')) return;
+  await sb.from('recipes').delete().eq('id', id);
+  toast('Receita removida.');
+  await loadAdminRecipes();
+}
+
+// ── ADMIN TABS ────────────────────────────────────────────
+function switchAdminTab(tab, el) {
+  document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('on'));
+  if (el) el.classList.add('on');
+  ['pacientes','conteudo','eventos','ranking','receitas'].forEach(t => {
+    const panel = document.getElementById('admin-tab-' + t);
+    if (panel) panel.style.display = t === tab ? 'block' : 'none';
+  });
+  if (tab === 'ranking') loadAdminRanking();
+  if (tab === 'receitas') loadAdminRecipes();
+}
+
+// ── ADMIN ─────────────────────────────────────────────────────
 async function loadAdmin() {
   const { data: all } = await sb.from('profiles').select('*').neq('role','admin').order('created_at', { ascending: false });
   if (!all) return;
   const pending = all.filter(p => p.status === 'pending');
   const active = all.filter(p => p.status === 'active');
-  const suspended = all.filter(p => p.status === 'suspended');
   const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 
   document.getElementById('admin-stats').innerHTML = `
@@ -2584,43 +2867,40 @@ async function suspendPatient(id) {
   await loadAdmin();
 }
 
-// ── NAVIGATION ────────────────────────────────────────────
+// ── NAVIGATION ────────────────────────────────────────────────
 function switchTab(tab) {
   document.querySelectorAll('.subscreen').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.bnav-item').forEach(n => n.classList.remove('on'));
   document.getElementById('tab-' + tab).classList.add('active');
   document.getElementById('nav-' + tab).classList.add('on');
   hideSub();
-  if (tab === 'inicio') renderHome();
-  if (tab === 'planner') loadCheckin();
-  if (tab === 'evolucao') { loadEvolution(); loadPerformance(); }
 }
 
 function showMais() { switchTab('mais'); }
 
 function showSub(name) {
   document.getElementById('mais-main').style.display = 'none';
-  ['receitas','conteudo','sos','conta','admin','jornada'].forEach(s => {
-    const el = document.getElementById('sub-'+s);
+  ['receitas','conteudo','sos','conta','admin','jornada','recipe-detail'].forEach(s => {
+    const el = document.getElementById('sub-' + s);
     if (el) el.style.display = 'none';
   });
   const target = document.getElementById('sub-' + name);
   if (target) target.style.display = 'block';
   if (name === 'receitas') loadRecipes();
   if (name === 'conteudo') loadContent();
-  if (name === 'admin') loadAdmin();
+  if (name === 'admin') { loadAdmin(); switchAdminTab('pacientes'); }
   if (name === 'jornada') loadJornada();
 }
 
 function hideSub() {
   document.getElementById('mais-main').style.display = 'block';
-  ['receitas','conteudo','sos','conta','admin','jornada'].forEach(s => {
-    const el = document.getElementById('sub-'+s);
+  ['receitas','conteudo','sos','conta','admin','jornada','recipe-detail'].forEach(s => {
+    const el = document.getElementById('sub-' + s);
     if (el) el.style.display = 'none';
   });
 }
 
-// ── JORNADA ───────────────────────────────────────────────
+// ── JORNADA ─────────────────────────────────────────────────────
 async function loadJornada() {
   if (!currentUser) return;
   const ninetyDaysAgo = new Date(); ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
@@ -2636,7 +2916,6 @@ async function loadJornada() {
   const habits = habitsRes.data || [];
   const habitsPerDay = (HABITS[currentGoal] || HABITS['emagrecer']).length;
 
-  // Build day map: date -> count of done habits
   const dayMap = {};
   logs.forEach(l => { dayMap[l.log_date] = dayMap[l.log_date] || 0; });
   habits.forEach(h => { dayMap[h.log_date] = (dayMap[h.log_date] || 0) + 1; });
@@ -2644,7 +2923,6 @@ async function loadJornada() {
   const activeDays = Object.keys(dayMap).filter(d => d <= today).sort();
   const totalDays = activeDays.length;
 
-  // Current streak
   let streak = 0;
   let checkDate = new Date();
   while (true) {
@@ -2653,7 +2931,6 @@ async function loadJornada() {
     if (dayMap[key] !== undefined) { streak++; checkDate.setDate(checkDate.getDate()-1); } else break;
   }
 
-  // Best streak
   let best = 0, cur = 0;
   activeDays.forEach((k, i) => {
     if (i === 0) { cur = 1; }
@@ -2664,7 +2941,6 @@ async function loadJornada() {
     if (cur > best) best = cur;
   });
 
-  // Avg %
   const avgPct = activeDays.length > 0
     ? Math.round(activeDays.reduce((acc, d) => acc + Math.min(100, Math.round(((dayMap[d]||0)/habitsPerDay)*100)), 0) / activeDays.length)
     : 0;
@@ -2705,7 +2981,7 @@ async function loadJornada() {
   }).join('');
 }
 
-// ── SCREEN MANAGER ────────────────────────────────────────
+// ── SCREEN MANAGER ────────────────────────────────────────────
 function showScreen(name) {
   document.getElementById('loading').style.display = 'none';
   document.getElementById('sbar').style.display = name === 'app' ? 'flex' : 'none';
@@ -2715,7 +2991,7 @@ function showScreen(name) {
   document.getElementById('screen-app').classList.toggle('active', name === 'app');
 }
 
-// ── TOAST ─────────────────────────────────────────────────
+// ── TOAST ─────────────────────────────────────────────────────────
 let toastTimer;
 function toast(msg) {
   const el = document.getElementById('toast');
