@@ -817,24 +817,41 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
         </div>
 
         <!-- Cardio -->
-        <div class="card">
-          <div class="checkin-row" style="margin-bottom:10px;">
+        <div class="card checkin-card" id="ci-cardio-card" onclick="toggleCheckin('cardio')">
+          <div class="checkin-row">
             <div class="checkin-ico">🏃</div>
             <div class="checkin-info">
               <div class="checkin-name">Cardio</div>
               <div class="checkin-sub">Corrida, caminhada, bike...</div>
             </div>
-            <div class="checkin-toggle on" id="ci-cardio-toggle" style="pointer-events:none;opacity:0;"></div>
+            <div class="checkin-toggle" id="ci-cardio-toggle"></div>
           </div>
-          <div class="cardio-input-row">
-            <button class="cardio-btn" onclick="adjustCardio(-5)">−</button>
-            <div class="cardio-display">
-              <span class="cardio-val" id="ci-cardio-val">0</span>
-              <span class="cardio-unit">min</span>
+          <!-- Detalhes opcionais — não influenciam o check -->
+          <div id="ci-cardio-details" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);" onclick="event.stopPropagation()">
+            <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">Opcional — não influencia o check-in</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+              <div>
+                <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">Tempo (min)</div>
+                <div class="cardio-input-row" style="justify-content:flex-start;gap:8px;">
+                  <button class="cardio-btn" onclick="adjustCardio(-5)">−</button>
+                  <div class="cardio-display" style="min-width:44px;">
+                    <span class="cardio-val" id="ci-cardio-val" style="font-size:26px;">0</span>
+                  </div>
+                  <button class="cardio-btn" onclick="adjustCardio(+5)">+</button>
+                </div>
+              </div>
+              <div>
+                <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">Distância (km)</div>
+                <div class="cardio-input-row" style="justify-content:flex-start;gap:8px;">
+                  <button class="cardio-btn" onclick="adjustCardioKm(-0.5)">−</button>
+                  <div class="cardio-display" style="min-width:44px;">
+                    <span class="cardio-val" id="ci-cardio-km" style="font-size:26px;">0</span>
+                  </div>
+                  <button class="cardio-btn" onclick="adjustCardioKm(+0.5)">+</button>
+                </div>
+              </div>
             </div>
-            <button class="cardio-btn" onclick="adjustCardio(+5)">+</button>
           </div>
-          <div style="font-size:10px;color:var(--muted);text-align:center;margin-top:6px;">Toque +/− para ajustar em 5 min</div>
         </div>
 
         <!-- Plano alimentar -->
@@ -1681,7 +1698,7 @@ async function renderHome() {
   const ml = todayLog ? (todayLog.water_ml || 0) : 0;
   const habitos = [
     { ico:'🏋️', lbl:'Treino',   done: todayLog?.treino_done },
-    { ico:'🏃', lbl:'Cardio',   done: (todayLog?.cardio_min||0) > 0 },
+    { ico:'🏃', lbl:'Cardio',   done: !!todayLog?.cardio_done },
     { ico:'🥗', lbl:'Plano',    done: todayLog?.plano_done },
     { ico:'💧', lbl:'Água',     done: ml >= 2000 },
     { ico:'😴', lbl:'Sono',     done: todayLog?.sono_done },
@@ -1714,14 +1731,14 @@ async function renderCalendar() {
   const monthStart = `${year}-${String(month+1).padStart(2,'0')}-01`;
   const monthEnd   = `${year}-${String(month+1).padStart(2,'0')}-${String(new Date(year,month+1,0).getDate()).padStart(2,'0')}`;
   const { data } = await sb.from('daily_logs')
-    .select('log_date,treino_done,cardio_min,plano_done,water_ml,sono_done,mente_done')
+    .select('log_date,treino_done,cardio_done,cardio_min,cardio_km,plano_done,water_ml,sono_done,mente_done')
     .eq('user_id', currentUser.id)
     .gte('log_date', monthStart)
     .lte('log_date', monthEnd);
   const logs = data || [];
   const statusMap = {};
   logs.forEach(l => {
-    const done = [l.treino_done, (l.cardio_min||0)>0, l.plano_done, (l.water_ml||0)>=2000, l.sono_done, l.mente_done].filter(Boolean).length;
+    const done = [l.treino_done, l.cardio_done, l.plano_done, (l.water_ml||0)>=2000, l.sono_done, l.mente_done].filter(Boolean).length;
     statusMap[l.log_date] = done === 6 ? 'done' : done > 0 ? 'partial' : 'none';
   });
   const grid = document.getElementById('cal-grid');
@@ -1765,7 +1782,7 @@ function renderHomeDayCard() {
   const ml = todayLog ? (todayLog.water_ml || 0) : 0;
   const habitos = [
     { ico:'🏋️', lbl:'Treino', done: todayLog?.treino_done },
-    { ico:'🏃', lbl:'Cardio', done: (todayLog?.cardio_min||0) > 0 },
+    { ico:'🏃', lbl:'Cardio', done: !!todayLog?.cardio_done },
     { ico:'🥗', lbl:'Plano',  done: todayLog?.plano_done },
     { ico:'💧', lbl:'Água',   done: ml >= 2000 },
     { ico:'😴', lbl:'Sono',   done: todayLog?.sono_done },
@@ -1791,18 +1808,20 @@ function renderHomeDayCard() {
 
 // ── CHECK-IN ───────────────────────────────────────────────
 // Estado local do check-in do dia
-let checkinState = { treino: false, cardio_min: 0, plano: false, sono: false, mente: false };
+let checkinState = { treino: false, cardio: false, cardio_min: 0, cardio_km: 0, plano: false, sono: false, mente: false };
 
 async function loadCheckin() {
   await loadTodayLog();
   if (todayLog) {
     checkinState.treino    = !!todayLog.treino_done;
+    checkinState.cardio    = !!todayLog.cardio_done;
     checkinState.cardio_min = todayLog.cardio_min || 0;
+    checkinState.cardio_km  = todayLog.cardio_km  || 0;
     checkinState.plano     = !!todayLog.plano_done;
     checkinState.sono      = !!todayLog.sono_done;
     checkinState.mente     = !!todayLog.mente_done;
   } else {
-    checkinState = { treino: false, cardio_min: 0, plano: false, sono: false, mente: false };
+    checkinState = { treino: false, cardio: false, cardio_min: 0, cardio_km: 0, plano: false, sono: false, mente: false };
   }
   renderCheckin();
 }
@@ -1814,14 +1833,19 @@ function renderCheckin() {
   if (el) el.textContent = dias[now.getDay()] + ', ' + now.getDate() + '/' + (now.getMonth()+1);
 
   setToggle('ci-treino-toggle', checkinState.treino);
+  setToggle('ci-cardio-toggle', checkinState.cardio);
   setToggle('ci-plano-toggle',  checkinState.plano);
   setToggle('ci-sono-toggle',   checkinState.sono);
   setToggle('ci-mente-toggle',  checkinState.mente);
 
   const cardioValEl = document.getElementById('ci-cardio-val');
   if (cardioValEl) cardioValEl.textContent = checkinState.cardio_min;
-  const cardioToggle = document.getElementById('ci-cardio-toggle');
-  if (cardioToggle) cardioToggle.classList.toggle('on', checkinState.cardio_min > 0);
+  const cardioKmEl = document.getElementById('ci-cardio-km');
+  if (cardioKmEl) cardioKmEl.textContent = checkinState.cardio_km % 1 === 0 ? checkinState.cardio_km : checkinState.cardio_km.toFixed(1);
+  const cardioDetails = document.getElementById('ci-cardio-details');
+  if (cardioDetails) cardioDetails.style.display = checkinState.cardio ? 'block' : 'none';
+  const cardioCard = document.getElementById('ci-cardio-card');
+  if (cardioCard) cardioCard.classList.toggle('on', checkinState.cardio);
 
   const ml = todayLog ? (todayLog.water_ml || 0) : 0;
   const filled = Math.round(ml / 250);
@@ -1841,7 +1865,7 @@ function renderCheckin() {
   const aguaOk = ml >= 2000;
   setToggle('ci-agua-toggle', aguaOk);
 
-  const items = [checkinState.treino, checkinState.cardio_min > 0, checkinState.plano, aguaOk, checkinState.sono, checkinState.mente];
+  const items = [checkinState.treino, checkinState.cardio, checkinState.plano, aguaOk, checkinState.sono, checkinState.mente];
   const done = items.filter(Boolean).length;
   const pct = Math.round((done / 6) * 100);
   const slEl = document.getElementById('checkin-status-label');
@@ -1868,21 +1892,31 @@ async function toggleCheckin(key) {
 async function adjustCardio(delta) {
   checkinState.cardio_min = Math.max(0, checkinState.cardio_min + delta);
   await saveCheckin();
-  renderCheckin();
+  const el = document.getElementById('ci-cardio-val');
+  if (el) el.textContent = checkinState.cardio_min;
+}
+
+async function adjustCardioKm(delta) {
+  checkinState.cardio_km = Math.max(0, Math.round((checkinState.cardio_km + delta) * 10) / 10);
+  await saveCheckin();
+  const el = document.getElementById('ci-cardio-km');
+  if (el) el.textContent = checkinState.cardio_km % 1 === 0 ? checkinState.cardio_km : checkinState.cardio_km.toFixed(1);
 }
 
 async function saveCheckin() {
   await ensureTodayLog();
   const payload = {
     treino_done:  checkinState.treino,
+    cardio_done:  checkinState.cardio,
     cardio_min:   checkinState.cardio_min,
+    cardio_km:    checkinState.cardio_km || null,
     plano_done:   checkinState.plano,
     sono_done:    checkinState.sono,
     mente_done:   checkinState.mente
   };
   const { error } = await sb.from('daily_logs').update(payload).eq('id', todayLog.id);
   if (!error) {
-    Object.assign(todayLog, { treino_done: payload.treino_done, cardio_min: payload.cardio_min, plano_done: payload.plano_done, sono_done: payload.sono_done, mente_done: payload.mente_done });
+    Object.assign(todayLog, payload);
     renderHomeDayCard();
   }
 }
@@ -1892,7 +1926,7 @@ function renderQuickHabits() { renderCheckin(); }
 
 function updateWeekProgress() {
   const ml = todayLog ? (todayLog.water_ml || 0) : 0;
-  const items = [checkinState.treino, checkinState.cardio_min > 0, checkinState.plano, ml >= 2000, checkinState.sono, checkinState.mente];
+  const items = [checkinState.treino, checkinState.cardio, checkinState.plano, ml >= 2000, checkinState.sono, checkinState.mente];
   const done = items.filter(Boolean).length;
   const pct = Math.round((done / 6) * 100);
   const pctEl = document.getElementById('week-pct');
@@ -1908,7 +1942,7 @@ async function loadPerformance() {
   const fromStr = from.toISOString().slice(0, 10);
 
   const { data } = await sb.from('daily_logs')
-    .select('log_date,treino_done,cardio_min,plano_done,water_ml,sono_done,mente_done')
+    .select('log_date,treino_done,cardio_done,cardio_min,cardio_km,plano_done,water_ml,sono_done,mente_done')
     .eq('user_id', currentUser.id)
     .gte('log_date', fromStr)
     .order('log_date', { ascending: true });
@@ -1980,7 +2014,7 @@ function renderPerfHistory(logs) {
       const ddStr = dd.toISOString().slice(0,10);
       const log = wLogs.find(l => l.log_date === ddStr);
       if (log) {
-        const done = [log.treino_done, (log.cardio_min||0)>0, log.plano_done, (log.water_ml||0)>=2000, log.sono_done, log.mente_done].filter(Boolean).length;
+        const done = [log.treino_done, log.cardio_done, log.plano_done, (log.water_ml||0)>=2000, log.sono_done, log.mente_done].filter(Boolean).length;
         pcts.push(Math.round((done/6)*100));
       } else {
         pcts.push(0);
@@ -2717,7 +2751,7 @@ async function loadAdminRanking() {
   const mesEnd   = TODAY;
 
   const { data: logs } = await sb.from('daily_logs')
-    .select('user_id, log_date, treino_done, cardio_min, plano_done, water_ml, sono_done, mente_done')
+    .select('user_id, log_date, treino_done, cardio_done, cardio_min, cardio_km, plano_done, water_ml, sono_done, mente_done')
     .gte('log_date', mesStart)
     .lte('log_date', mesEnd);
 
@@ -2728,7 +2762,7 @@ async function loadAdminRanking() {
 
   const contagem = {};
   logs.forEach(l => {
-    const temAlgo = l.treino_done || (l.cardio_min||0)>0 || l.plano_done || (l.water_ml||0)>=2000 || l.sono_done || l.mente_done;
+    const temAlgo = l.treino_done || l.cardio_done || l.plano_done || (l.water_ml||0)>=2000 || l.sono_done || l.mente_done;
     if (temAlgo) contagem[l.user_id] = (contagem[l.user_id] || 0) + 1;
   });
 
