@@ -1221,6 +1221,10 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
           <div class="card" style="margin-bottom:16px;">
             <div class="inp-group"><label class="inp-label">Título</label><input class="inp" type="text" id="cnt-title" placeholder="Ex: Aula 1 — Boas-vindas"></div>
             <div class="inp-group" style="margin-top:8px;"><label class="inp-label">Descrição (opcional)</label><input class="inp" type="text" id="cnt-desc" placeholder="Breve descrição do conteúdo"></div>
+            <div style="display:grid;grid-template-columns:2fr 1fr;gap:8px;margin-top:8px;">
+              <div class="inp-group"><label class="inp-label">Módulo</label><input class="inp" type="text" id="cnt-module" placeholder="Ex: Parte 1 — Comece aqui"></div>
+              <div class="inp-group"><label class="inp-label">Ordem</label><input class="inp" type="number" id="cnt-order" placeholder="1" min="1"></div>
+            </div>
             <div class="inp-group" style="margin-top:8px;"><label class="inp-label">Link do YouTube</label><input class="inp" type="url" id="cnt-youtube" placeholder="https://youtu.be/..."></div>
             <div class="inp-group" style="margin-top:8px;"><label class="inp-label">Material em PDF (opcional)</label><input class="inp" type="file" id="cnt-pdf" accept="application/pdf"></div>
             <div style="display:flex;align-items:center;gap:10px;margin-top:12px;">
@@ -2490,27 +2494,45 @@ async function toggleFavoriteDetail(recipeId, btn) {
 
 // ── CONTEÚDO ──────────────────────────────────────────────
 async function loadContent() {
-  const { data } = await sb.from('content_items').select('*').eq('published', true).neq('type','sos').order('created_at', { ascending: true });
+  const { data } = await sb.from('content_items').select('*').eq('published', true).neq('type','sos').order('module_title', { ascending: true, nullsFirst: false }).order('sort_order', { ascending: true }).order('created_at', { ascending: true });
   const el = document.getElementById('content-list');
   if (!data || data.length === 0) {
     el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);font-size:13px;">Em breve novos conteúdos do Dr. Roberto!</div>';
     return;
   }
   const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  const cards = data.map(v => {
-    const div = document.createElement('div');
-    div.className = 'video-card';
-    div.addEventListener('click', () => openContentDetail(v));
-    div.innerHTML = `
-      <div class="video-thumb"><div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
-      <div class="video-info">
-        <div class="video-title">${esc(v.title)}</div>
-        <div class="video-dur">${v.duration_min ? esc(v.duration_min) + ' min' : ''} · ${esc(v.description || '')}</div>
-      </div>`;
-    return div;
-  });
   el.innerHTML = '';
-  cards.forEach(c => el.appendChild(c));
+
+  // Agrupar por módulo
+  const grouped = [];
+  const moduleMap = new Map();
+  data.forEach(v => {
+    const mod = v.module_title || '';
+    if (!moduleMap.has(mod)) { moduleMap.set(mod, []); grouped.push(mod); }
+    moduleMap.get(mod).push(v);
+  });
+
+  grouped.forEach(mod => {
+    // Cabeçalho do módulo (se tiver nome)
+    if (mod) {
+      const header = document.createElement('div');
+      header.style.cssText = 'font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);padding:18px 0 8px;border-bottom:1px solid var(--border);margin-bottom:8px;';
+      header.textContent = mod;
+      el.appendChild(header);
+    }
+    moduleMap.get(mod).forEach(v => {
+      const div = document.createElement('div');
+      div.className = 'video-card';
+      div.addEventListener('click', () => openContentDetail(v));
+      div.innerHTML = `
+        <div class="video-thumb"><div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
+        <div class="video-info">
+          <div class="video-title">${esc(v.title)}</div>
+          <div class="video-dur">${v.duration_min ? esc(v.duration_min) + ' min' : ''} · ${esc(v.description || '')}</div>
+        </div>`;
+      el.appendChild(div);
+    });
+  });
 }
 
 function openContentDetail(v) {
@@ -2857,6 +2879,8 @@ async function loadAdminContent() {
 async function saveAdminContent() {
   const title = document.getElementById('cnt-title').value.trim();
   const desc = document.getElementById('cnt-desc').value.trim();
+  const moduleTitle = document.getElementById('cnt-module').value.trim();
+  const sortOrder = parseInt(document.getElementById('cnt-order').value) || 0;
   const youtubeUrl = document.getElementById('cnt-youtube').value.trim();
   const pdfFile = document.getElementById('cnt-pdf').files[0];
   const published = document.getElementById('cnt-published').checked;
@@ -2876,12 +2900,15 @@ async function saveAdminContent() {
   const { error } = await sb.from('content_items').insert({
     title, description: desc || null, youtube_url: youtubeUrl || null,
     type: 'video', pdf_path, published,
+    module_title: moduleTitle || null, sort_order: sortOrder,
     created_by: currentUser.id
   });
   if (error) { toast('Erro ao salvar.'); return; }
   toast('Conteúdo salvo! ✓');
   document.getElementById('cnt-title').value = '';
   document.getElementById('cnt-desc').value = '';
+  document.getElementById('cnt-module').value = '';
+  document.getElementById('cnt-order').value = '';
   document.getElementById('cnt-youtube').value = '';
   document.getElementById('cnt-pdf').value = '';
   await loadAdminContent();
