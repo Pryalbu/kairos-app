@@ -1093,6 +1093,12 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
         <div id="content-list"><div style="text-align:center;padding:40px;color:var(--muted);font-size:13px;">Carregando conteúdo...</div></div>
       </div>
 
+      <!-- Sub: Detalhe do conteúdo -->
+      <div class="scroll" id="sub-conteudo-detail" style="display:none;padding-top:14px;">
+        <div class="back-btn" onclick="showSub('conteudo')"><svg viewBox="0 0 24 24"><polyline points="15,18 9,12 15,6"/></svg><span>Conteúdo</span></div>
+        <div id="content-detail-body"></div>
+      </div>
+
       <!-- Sub: SOS -->
       <div class="scroll" id="sub-sos" style="display:none;padding-top:14px;">
         <div class="back-btn" onclick="hideSub()"><svg viewBox="0 0 24 24"><polyline points="15,18 9,12 15,6"/></svg><span>Voltar</span></div>
@@ -2422,13 +2428,13 @@ async function openRecipeDetail(id) {
 
   document.getElementById('recipe-detail-content').innerHTML = `
     ${photoHtml}
-    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px;">
-      <div>
+    <div style="margin-bottom:8px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
         <span class="recipe-tag">${esc(MEAL_LABELS[r.meal_type] || r.meal_type)}</span>
-        <div class="hdr-title" style="font-size:20px;margin-top:6px;">${esc(r.title)}</div>
+        <button id="detail-fav-btn" data-id="${esc(id)}" class="btn btn-outline ${isFav ? 'on' : ''}" style="font-size:12px;flex-shrink:0;"
+          onclick="toggleFavoriteDetail('${esc(id)}',this)">${isFav ? '❤️ Favoritada' : '🤍 Favoritar'}</button>
       </div>
-      <button id="detail-fav-btn" data-id="${esc(id)}" class="btn btn-outline ${isFav ? 'on' : ''}" style="font-size:12px;flex-shrink:0;margin-top:18px;"
-        onclick="toggleFavoriteDetail('${esc(id)}',this)">${isFav ? '❤️ Favoritada' : '🤍 Favoritar'}</button>
+      <div class="hdr-title" style="font-size:20px;margin-top:6px;">${esc(r.title)}</div>
     </div>
     <div class="macro-row">
       <div class="macro-pill"><div class="macro-pill-val">${esc(r.calories || '—')}</div><div class="macro-pill-lbl">kcal</div></div>
@@ -2474,7 +2480,7 @@ async function loadContent() {
   const cards = data.map(v => {
     const div = document.createElement('div');
     div.className = 'video-card';
-    if (v.youtube_url) div.addEventListener('click', () => window.open(v.youtube_url, '_blank'));
+    div.addEventListener('click', () => openContentDetail(v));
     div.innerHTML = `
       <div class="video-thumb"><div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
       <div class="video-info">
@@ -2485,6 +2491,29 @@ async function loadContent() {
   });
   el.innerHTML = '';
   cards.forEach(c => el.appendChild(c));
+}
+
+function openContentDetail(v) {
+  const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  let mediaHtml = '';
+  if (v.youtube_url) {
+    const m = v.youtube_url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/))([^&\n?#]+)/);
+    const vid = m ? m[1] : null;
+    if (vid) {
+      mediaHtml = `<div style="position:relative;width:100%;padding-bottom:56.25%;background:#000;border-radius:var(--r);overflow:hidden;margin-bottom:16px;">
+        <iframe src="https://www.youtube-nocookie.com/embed/${esc(vid)}?autoplay=1&rel=0"
+          style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;"
+          allow="autoplay; fullscreen" allowfullscreen></iframe>
+      </div>`;
+    }
+  }
+  document.getElementById('content-detail-body').innerHTML = `
+    ${mediaHtml}
+    <div class="hdr-title" style="font-size:20px;margin-bottom:6px;">${esc(v.title)}</div>
+    ${v.description ? `<div style="color:var(--muted);font-size:14px;line-height:1.5;">${esc(v.description)}</div>` : ''}
+    <div style="height:24px;"></div>
+  `;
+  showSub('conteudo-detail');
 }
 
 // ── SOS ───────────────────────────────────────────────────
