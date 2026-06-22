@@ -1916,10 +1916,11 @@ async function loadNotices() {
   const { data } = await sb.from('notices').select('*').eq('published', true).order('created_at', { ascending: false }).limit(3);
   const wrap = document.getElementById('notices-wrap');
   if (!data || data.length === 0) { wrap.innerHTML = ''; return; }
+  const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   wrap.innerHTML = data.map(n => `
     <div class="notice">
-      <div class="notice-title">📌 ${n.title}</div>
-      <div class="notice-body">${n.body}</div>
+      <div class="notice-title">📌 ${esc(n.title)}</div>
+      <div class="notice-body">${esc(n.body)}</div>
     </div>
   `).join('');
 }
@@ -2215,13 +2216,14 @@ async function loadRecipes() {
     return;
   }
   const emojis = { cafe:'☕', almoco:'🍽️', lanche:'🥗', jantar:'🌙', sobremesa:'🍮' };
+  const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   el.innerHTML = data.map(r => `
     <div class="recipe-card">
       <div class="recipe-thumb">${emojis[r.meal_type] || '🍴'}</div>
       <div>
-        <div class="recipe-name">${r.title}</div>
-        <div class="recipe-meta">${r.calories || '—'} kcal · ${r.protein_g || '—'}g prot</div>
-        <span class="recipe-tag">${r.meal_type}</span>
+        <div class="recipe-name">${esc(r.title)}</div>
+        <div class="recipe-meta">${esc(r.calories || '—')} kcal · ${esc(r.protein_g || '—')}g prot</div>
+        <span class="recipe-tag">${esc(r.meal_type)}</span>
       </div>
     </div>
   `).join('');
@@ -2235,15 +2237,21 @@ async function loadContent() {
     el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);font-size:13px;">Em breve novos conteúdos do Dr. Roberto!</div>';
     return;
   }
-  el.innerHTML = data.map(v => `
-    <div class="video-card" onclick="window.open('${v.youtube_url}','_blank')">
+  const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  const cards = data.map(v => {
+    const div = document.createElement('div');
+    div.className = 'video-card';
+    if (v.youtube_url) div.addEventListener('click', () => window.open(v.youtube_url, '_blank'));
+    div.innerHTML = `
       <div class="video-thumb"><div class="play-btn"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></div></div>
       <div class="video-info">
-        <div class="video-title">${v.title}</div>
-        <div class="video-dur">${v.duration_min ? v.duration_min + ' min' : ''} · ${v.description || ''}</div>
-      </div>
-    </div>
-  `).join('');
+        <div class="video-title">${esc(v.title)}</div>
+        <div class="video-dur">${v.duration_min ? esc(v.duration_min) + ' min' : ''} · ${esc(v.description || '')}</div>
+      </div>`;
+    return div;
+  });
+  el.innerHTML = '';
+  cards.forEach(c => el.appendChild(c));
 }
 
 // ── SOS ───────────────────────────────────────────────────
@@ -2373,11 +2381,12 @@ async function loadAdminEventos() {
     const dt = new Date(ev.event_date + 'T12:00:00').toLocaleDateString('pt-BR');
     const row = document.createElement('div');
     row.className = 'evento-admin-row';
+    const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     row.innerHTML = `
-      <div class="evento-admin-title">${sanitize(ev.title)}</div>
+      <div class="evento-admin-title">${esc(ev.title)}</div>
       <div class="evento-admin-date">📅 ${dt}</div>
-      ${ev.description ? `<div class="evento-admin-desc">${sanitize(ev.description)}</div>` : ''}
-      ${ev.link_url ? `<div style="font-size:11px;color:var(--gold);margin-top:4px;">🔗 ${sanitize(ev.link_url)}</div>` : ''}
+      ${ev.description ? `<div class="evento-admin-desc">${esc(ev.description)}</div>` : ''}
+      ${ev.link_url ? `<div style="font-size:11px;color:var(--gold);margin-top:4px;">🔗 ${esc(ev.link_url)}</div>` : ''}
       <div class="evento-admin-actions">
         <button class="evento-del-btn">Remover</button>
       </div>
