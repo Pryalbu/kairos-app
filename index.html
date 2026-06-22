@@ -831,11 +831,11 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
               <div class="inp-group">
                 <label class="inp-label">Tempo</label>
-                <input class="inp" type="text" id="ci-cardio-val" placeholder="00:00" inputmode="numeric" maxlength="5" oninput="maskCardioTime(this)" onblur="saveCheckin()" style="text-align:center;letter-spacing:.05em;">
+                <input class="inp" type="text" id="ci-cardio-val" placeholder="00:00" inputmode="numeric" maxlength="5" oninput="maskCardioTime(this)" style="text-align:center;letter-spacing:.05em;">
               </div>
               <div class="inp-group">
                 <label class="inp-label">Distância (km)</label>
-                <input class="inp" type="text" id="ci-cardio-km" placeholder="0,00" inputmode="decimal" maxlength="6" oninput="maskCardioKm(this)" onblur="saveCheckin()" style="text-align:center;letter-spacing:.05em;">
+                <input class="inp" type="text" id="ci-cardio-km" placeholder="0,00" inputmode="decimal" maxlength="6" oninput="maskCardioKm(this)" style="text-align:center;letter-spacing:.05em;">
               </div>
             </div>
           </div>
@@ -1876,24 +1876,31 @@ async function toggleCheckin(key) {
   renderCheckin();
 }
 
+let _cardioSaveTimer = null;
+function _scheduleSaveCardio() {
+  clearTimeout(_cardioSaveTimer);
+  _cardioSaveTimer = setTimeout(() => saveCheckin(), 900);
+}
+
 // Máscara mm:ss — insere ":" automaticamente
 function maskCardioTime(el) {
   let v = el.value.replace(/[^0-9]/g, '').slice(0, 4);
   if (v.length >= 3) v = v.slice(0, 2) + ':' + v.slice(2);
   el.value = v;
-  checkinState.cardio_time = v.length === 5 ? v : null;
+  // Salva tanto valor completo (55:09) quanto parcial (ex: "55:")
+  checkinState.cardio_time = v || null;
+  _scheduleSaveCardio();
 }
 
 // Máscara distância — vírgula como separador decimal
 function maskCardioKm(el) {
   let v = el.value.replace(/[^0-9,]/g, '');
-  // Só uma vírgula
   const parts = v.split(',');
   if (parts.length > 2) v = parts[0] + ',' + parts.slice(1).join('');
-  // Máximo 2 casas após vírgula
   if (parts[1] !== undefined) v = parts[0] + ',' + parts[1].slice(0, 2);
   el.value = v;
   checkinState.cardio_km = v ? parseFloat(v.replace(',', '.')) : 0;
+  _scheduleSaveCardio();
 }
 
 async function saveCheckin() {
