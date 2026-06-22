@@ -1947,7 +1947,7 @@ async function loadPerformance() {
 
   const metricas = [
     { ico:'🏋️', label:'Treino',         key:'treino_done',  tipo:'bool' },
-    { ico:'🏃', label:'Cardio (min)',    key:'cardio_min',   tipo:'minutos' },
+    { ico:'🏃', label:'Cardio',          key:'cardio_done',  tipo:'bool' },
     { ico:'🥗', label:'Plano alimentar', key:'plano_done',   tipo:'bool' },
     { ico:'💧', label:'Hidratação 2L',   key:'water_ml',     tipo:'agua' },
     { ico:'😴', label:'Sono',            key:'sono_done',    tipo:'bool' },
@@ -2276,7 +2276,8 @@ async function loadEvolution() {
       chartEl.innerHTML = chartData.map((r, i) => {
         const h = Math.round(((r.weight_kg - minW) / range) * 40 + 10);
         const isLast = i === chartData.length - 1;
-        return `<div class="bar ${isLast ? 'hi' : ''}" style="height:${h}px"><span class="bar-lbl">${r.record_date.slice(5)}</span></div>`;
+        const [, mm, dd] = r.record_date.split('-');
+        return `<div class="bar ${isLast ? 'hi' : ''}" style="height:${h}px"><span class="bar-lbl">${dd}/${mm}</span></div>`;
       }).join('');
     } else {
       chartEl.innerHTML = '<p style="font-size:12px;color:var(--muted);text-align:center;width:100%;padding:10px 0;">Registre seu primeiro peso para ver o gráfico.</p>';
