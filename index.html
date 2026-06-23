@@ -1323,7 +1323,8 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
           <div class="card" style="margin-bottom:16px;">
             <div class="inp-group"><label class="inp-label">Título</label><input class="inp" type="text" id="eb-title" placeholder="Ex: Guia de Emagrecimento Definitivo"></div>
             <div class="inp-group" style="margin-top:8px;"><label class="inp-label">Descrição</label><textarea class="inp" id="eb-desc" placeholder="Descreva o que o paciente vai aprender..." rows="3" style="resize:none;height:auto;"></textarea></div>
-            <div class="inp-group" style="margin-top:8px;"><label class="inp-label">Imagem de capa (URL)</label><input class="inp" type="url" id="eb-image" placeholder="https://..."></div>
+            <div class="inp-group" style="margin-top:8px;"><label class="inp-label">Imagem de capa</label><input class="inp" type="file" id="eb-image" accept="image/jpeg,image/png,image/webp"></div>
+            <div id="eb-image-preview" style="margin-top:6px;display:none;"><img id="eb-image-preview-img" style="width:100%;max-height:160px;object-fit:cover;border-radius:8px;"></div>
             <div class="inp-group" style="margin-top:8px;"><label class="inp-label">Link de checkout</label><input class="inp" type="url" id="eb-checkout" placeholder="https://pay.hotmart.com/..."></div>
             <div class="inp-group" style="margin-top:8px;"><label class="inp-label">Preço (ex: R$ 47,00)</label><input class="inp" type="text" id="eb-price" placeholder="R$ 47,00"></div>
             <div style="display:flex;align-items:center;gap:10px;margin-top:12px;">
@@ -3231,16 +3232,19 @@ async function loadEbooks() {
     el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);font-size:13px;">Nenhum eBook disponível ainda.</div>';
     return;
   }
-  el.innerHTML = data.map(b => `
+  el.innerHTML = data.map(b => {
+    const imgSrc = ebookPublicUrl(b.image_url);
+    return `
     <div class="card" style="margin-bottom:14px;overflow:hidden;">
-      ${b.image_url ? `<img src="${esc(b.image_url)}" style="width:100%;max-height:180px;object-fit:cover;border-radius:8px;margin-bottom:12px;" onerror="this.style.display='none'">` : ''}
+      ${imgSrc ? `<img src="${esc(imgSrc)}" style="width:100%;max-height:180px;object-fit:cover;border-radius:8px;margin-bottom:12px;" onerror="this.style.display='none'">` : ''}
       <div style="font-size:16px;font-weight:700;color:var(--cream);margin-bottom:6px;">${esc(b.title)}</div>
       ${b.description ? `<div style="font-size:13px;color:var(--muted);line-height:1.5;margin-bottom:10px;">${esc(b.description)}</div>` : ''}
       <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px;">
         ${b.price_text ? `<div style="font-size:18px;font-weight:700;color:var(--gold);">${esc(b.price_text)}</div>` : '<div></div>'}
         ${b.checkout_url ? `<a href="${esc(b.checkout_url)}" target="_blank" rel="noopener" class="btn btn-gold" style="text-decoration:none;padding:10px 20px;font-size:14px;">Comprar →</a>` : ''}
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 async function loadAdminEbooks() {
@@ -3263,14 +3267,29 @@ async function loadAdminEbooks() {
     </div>`).join('');
 }
 
+const SUPABASE_URL = 'https://qgyuvbnieyjprxbozotk.supabase.co';
+
+function ebookPublicUrl(path) {
+  if (!path) return null;
+  if (path.startsWith('http')) return path;
+  return `${SUPABASE_URL}/storage/v1/object/public/ebook-covers/${path}`;
+}
+
 function editEbook(b) {
   _editingEbookId = b.id;
   document.getElementById('eb-title').value    = b.title || '';
   document.getElementById('eb-desc').value     = b.description || '';
-  document.getElementById('eb-image').value    = b.image_url || '';
   document.getElementById('eb-checkout').value = b.checkout_url || '';
   document.getElementById('eb-price').value    = b.price_text || '';
   document.getElementById('eb-published').checked = !!b.published;
+  // Mostrar preview da imagem atual
+  const preview = document.getElementById('eb-image-preview');
+  const previewImg = document.getElementById('eb-image-preview-img');
+  const url = ebookPublicUrl(b.image_url);
+  if (url && preview && previewImg) {
+    previewImg.src = url;
+    preview.style.display = 'block';
+  }
   const btn = document.querySelector('[onclick="saveAdminEbook()"]');
   if (btn) btn.textContent = 'Atualizar eBook';
   document.getElementById('eb-title').scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -3278,22 +3297,39 @@ function editEbook(b) {
 
 function cancelEditEbook() {
   _editingEbookId = null;
-  ['eb-title','eb-desc','eb-image','eb-checkout','eb-price'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  ['eb-title','eb-desc','eb-checkout','eb-price'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  const imgEl = document.getElementById('eb-image'); if (imgEl) imgEl.value = '';
+  const preview = document.getElementById('eb-image-preview'); if (preview) preview.style.display = 'none';
   document.getElementById('eb-published').checked = false;
   const btn = document.querySelector('[onclick="saveAdminEbook()"]');
   if (btn) btn.textContent = 'Salvar eBook';
 }
 
 async function saveAdminEbook() {
-  const title       = document.getElementById('eb-title').value.trim();
-  const description = document.getElementById('eb-desc').value.trim();
-  const image_url   = document.getElementById('eb-image').value.trim();
+  const title        = document.getElementById('eb-title').value.trim();
+  const description  = document.getElementById('eb-desc').value.trim();
   const checkout_url = document.getElementById('eb-checkout').value.trim();
-  const price_text  = document.getElementById('eb-price').value.trim();
-  const published   = document.getElementById('eb-published').checked;
+  const price_text   = document.getElementById('eb-price').value.trim();
+  const published    = document.getElementById('eb-published').checked;
+  const file         = document.getElementById('eb-image').files[0];
   if (!title) { toast('Título obrigatório.'); return; }
   if (!checkout_url) { toast('Link de checkout obrigatório.'); return; }
-  const payload = { title, description: description || null, image_url: image_url || null, checkout_url, price_text: price_text || null, published };
+
+  let image_url = undefined; // undefined = não alterar no update
+  if (file) {
+    const allowed = ['image/jpeg','image/png','image/webp'];
+    if (!allowed.includes(file.type)) { toast('Imagem deve ser JPG, PNG ou WebP.'); return; }
+    if (file.size > 5 * 1024 * 1024) { toast('Imagem maior que 5MB.'); return; }
+    const ext = file.name.split('.').pop();
+    const path = `${Date.now()}.${ext}`;
+    const { error: upErr } = await sb.storage.from('ebook-covers').upload(path, file, { contentType: file.type });
+    if (upErr) { toast('Erro ao enviar imagem.'); return; }
+    image_url = path;
+  }
+
+  const payload = { title, description: description || null, checkout_url, price_text: price_text || null, published };
+  if (image_url !== undefined) payload.image_url = image_url;
+
   if (_editingEbookId) {
     const { error } = await sb.from('ebooks').update(payload).eq('id', _editingEbookId);
     if (error) { toast('Erro ao atualizar.'); return; }
