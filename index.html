@@ -2938,7 +2938,7 @@ async function saveAdminContent() {
     module_title: moduleTitle || null, sort_order: sortOrder,
     created_by: currentUser.id
   });
-  if (error) { toast('Erro ao salvar.'); return; }
+  if (error) { toast('Erro: ' + (error.message || error.code || 'RLS bloqueou')); console.error('saveAdminContent:', error); return; }
   toast('Conteúdo salvo! ✓');
   document.getElementById('cnt-title').value = '';
   document.getElementById('cnt-desc').value = '';
