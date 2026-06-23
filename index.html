@@ -1230,6 +1230,15 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
               <div class="inp-group"><label class="inp-label">Ordem</label><input class="inp" type="number" id="cnt-order" placeholder="1" min="1"></div>
             </div>
             <div class="inp-group" style="margin-top:8px;"><label class="inp-label">Link do YouTube</label><input class="inp" type="url" id="cnt-youtube" placeholder="https://youtu.be/..."></div>
+            <div class="inp-group" style="margin-top:8px;">
+              <label class="inp-label">Visível para os planos</label>
+              <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:4px;">
+                <label style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--cream);cursor:pointer;"><input type="checkbox" id="cnt-plan-essencial" value="essencial"> Essencial</label>
+                <label style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--cream);cursor:pointer;"><input type="checkbox" id="cnt-plan-pro" value="pro"> Pro</label>
+                <label style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--cream);cursor:pointer;"><input type="checkbox" id="cnt-plan-premium" value="premium"> Premium</label>
+                <label style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted);cursor:pointer;"><input type="checkbox" id="cnt-plan-all" onchange="toggleAllPlans(this)" checked> Todos</label>
+              </div>
+            </div>
             <div class="inp-group" style="margin-top:8px;"><label class="inp-label">Material em PDF (opcional)</label><input class="inp" type="file" id="cnt-pdf" accept="application/pdf"></div>
             <div style="display:flex;align-items:center;gap:10px;margin-top:12px;">
               <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);cursor:pointer;">
@@ -2623,7 +2632,7 @@ function loadAccount() {
   document.getElementById('acc-avatar').textContent = initials;
   document.getElementById('acc-name').textContent = p.full_name || '—';
   document.getElementById('acc-email').textContent = p.email || '';
-  const planLabels = { trimestral:'Plano Trimestral', semestral:'Plano Semestral', anual:'Plano Anual' };
+  const planLabels = { essencial:'Kairós Essencial', pro:'Kairós Pro', premium:'Kairós Premium' };
   document.getElementById('acc-plan').textContent = planLabels[p.plan] || 'Plano —';
   if (p.subscription_expires_at) {
     const d = new Date(p.subscription_expires_at);
@@ -2911,6 +2920,13 @@ async function loadAdminContent() {
     </div>`).join('');
 }
 
+function toggleAllPlans(cb) {
+  ['essencial','pro','premium'].forEach(p => {
+    const el = document.getElementById('cnt-plan-' + p);
+    if (el) el.checked = false;
+  });
+}
+
 async function saveAdminContent() {
   const title = document.getElementById('cnt-title').value.trim();
   const desc = document.getElementById('cnt-desc').value.trim();
@@ -2919,6 +2935,11 @@ async function saveAdminContent() {
   const youtubeUrl = document.getElementById('cnt-youtube').value.trim();
   const pdfFile = document.getElementById('cnt-pdf').files[0];
   const published = document.getElementById('cnt-published').checked;
+  // Planos permitidos: null = todos; array = restrito
+  const allChecked = document.getElementById('cnt-plan-all')?.checked;
+  const selectedPlans = allChecked ? null :
+    ['essencial','pro','premium'].filter(p => document.getElementById('cnt-plan-' + p)?.checked);
+  const allowedPlans = (!allChecked && selectedPlans.length > 0) ? selectedPlans : null;
 
   if (!title) { toast('Título obrigatório.'); return; }
 
@@ -2936,6 +2957,7 @@ async function saveAdminContent() {
     title, description: desc || null, youtube_url: youtubeUrl || null,
     type: 'video', pdf_path, published,
     module_title: moduleTitle || null, sort_order: sortOrder,
+    allowed_plans: allowedPlans,
     created_by: currentUser.id
   });
   if (error) { toast('Erro: ' + (error.message || error.code || 'RLS bloqueou')); console.error('saveAdminContent:', error); return; }
@@ -2946,6 +2968,8 @@ async function saveAdminContent() {
   document.getElementById('cnt-order').value = '';
   document.getElementById('cnt-youtube').value = '';
   document.getElementById('cnt-pdf').value = '';
+  ['essencial','pro','premium'].forEach(p => { const el = document.getElementById('cnt-plan-' + p); if (el) el.checked = false; });
+  const allEl = document.getElementById('cnt-plan-all'); if (allEl) allEl.checked = true;
   await loadAdminContent();
 }
 
@@ -3000,9 +3024,9 @@ async function loadAdmin() {
           <span class="status-badge status-pending">Pendente</span>
           <select class="plan-select" id="plan-${esc(p.id)}">
             <option value="">Plano</option>
-            <option value="trimestral">Trimestral (90d)</option>
-            <option value="semestral">Semestral (180d)</option>
-            <option value="anual">Anual (365d)</option>
+            <option value="essencial">Kairós Essencial</option>
+            <option value="pro">Kairós Pro</option>
+            <option value="premium">Kairós Premium</option>
           </select>
           <button class="activate-btn" onclick="activatePatient('${esc(p.id)}')">Ativar</button>
         </div>
@@ -3034,7 +3058,7 @@ async function loadAdmin() {
 async function activatePatient(id) {
   const plan = document.getElementById('plan-' + id).value;
   if (!plan) { toast('Selecione um plano primeiro.'); return; }
-  const days = { trimestral: 90, semestral: 180, anual: 365 };
+  const days = { essencial: 365, pro: 365, premium: 365 };
   const expires = new Date();
   expires.setDate(expires.getDate() + days[plan]);
   const { error } = await sb.from('profiles').update({
