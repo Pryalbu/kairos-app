@@ -1026,6 +1026,11 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
           <div><div class="mais-label">Conteúdo</div><div class="mais-sub">Vídeos e materiais do Dr. Roberto</div></div>
           <div class="mais-arrow"><svg viewBox="0 0 24 24"><polyline points="9,18 15,12 9,6"/></svg></div>
         </div>
+        <div class="mais-item" onclick="showSub('dicas')">
+          <div class="mais-ico"><svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 2.6-1.4 4.9-3.5 6.2V17a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1v-1.8C6.4 13.9 5 11.6 5 9a7 7 0 0 1 7-7z"/><line x1="9" y1="21" x2="15" y2="21"/><line x1="10" y1="17" x2="14" y2="17"/></svg></div>
+          <div><div class="mais-label">Dicas</div><div class="mais-sub">Produtos, livros e séries favoritos</div></div>
+          <div class="mais-arrow"><svg viewBox="0 0 24 24"><polyline points="9,18 15,12 9,6"/></svg></div>
+        </div>
         <div class="mais-item" onclick="showSub('sos')">
           <div class="mais-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
           <div><div class="mais-label">SOS Nutricional</div><div class="mais-sub">Leituras de apoio rápido</div></div>
@@ -1071,14 +1076,40 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
         <div class="back-btn" onclick="hideSub()"><svg viewBox="0 0 24 24"><polyline points="15,18 9,12 15,6"/></svg><span>Voltar</span></div>
         <div class="tag" style="margin-bottom:4px;">Receitas</div>
         <div class="hdr-title" style="font-size:20px;margin-bottom:12px;">Banco de receitas</div>
-        <div class="recipe-filters" id="recipe-filters">
-          <div class="recipe-filter-chip on" onclick="filterRecipes('todos',this)">Todos</div>
-          <div class="recipe-filter-chip" onclick="filterRecipes('prato',this)">🍽️ Pratos</div>
-          <div class="recipe-filter-chip" onclick="filterRecipes('lanche',this)">🥗 Lanches</div>
-          <div class="recipe-filter-chip" onclick="filterRecipes('sobremesa',this)">🍮 Sobremesas</div>
+        <!-- Tabs Receitas / eBooks -->
+        <div style="display:flex;gap:0;margin-bottom:14px;border-bottom:2px solid var(--border);">
+          <button id="tab-btn-receitas" onclick="switchReceitasTab('receitas')" style="flex:1;padding:8px;background:none;border:none;font-size:13px;font-weight:600;color:var(--gold);border-bottom:2px solid var(--gold);margin-bottom:-2px;cursor:pointer;">Receitas</button>
+          <button id="tab-btn-ebooks" onclick="switchReceitasTab('ebooks')" style="flex:1;padding:8px;background:none;border:none;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;">eBooks</button>
         </div>
-        <button id="fav-toggle-btn" class="recipe-fav-toggle" onclick="toggleFavView()">♡ Favoritas</button>
-        <div id="recipes-list"><div style="text-align:center;padding:40px;color:var(--muted);font-size:13px;">Carregando receitas...</div></div>
+        <!-- Aba Receitas -->
+        <div id="receitas-pane">
+          <div class="recipe-filters" id="recipe-filters">
+            <div class="recipe-filter-chip on" onclick="filterRecipes('todos',this)">Todos</div>
+            <div class="recipe-filter-chip" onclick="filterRecipes('prato',this)">🍽️ Pratos</div>
+            <div class="recipe-filter-chip" onclick="filterRecipes('lanche',this)">🥗 Lanches</div>
+            <div class="recipe-filter-chip" onclick="filterRecipes('sobremesa',this)">🍮 Sobremesas</div>
+          </div>
+          <button id="fav-toggle-btn" class="recipe-fav-toggle" onclick="toggleFavView()">♡ Favoritas</button>
+          <div id="recipes-list"><div style="text-align:center;padding:40px;color:var(--muted);font-size:13px;">Carregando receitas...</div></div>
+        </div>
+        <!-- Aba eBooks -->
+        <div id="ebooks-pane" style="display:none;">
+          <div id="ebooks-list"><div style="text-align:center;padding:40px;color:var(--muted);font-size:13px;">Carregando eBooks...</div></div>
+        </div>
+      </div>
+
+      <!-- Sub: Dicas -->
+      <div class="scroll" id="sub-dicas" style="display:none;padding-top:14px;">
+        <div class="back-btn" onclick="hideSub()"><svg viewBox="0 0 24 24"><polyline points="15,18 9,12 15,6"/></svg><span>Voltar</span></div>
+        <div class="tag" style="margin-bottom:4px;">Dicas</div>
+        <div class="hdr-title" style="font-size:20px;margin-bottom:12px;">Recomendações</div>
+        <div class="recipe-filters" id="dicas-filters" style="margin-bottom:14px;">
+          <div class="recipe-filter-chip on" onclick="filterDicas('todos',this)">Todos</div>
+          <div class="recipe-filter-chip" onclick="filterDicas('produto',this)">🛒 Produtos</div>
+          <div class="recipe-filter-chip" onclick="filterDicas('livro',this)">📚 Livros</div>
+          <div class="recipe-filter-chip" onclick="filterDicas('serie',this)">🎬 Séries</div>
+        </div>
+        <div id="dicas-list"><div style="text-align:center;padding:40px;color:var(--muted);font-size:13px;">Carregando dicas...</div></div>
       </div>
 
       <!-- Sub: Detalhe da receita -->
@@ -1157,6 +1188,8 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
           <div class="admin-tab" onclick="switchAdminTab('eventos',this)">Eventos</div>
           <div class="admin-tab" onclick="switchAdminTab('receitas',this)">Receitas</div>
           <div class="admin-tab" onclick="switchAdminTab('conteudo',this)">Conteúdo</div>
+          <div class="admin-tab" onclick="switchAdminTab('ebooks',this)">eBooks</div>
+          <div class="admin-tab" onclick="switchAdminTab('dicas',this)">Dicas</div>
         </div>
 
         <div id="admin-tab-pacientes">
@@ -1214,7 +1247,10 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
                 <input type="checkbox" id="rec-published"> Publicar imediatamente
               </label>
             </div>
-            <button class="btn btn-gold" style="margin-top:12px;" onclick="saveAdminRecipe()">Salvar receita</button>
+            <div style="display:flex;gap:8px;margin-top:12px;">
+              <button class="btn btn-gold" style="flex:1;" onclick="saveAdminRecipe()">Salvar receita</button>
+              <button class="btn btn-outline" style="flex:0 0 auto;" onclick="cancelEditRecipe()" id="btn-cancel-recipe" style="display:none;">Cancelar</button>
+            </div>
           </div>
           <div class="card-title" style="margin-bottom:8px;">Receitas cadastradas</div>
           <div id="admin-receitas-list"></div>
@@ -1245,11 +1281,68 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
                 <input type="checkbox" id="cnt-published" checked> Publicar imediatamente
               </label>
             </div>
-            <button class="btn btn-gold" style="margin-top:12px;" onclick="saveAdminContent()">Salvar conteúdo</button>
+            <div style="display:flex;gap:8px;margin-top:12px;">
+              <button class="btn btn-gold" style="flex:1;" onclick="saveAdminContent()">Salvar conteúdo</button>
+              <button class="btn btn-outline" style="flex:0 0 auto;" onclick="cancelEditContent()">Cancelar</button>
+            </div>
           </div>
           <div class="card-title" style="margin-bottom:8px;">Conteúdos cadastrados</div>
           <div id="admin-conteudo-list"></div>
         </div>
+
+        <!-- Admin eBooks -->
+        <div id="admin-tab-ebooks" style="display:none;">
+          <div class="card-title" style="margin-bottom:12px;">Novo eBook</div>
+          <div class="card" style="margin-bottom:16px;">
+            <div class="inp-group"><label class="inp-label">Título</label><input class="inp" type="text" id="eb-title" placeholder="Ex: Guia de Emagrecimento Definitivo"></div>
+            <div class="inp-group" style="margin-top:8px;"><label class="inp-label">Descrição</label><textarea class="inp" id="eb-desc" placeholder="Descreva o que o paciente vai aprender..." rows="3" style="resize:none;height:auto;"></textarea></div>
+            <div class="inp-group" style="margin-top:8px;"><label class="inp-label">Imagem de capa (URL)</label><input class="inp" type="url" id="eb-image" placeholder="https://..."></div>
+            <div class="inp-group" style="margin-top:8px;"><label class="inp-label">Link de checkout</label><input class="inp" type="url" id="eb-checkout" placeholder="https://pay.hotmart.com/..."></div>
+            <div class="inp-group" style="margin-top:8px;"><label class="inp-label">Preço (ex: R$ 47,00)</label><input class="inp" type="text" id="eb-price" placeholder="R$ 47,00"></div>
+            <div style="display:flex;align-items:center;gap:10px;margin-top:12px;">
+              <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);cursor:pointer;">
+                <input type="checkbox" id="eb-published"> Publicar imediatamente
+              </label>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:12px;">
+              <button class="btn btn-gold" style="flex:1;" onclick="saveAdminEbook()">Salvar eBook</button>
+              <button class="btn btn-outline" style="flex:0 0 auto;" onclick="cancelEditEbook()">Cancelar</button>
+            </div>
+          </div>
+          <div class="card-title" style="margin-bottom:8px;">eBooks cadastrados</div>
+          <div id="admin-ebooks-list"></div>
+        </div>
+
+        <!-- Admin Dicas -->
+        <div id="admin-tab-dicas" style="display:none;">
+          <div class="card-title" style="margin-bottom:12px;">Nova dica</div>
+          <div class="card" style="margin-bottom:16px;">
+            <div class="inp-group"><label class="inp-label">Título</label><input class="inp" type="text" id="dica-title" placeholder="Ex: Proteína do bem — Whey Gold Standard"></div>
+            <div class="inp-group" style="margin-top:8px;"><label class="inp-label">Descrição</label><textarea class="inp" id="dica-desc" placeholder="Por que você recomenda isso?" rows="3" style="resize:none;height:auto;"></textarea></div>
+            <div class="inp-group" style="margin-top:8px;"><label class="inp-label">Imagem (URL)</label><input class="inp" type="url" id="dica-image" placeholder="https://..."></div>
+            <div class="inp-group" style="margin-top:8px;"><label class="inp-label">Categoria</label>
+              <select class="inp" id="dica-category">
+                <option value="produto">🛒 Produto</option>
+                <option value="livro">📚 Livro</option>
+                <option value="serie">🎬 Série</option>
+              </select>
+            </div>
+            <div class="inp-group" style="margin-top:8px;"><label class="inp-label">Link</label><input class="inp" type="url" id="dica-link" placeholder="https://..."></div>
+            <div class="inp-group" style="margin-top:8px;"><label class="inp-label">Texto do botão</label><input class="inp" type="text" id="dica-link-label" placeholder="Comprar, Ver no Netflix, Ver na Amazon..."></div>
+            <div style="display:flex;align-items:center;gap:10px;margin-top:12px;">
+              <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);cursor:pointer;">
+                <input type="checkbox" id="dica-published"> Publicar imediatamente
+              </label>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:12px;">
+              <button class="btn btn-gold" style="flex:1;" onclick="saveAdminDica()">Salvar dica</button>
+              <button class="btn btn-outline" style="flex:0 0 auto;" onclick="cancelEditDica()">Cancelar</button>
+            </div>
+          </div>
+          <div class="card-title" style="margin-bottom:8px;">Dicas cadastradas</div>
+          <div id="admin-dicas-list"></div>
+        </div>
+
       </div>
       </div>
 
@@ -2817,6 +2910,8 @@ async function loadAdminRanking() {
 }
 
 // ── ADMIN RECEITAS ────────────────────────────────────────
+let _editingRecipeId = null;
+
 async function loadAdminRecipes() {
   const { data } = await sb.from('recipes').select('*').order('created_at', { ascending: false });
   const el = document.getElementById('admin-receitas-list');
@@ -2831,16 +2926,44 @@ async function loadAdminRecipes() {
     row.className = 'evento-admin-row';
     row.innerHTML = `
       <div class="evento-admin-title">${esc(r.title)}</div>
-      <div class="evento-admin-date">${esc(MEAL_LABELS[r.meal_type] || r.meal_type || '—')}</div>
-      <div class="evento-admin-actions">
+      <div class="evento-admin-date">${esc(MEAL_LABELS[r.meal_type] || r.meal_type || '—')} · ${r.published ? '<span style="color:var(--success)">● Pub</span>' : '<span style="color:var(--muted)">○ Rasc</span>'}</div>
+      <div class="evento-admin-actions" style="flex-wrap:wrap;gap:4px;">
+        <button class="activate-btn" style="padding:4px 10px;" onclick="editRecipe(${JSON.stringify(r).replace(/"/g,'&quot;')})">Editar</button>
         <button class="activate-btn" style="padding:4px 10px;" onclick="togglePublishRecipe('${esc(r.id)}', ${r.published})">
-          ${r.published ? 'Despublicar' : 'Publicar'}
+          ${r.published ? 'Ocultar' : 'Publicar'}
         </button>
         <button class="suspend-btn" style="padding:4px 10px;" onclick="deleteAdminRecipe('${esc(r.id)}')">Remover</button>
       </div>
     `;
     el.appendChild(row);
   });
+}
+
+function editRecipe(r) {
+  _editingRecipeId = r.id;
+  document.getElementById('rec-title').value        = r.title || '';
+  document.getElementById('rec-category').value     = r.meal_type || '';
+  document.getElementById('rec-ingredients').value  = r.ingredients || '';
+  document.getElementById('rec-instructions').value = r.instructions || '';
+  document.getElementById('rec-calories').value     = r.calories || '';
+  document.getElementById('rec-protein').value      = r.protein_g || '';
+  document.getElementById('rec-carbs').value        = r.carbs_g || '';
+  document.getElementById('rec-fat').value          = r.fat_g || '';
+  document.getElementById('rec-published').checked  = !!r.published;
+  const btn = document.querySelector('[onclick="saveAdminRecipe()"]');
+  if (btn) btn.textContent = 'Atualizar receita';
+  document.getElementById('rec-title').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function cancelEditRecipe() {
+  _editingRecipeId = null;
+  ['rec-title','rec-ingredients','rec-instructions','rec-calories','rec-protein','rec-carbs','rec-fat','rec-photo'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+  document.getElementById('rec-category').value = '';
+  document.getElementById('rec-published').checked = false;
+  const btn = document.querySelector('[onclick="saveAdminRecipe()"]');
+  if (btn) btn.textContent = 'Salvar receita';
 }
 
 async function saveAdminRecipe() {
@@ -2871,17 +2994,25 @@ async function saveAdminRecipe() {
     photo_path = path;
   }
 
-  const { error } = await sb.from('recipes').insert({
-    title, meal_type, ingredients, instructions,
-    calories, protein_g, carbs_g, fat_g, published, photo_path
-  });
-  if (error) { toast('Erro ao salvar receita.'); return; }
-  toast('Receita salva! ✓');
-  ['rec-title','rec-category','rec-ingredients','rec-instructions','rec-calories','rec-protein','rec-carbs','rec-fat','rec-photo'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.value = '';
-  });
-  document.getElementById('rec-published').checked = false;
+  if (_editingRecipeId) {
+    const updates = { title, meal_type, ingredients, instructions, calories, protein_g, carbs_g, fat_g, published };
+    if (photo_path) updates.photo_path = photo_path;
+    const { error } = await sb.from('recipes').update(updates).eq('id', _editingRecipeId);
+    if (error) { toast('Erro ao atualizar receita.'); return; }
+    toast('Receita atualizada! ✓');
+    cancelEditRecipe();
+  } else {
+    const { error } = await sb.from('recipes').insert({
+      title, meal_type, ingredients, instructions,
+      calories, protein_g, carbs_g, fat_g, published, photo_path
+    });
+    if (error) { toast('Erro ao salvar receita.'); return; }
+    toast('Receita salva! ✓');
+    ['rec-title','rec-category','rec-ingredients','rec-instructions','rec-calories','rec-protein','rec-carbs','rec-fat','rec-photo'].forEach(id => {
+      const el = document.getElementById(id); if (el) el.value = '';
+    });
+    document.getElementById('rec-published').checked = false;
+  }
   await loadAdminRecipes();
 }
 
@@ -2900,24 +3031,66 @@ async function deleteAdminRecipe(id) {
 }
 
 // ── ADMIN CONTEÚDO ────────────────────────────────────────
+let _editingContentId = null;
+
 async function loadAdminContent() {
   const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  const { data } = await sb.from('content_items').select('*').order('created_at', { ascending: false });
+  const { data } = await sb.from('content_items').select('*').order('module_title',{ascending:true,nullsFirst:false}).order('sort_order',{ascending:true});
   const el = document.getElementById('admin-conteudo-list');
   if (!data || data.length === 0) { el.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:8px 0;">Nenhum conteúdo cadastrado.</div>'; return; }
   el.innerHTML = data.map(c => `
     <div class="card" style="margin-bottom:10px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
       <div style="flex:1;min-width:0;">
         <div style="font-size:13px;font-weight:500;color:var(--cream);">${esc(c.title)}</div>
+        ${c.module_title ? `<div style="font-size:11px;color:var(--gold);margin-top:2px;">${esc(c.module_title)} · #${c.sort_order||0}</div>` : ''}
         ${c.youtube_url ? `<div style="font-size:11px;color:var(--muted);margin-top:2px;">▶ ${esc(c.youtube_url)}</div>` : ''}
         ${c.pdf_path ? `<div style="font-size:11px;color:var(--gold);margin-top:2px;">📄 PDF anexado</div>` : ''}
         <div style="font-size:11px;color:${c.published ? 'var(--success)' : 'var(--muted)'};margin-top:4px;">${c.published ? '● Publicado' : '○ Rascunho'}</div>
       </div>
-      <div style="display:flex;gap:6px;flex-shrink:0;">
+      <div style="display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end;">
+        <button class="activate-btn" style="padding:4px 10px;font-size:11px;" onclick="editContent(${JSON.stringify(c).replace(/"/g,'&quot;')})">Editar</button>
         <button class="activate-btn" style="padding:4px 10px;font-size:11px;" onclick="togglePublishContent('${esc(c.id)}',${c.published})">${c.published ? 'Ocultar' : 'Publicar'}</button>
         <button class="activate-btn" style="padding:4px 10px;font-size:11px;background:var(--danger);border-color:var(--danger);" onclick="deleteAdminContent('${esc(c.id)}')">Remover</button>
       </div>
     </div>`).join('');
+}
+
+function editContent(c) {
+  _editingContentId = c.id;
+  document.getElementById('cnt-title').value   = c.title || '';
+  document.getElementById('cnt-desc').value    = c.description || '';
+  document.getElementById('cnt-module').value  = c.module_title || '';
+  document.getElementById('cnt-order').value   = c.sort_order || '';
+  document.getElementById('cnt-youtube').value = c.youtube_url || '';
+  document.getElementById('cnt-published').checked = !!c.published;
+  // Planos
+  const plans = c.allowed_plans || [];
+  const allEl = document.getElementById('cnt-plan-all');
+  if (allEl) allEl.checked = plans.length === 0;
+  ['essencial','pro','premium'].forEach(p => {
+    const el = document.getElementById('cnt-plan-' + p);
+    if (el) el.checked = plans.includes(p);
+  });
+  // Atualizar botão e título
+  const btn = document.querySelector('[onclick="saveAdminContent()"]');
+  if (btn) btn.textContent = 'Atualizar conteúdo';
+  const title = document.querySelector('#admin-tab-conteudo .card-title');
+  if (title) title.textContent = 'Editando conteúdo';
+  // Scroll até o formulário
+  document.getElementById('cnt-title').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function cancelEditContent() {
+  _editingContentId = null;
+  ['cnt-title','cnt-desc','cnt-module','cnt-order','cnt-youtube'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  document.getElementById('cnt-pdf').value = '';
+  document.getElementById('cnt-published').checked = true;
+  ['essencial','pro','premium'].forEach(p => { const el = document.getElementById('cnt-plan-' + p); if (el) el.checked = false; });
+  const allEl = document.getElementById('cnt-plan-all'); if (allEl) allEl.checked = true;
+  const btn = document.querySelector('[onclick="saveAdminContent()"]');
+  if (btn) btn.textContent = 'Salvar conteúdo';
+  const title = document.querySelector('#admin-tab-conteudo .card-title');
+  if (title) title.textContent = 'Novo conteúdo';
 }
 
 function toggleAllPlans(cb) {
@@ -2953,23 +3126,36 @@ async function saveAdminContent() {
     pdf_path = path;
   }
 
-  const { error } = await sb.from('content_items').insert({
-    title, description: desc || null, youtube_url: youtubeUrl || null,
-    type: 'video', pdf_path, published,
-    module_title: moduleTitle || null, sort_order: sortOrder,
-    allowed_plans: allowedPlans,
-    created_by: currentUser.id
-  });
-  if (error) { toast('Erro: ' + (error.message || error.code || 'RLS bloqueou')); console.error('saveAdminContent:', error); return; }
-  toast('Conteúdo salvo! ✓');
-  document.getElementById('cnt-title').value = '';
-  document.getElementById('cnt-desc').value = '';
-  document.getElementById('cnt-module').value = '';
-  document.getElementById('cnt-order').value = '';
-  document.getElementById('cnt-youtube').value = '';
-  document.getElementById('cnt-pdf').value = '';
-  ['essencial','pro','premium'].forEach(p => { const el = document.getElementById('cnt-plan-' + p); if (el) el.checked = false; });
-  const allEl = document.getElementById('cnt-plan-all'); if (allEl) allEl.checked = true;
+  if (_editingContentId) {
+    const updates = {
+      title, description: desc || null, youtube_url: youtubeUrl || null,
+      published, module_title: moduleTitle || null, sort_order: sortOrder,
+      allowed_plans: allowedPlans,
+    };
+    if (pdf_path) updates.pdf_path = pdf_path;
+    const { error } = await sb.from('content_items').update(updates).eq('id', _editingContentId);
+    if (error) { toast('Erro: ' + (error.message || error.code)); console.error('updateContent:', error); return; }
+    toast('Conteúdo atualizado! ✓');
+    cancelEditContent();
+  } else {
+    const { error } = await sb.from('content_items').insert({
+      title, description: desc || null, youtube_url: youtubeUrl || null,
+      type: 'video', pdf_path, published,
+      module_title: moduleTitle || null, sort_order: sortOrder,
+      allowed_plans: allowedPlans,
+      created_by: currentUser.id
+    });
+    if (error) { toast('Erro: ' + (error.message || error.code || 'RLS bloqueou')); console.error('saveAdminContent:', error); return; }
+    toast('Conteúdo salvo! ✓');
+    document.getElementById('cnt-title').value = '';
+    document.getElementById('cnt-desc').value = '';
+    document.getElementById('cnt-module').value = '';
+    document.getElementById('cnt-order').value = '';
+    document.getElementById('cnt-youtube').value = '';
+    document.getElementById('cnt-pdf').value = '';
+    ['essencial','pro','premium'].forEach(p => { const el = document.getElementById('cnt-plan-' + p); if (el) el.checked = false; });
+    const allEl = document.getElementById('cnt-plan-all'); if (allEl) allEl.checked = true;
+  }
   await loadAdminContent();
 }
 
@@ -2986,17 +3172,246 @@ async function deleteAdminContent(id) {
   await loadAdminContent();
 }
 
+// ── EBOOKS ─────────────────────────────────────────────────
+let _editingEbookId = null;
+
+function switchReceitasTab(tab) {
+  const isEbooks = tab === 'ebooks';
+  document.getElementById('receitas-pane').style.display = isEbooks ? 'none' : 'block';
+  document.getElementById('ebooks-pane').style.display   = isEbooks ? 'block' : 'none';
+  document.getElementById('tab-btn-receitas').style.cssText = !isEbooks
+    ? 'flex:1;padding:8px;background:none;border:none;font-size:13px;font-weight:600;color:var(--gold);border-bottom:2px solid var(--gold);margin-bottom:-2px;cursor:pointer;'
+    : 'flex:1;padding:8px;background:none;border:none;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;';
+  document.getElementById('tab-btn-ebooks').style.cssText = isEbooks
+    ? 'flex:1;padding:8px;background:none;border:none;font-size:13px;font-weight:600;color:var(--gold);border-bottom:2px solid var(--gold);margin-bottom:-2px;cursor:pointer;'
+    : 'flex:1;padding:8px;background:none;border:none;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;';
+  if (isEbooks) loadEbooks();
+}
+
+async function loadEbooks() {
+  const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const { data } = await sb.from('ebooks').select('*').eq('published', true).order('created_at', { ascending: false });
+  const el = document.getElementById('ebooks-list');
+  if (!data || data.length === 0) {
+    el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);font-size:13px;">Nenhum eBook disponível ainda.</div>';
+    return;
+  }
+  el.innerHTML = data.map(b => `
+    <div class="card" style="margin-bottom:14px;overflow:hidden;">
+      ${b.image_url ? `<img src="${esc(b.image_url)}" style="width:100%;max-height:180px;object-fit:cover;border-radius:8px;margin-bottom:12px;" onerror="this.style.display='none'">` : ''}
+      <div style="font-size:16px;font-weight:700;color:var(--cream);margin-bottom:6px;">${esc(b.title)}</div>
+      ${b.description ? `<div style="font-size:13px;color:var(--muted);line-height:1.5;margin-bottom:10px;">${esc(b.description)}</div>` : ''}
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px;">
+        ${b.price_text ? `<div style="font-size:18px;font-weight:700;color:var(--gold);">${esc(b.price_text)}</div>` : '<div></div>'}
+        ${b.checkout_url ? `<a href="${esc(b.checkout_url)}" target="_blank" rel="noopener" class="btn btn-gold" style="text-decoration:none;padding:10px 20px;font-size:14px;">Comprar →</a>` : ''}
+      </div>
+    </div>`).join('');
+}
+
+async function loadAdminEbooks() {
+  const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  const { data } = await sb.from('ebooks').select('*').order('created_at', { ascending: false });
+  const el = document.getElementById('admin-ebooks-list');
+  if (!data || data.length === 0) { el.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:8px 0;">Nenhum eBook cadastrado.</div>'; return; }
+  el.innerHTML = data.map(b => `
+    <div class="card" style="margin-bottom:10px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:13px;font-weight:500;color:var(--cream);">${esc(b.title)}</div>
+        ${b.price_text ? `<div style="font-size:11px;color:var(--gold);margin-top:2px;">${esc(b.price_text)}</div>` : ''}
+        <div style="font-size:11px;color:${b.published ? 'var(--success)' : 'var(--muted)'};margin-top:4px;">${b.published ? '● Publicado' : '○ Rascunho'}</div>
+      </div>
+      <div style="display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end;">
+        <button class="activate-btn" style="padding:4px 10px;font-size:11px;" onclick="editEbook(${JSON.stringify(b).replace(/"/g,'&quot;')})">Editar</button>
+        <button class="activate-btn" style="padding:4px 10px;font-size:11px;" onclick="togglePublishEbook('${esc(b.id)}',${b.published})">${b.published ? 'Ocultar' : 'Publicar'}</button>
+        <button class="activate-btn" style="padding:4px 10px;font-size:11px;background:var(--danger);border-color:var(--danger);" onclick="deleteAdminEbook('${esc(b.id)}')">Remover</button>
+      </div>
+    </div>`).join('');
+}
+
+function editEbook(b) {
+  _editingEbookId = b.id;
+  document.getElementById('eb-title').value    = b.title || '';
+  document.getElementById('eb-desc').value     = b.description || '';
+  document.getElementById('eb-image').value    = b.image_url || '';
+  document.getElementById('eb-checkout').value = b.checkout_url || '';
+  document.getElementById('eb-price').value    = b.price_text || '';
+  document.getElementById('eb-published').checked = !!b.published;
+  const btn = document.querySelector('[onclick="saveAdminEbook()"]');
+  if (btn) btn.textContent = 'Atualizar eBook';
+  document.getElementById('eb-title').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function cancelEditEbook() {
+  _editingEbookId = null;
+  ['eb-title','eb-desc','eb-image','eb-checkout','eb-price'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  document.getElementById('eb-published').checked = false;
+  const btn = document.querySelector('[onclick="saveAdminEbook()"]');
+  if (btn) btn.textContent = 'Salvar eBook';
+}
+
+async function saveAdminEbook() {
+  const title       = document.getElementById('eb-title').value.trim();
+  const description = document.getElementById('eb-desc').value.trim();
+  const image_url   = document.getElementById('eb-image').value.trim();
+  const checkout_url = document.getElementById('eb-checkout').value.trim();
+  const price_text  = document.getElementById('eb-price').value.trim();
+  const published   = document.getElementById('eb-published').checked;
+  if (!title) { toast('Título obrigatório.'); return; }
+  if (!checkout_url) { toast('Link de checkout obrigatório.'); return; }
+  const payload = { title, description: description || null, image_url: image_url || null, checkout_url, price_text: price_text || null, published };
+  if (_editingEbookId) {
+    const { error } = await sb.from('ebooks').update(payload).eq('id', _editingEbookId);
+    if (error) { toast('Erro ao atualizar.'); return; }
+    toast('eBook atualizado! ✓');
+    cancelEditEbook();
+  } else {
+    const { error } = await sb.from('ebooks').insert(payload);
+    if (error) { toast('Erro ao salvar.'); return; }
+    toast('eBook salvo! ✓');
+    cancelEditEbook();
+  }
+  await loadAdminEbooks();
+}
+
+async function togglePublishEbook(id, pub) {
+  await sb.from('ebooks').update({ published: !pub }).eq('id', id);
+  await loadAdminEbooks();
+}
+
+async function deleteAdminEbook(id) {
+  if (!confirm('Remover este eBook?')) return;
+  await sb.from('ebooks').delete().eq('id', id);
+  toast('eBook removido.');
+  await loadAdminEbooks();
+}
+
+// ── DICAS ──────────────────────────────────────────────────
+let _editingDicaId = null;
+let _dicaFilter = 'todos';
+
+async function loadDicas() {
+  const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  let q = sb.from('tips').select('*').eq('published', true).order('created_at', { ascending: false });
+  if (_dicaFilter !== 'todos') q = q.eq('category', _dicaFilter);
+  const { data } = await q;
+  const el = document.getElementById('dicas-list');
+  if (!data || data.length === 0) {
+    el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);font-size:13px;">Nenhuma dica disponível.</div>';
+    return;
+  }
+  const catIco = { produto:'🛒', livro:'📚', serie:'🎬' };
+  el.innerHTML = data.map(d => `
+    <div class="card" style="margin-bottom:14px;overflow:hidden;">
+      ${d.image_url ? `<img src="${esc(d.image_url)}" style="width:100%;max-height:160px;object-fit:cover;border-radius:8px;margin-bottom:12px;" onerror="this.style.display='none'">` : ''}
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <span style="font-size:11px;background:var(--surface2);padding:2px 8px;border-radius:20px;color:var(--muted);">${catIco[d.category]||''} ${d.category||''}</span>
+      </div>
+      <div style="font-size:15px;font-weight:700;color:var(--cream);margin-bottom:6px;">${esc(d.title)}</div>
+      ${d.description ? `<div style="font-size:13px;color:var(--muted);line-height:1.5;margin-bottom:10px;">${esc(d.description)}</div>` : ''}
+      ${d.link_url ? `<a href="${esc(d.link_url)}" target="_blank" rel="noopener" class="btn btn-outline" style="text-decoration:none;display:block;text-align:center;padding:10px;">${esc(d.link_label||'Ver mais')} →</a>` : ''}
+    </div>`).join('');
+}
+
+function filterDicas(cat, el) {
+  _dicaFilter = cat;
+  document.querySelectorAll('#dicas-filters .recipe-filter-chip').forEach(c => c.classList.remove('on'));
+  if (el) el.classList.add('on');
+  loadDicas();
+}
+
+async function loadAdminDicas() {
+  const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  const { data } = await sb.from('tips').select('*').order('created_at', { ascending: false });
+  const el = document.getElementById('admin-dicas-list');
+  if (!data || data.length === 0) { el.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:8px 0;">Nenhuma dica cadastrada.</div>'; return; }
+  const catIco = { produto:'🛒', livro:'📚', serie:'🎬' };
+  el.innerHTML = data.map(d => `
+    <div class="card" style="margin-bottom:10px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:13px;font-weight:500;color:var(--cream);">${esc(d.title)}</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px;">${catIco[d.category]||''} ${d.category||''}</div>
+        <div style="font-size:11px;color:${d.published ? 'var(--success)' : 'var(--muted)'};margin-top:4px;">${d.published ? '● Publicado' : '○ Rascunho'}</div>
+      </div>
+      <div style="display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end;">
+        <button class="activate-btn" style="padding:4px 10px;font-size:11px;" onclick="editDica(${JSON.stringify(d).replace(/"/g,'&quot;')})">Editar</button>
+        <button class="activate-btn" style="padding:4px 10px;font-size:11px;" onclick="togglePublishDica('${esc(d.id)}',${d.published})">${d.published ? 'Ocultar' : 'Publicar'}</button>
+        <button class="activate-btn" style="padding:4px 10px;font-size:11px;background:var(--danger);border-color:var(--danger);" onclick="deleteAdminDica('${esc(d.id)}')">Remover</button>
+      </div>
+    </div>`).join('');
+}
+
+function editDica(d) {
+  _editingDicaId = d.id;
+  document.getElementById('dica-title').value      = d.title || '';
+  document.getElementById('dica-desc').value       = d.description || '';
+  document.getElementById('dica-image').value      = d.image_url || '';
+  document.getElementById('dica-category').value   = d.category || 'produto';
+  document.getElementById('dica-link').value       = d.link_url || '';
+  document.getElementById('dica-link-label').value = d.link_label || '';
+  document.getElementById('dica-published').checked = !!d.published;
+  const btn = document.querySelector('[onclick="saveAdminDica()"]');
+  if (btn) btn.textContent = 'Atualizar dica';
+  document.getElementById('dica-title').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function cancelEditDica() {
+  _editingDicaId = null;
+  ['dica-title','dica-desc','dica-image','dica-link','dica-link-label'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  document.getElementById('dica-category').value = 'produto';
+  document.getElementById('dica-published').checked = false;
+  const btn = document.querySelector('[onclick="saveAdminDica()"]');
+  if (btn) btn.textContent = 'Salvar dica';
+}
+
+async function saveAdminDica() {
+  const title      = document.getElementById('dica-title').value.trim();
+  const description= document.getElementById('dica-desc').value.trim();
+  const image_url  = document.getElementById('dica-image').value.trim();
+  const category   = document.getElementById('dica-category').value;
+  const link_url   = document.getElementById('dica-link').value.trim();
+  const link_label = document.getElementById('dica-link-label').value.trim();
+  const published  = document.getElementById('dica-published').checked;
+  if (!title) { toast('Título obrigatório.'); return; }
+  const payload = { title, description: description || null, image_url: image_url || null, category, link_url: link_url || null, link_label: link_label || 'Ver mais', published };
+  if (_editingDicaId) {
+    const { error } = await sb.from('tips').update(payload).eq('id', _editingDicaId);
+    if (error) { toast('Erro ao atualizar.'); return; }
+    toast('Dica atualizada! ✓');
+    cancelEditDica();
+  } else {
+    const { error } = await sb.from('tips').insert(payload);
+    if (error) { toast('Erro ao salvar.'); return; }
+    toast('Dica salva! ✓');
+    cancelEditDica();
+  }
+  await loadAdminDicas();
+}
+
+async function togglePublishDica(id, pub) {
+  await sb.from('tips').update({ published: !pub }).eq('id', id);
+  await loadAdminDicas();
+}
+
+async function deleteAdminDica(id) {
+  if (!confirm('Remover esta dica?')) return;
+  await sb.from('tips').delete().eq('id', id);
+  toast('Dica removida.');
+  await loadAdminDicas();
+}
+
 // ── ADMIN TABS ────────────────────────────────────────────
 function switchAdminTab(tab, el) {
   document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('on'));
   if (el) el.classList.add('on');
-  ['pacientes','conteudo','eventos','ranking','receitas'].forEach(t => {
+  ['pacientes','conteudo','eventos','ranking','receitas','ebooks','dicas'].forEach(t => {
     const panel = document.getElementById('admin-tab-' + t);
     if (panel) panel.style.display = t === tab ? 'block' : 'none';
   });
-  if (tab === 'ranking') loadAdminRanking();
+  if (tab === 'ranking')  loadAdminRanking();
   if (tab === 'receitas') loadAdminRecipes();
   if (tab === 'conteudo') loadAdminContent();
+  if (tab === 'ebooks')   loadAdminEbooks();
+  if (tab === 'dicas')    loadAdminDicas();
 }
 
 // ── ADMIN ─────────────────────────────────────────────────────
@@ -3091,7 +3506,7 @@ function showMais() { switchTab('mais'); }
 
 function showSub(name) {
   document.getElementById('mais-main').style.display = 'none';
-  ['receitas','conteudo','conteudo-detail','sos','conta','admin','jornada','recipe-detail'].forEach(s => {
+  ['receitas','conteudo','conteudo-detail','sos','conta','admin','jornada','recipe-detail','dicas'].forEach(s => {
     const el = document.getElementById('sub-' + s);
     if (el) el.style.display = 'none';
   });
@@ -3102,10 +3517,11 @@ function showSub(name) {
   }
   const target = document.getElementById('sub-' + name);
   if (target) target.style.display = 'block';
-  if (name === 'receitas') loadRecipes();
+  if (name === 'receitas') { switchReceitasTab('receitas'); loadRecipes(); }
   if (name === 'conteudo') loadContent();
   if (name === 'admin') { loadAdmin(); switchAdminTab('pacientes'); }
   if (name === 'jornada') loadJornada();
+  if (name === 'dicas') loadDicas();
 }
 
 function hideSub() {
