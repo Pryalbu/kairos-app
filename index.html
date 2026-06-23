@@ -583,14 +583,21 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
 .jornada-stat { background:var(--surface2); border:1px solid var(--border); border-radius:14px; padding:14px; text-align:center; }
 .jornada-stat-val { font-size:26px; color:var(--gold); font-weight:700; margin-bottom:3px; }
 .jornada-stat-label { font-size:11px; color:var(--muted); }
-.jornada-month { margin-bottom:20px; }
-.jornada-month-title { font-size:12px; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:.06em; margin-bottom:8px; }
+.jornada-cal { background:var(--surface2); border:1px solid var(--border); border-radius:16px; padding:16px; margin-bottom:16px; }
+.jornada-cal-nav { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+.jornada-cal-nav-btn { background:var(--surface); border:1px solid var(--border); border-radius:10px; width:36px; height:36px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--cream); flex-shrink:0; }
+.jornada-cal-nav-btn:active { background:var(--gold-dim); }
+.jornada-cal-month { font-size:15px; font-weight:700; color:var(--cream); text-align:center; text-transform:capitalize; }
+.jornada-weekdays { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; margin-bottom:6px; }
+.jornada-weekday { font-size:10px; color:var(--muted); text-align:center; font-weight:600; padding:2px 0; }
 .jornada-days { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; }
-.jornada-day { aspect-ratio:1; border-radius:5px; background:var(--surface2); }
-.jornada-day.active { background:var(--gold); }
-.jornada-day.partial { background:var(--gold-dim); border:1px solid var(--gold); }
-.jornada-day.future { opacity:.3; }
-.jornada-legend { display:flex; gap:14px; margin-bottom:18px; }
+.jornada-day { aspect-ratio:1; border-radius:8px; background:var(--surface); display:flex; align-items:center; justify-content:center; font-size:11px; color:var(--muted); position:relative; }
+.jornada-day.active { background:var(--gold); color:#1a1200; font-weight:700; }
+.jornada-day.partial { background:var(--gold-dim); border:1px solid var(--gold); color:var(--gold); }
+.jornada-day.future { opacity:.25; }
+.jornada-day.today { outline:2px solid var(--gold); outline-offset:2px; }
+.jornada-day.empty { background:transparent; }
+.jornada-legend { display:flex; gap:14px; margin-bottom:18px; flex-wrap:wrap; }
 .jornada-legend-item { display:flex; align-items:center; gap:6px; font-size:11px; color:var(--muted); }
 .jornada-legend-dot { width:12px; height:12px; border-radius:3px; }
 
@@ -1063,12 +1070,32 @@ html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;colo
         <div class="hdr-title" style="font-size:20px;margin-bottom:4px;">Sua evolução</div>
         <p style="font-size:12px;color:var(--muted);margin-bottom:16px;">A constância constrói o que a motivação começa.</p>
         <div class="jornada-stats" id="jornada-stats"></div>
+        <div class="jornada-cal">
+          <div class="jornada-cal-nav">
+            <div class="jornada-cal-nav-btn" onclick="changeJornadaMonth(-1)">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15,18 9,12 15,6"/></svg>
+            </div>
+            <div class="jornada-cal-month" id="jornada-cal-title">—</div>
+            <div class="jornada-cal-nav-btn" onclick="changeJornadaMonth(1)" id="jornada-next-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9,18 15,12 9,6"/></svg>
+            </div>
+          </div>
+          <div class="jornada-weekdays">
+            <div class="jornada-weekday">Dom</div>
+            <div class="jornada-weekday">Seg</div>
+            <div class="jornada-weekday">Ter</div>
+            <div class="jornada-weekday">Qua</div>
+            <div class="jornada-weekday">Qui</div>
+            <div class="jornada-weekday">Sex</div>
+            <div class="jornada-weekday">Sáb</div>
+          </div>
+          <div class="jornada-days" id="jornada-cal-grid"></div>
+        </div>
         <div class="jornada-legend">
           <div class="jornada-legend-item"><div class="jornada-legend-dot" style="background:var(--gold);"></div>check-in completo</div>
           <div class="jornada-legend-item"><div class="jornada-legend-dot" style="background:var(--gold-dim);border:1px solid var(--gold);"></div>parcial</div>
-          <div class="jornada-legend-item"><div class="jornada-legend-dot" style="background:var(--surface2);"></div>sem registro</div>
+          <div class="jornada-legend-item"><div class="jornada-legend-dot" style="background:var(--surface);"></div>sem registro</div>
         </div>
-        <div id="jornada-months"></div>
       </div>
 
       <!-- Sub: Receitas -->
@@ -3535,36 +3562,42 @@ function hideSub() {
 }
 
 // ── JORNADA ─────────────────────────────────────────────────────
+let _jornadaDayMap = {};
+let _jornadaHabitsPerDay = 6;
+let _jornadaViewYear = new Date().getFullYear();
+let _jornadaViewMonth = new Date().getMonth(); // 0-indexed
+
 async function loadJornada() {
   if (!currentUser) return;
-  const ninetyDaysAgo = new Date(); ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
-  const fromDate = ninetyDaysAgo.toISOString().split('T')[0];
-  const today = new Date().toISOString().split('T')[0];
 
+  // Busca todos os registros do usuário (desde o início)
   const [logsRes, habitsRes] = await Promise.all([
-    sb.from('daily_logs').select('log_date').eq('user_id', currentUser.id).gte('log_date', fromDate),
-    sb.from('habit_logs').select('log_date,habit_key').eq('user_id', currentUser.id).gte('log_date', fromDate)
+    sb.from('daily_logs').select('log_date').eq('user_id', currentUser.id),
+    sb.from('habit_logs').select('log_date,habit_key').eq('user_id', currentUser.id)
   ]);
 
-  const logs = logsRes.data || [];
-  const habits = habitsRes.data || [];
-  const habitsPerDay = (HABITS[currentGoal] || HABITS['emagrecer']).length;
+  const logs    = logsRes.data  || [];
+  const habits  = habitsRes.data || [];
+  _jornadaHabitsPerDay = (HABITS[currentGoal] || HABITS['emagrecer']).length;
 
-  const dayMap = {};
-  logs.forEach(l => { dayMap[l.log_date] = dayMap[l.log_date] || 0; });
-  habits.forEach(h => { dayMap[h.log_date] = (dayMap[h.log_date] || 0) + 1; });
+  _jornadaDayMap = {};
+  logs.forEach(l => { _jornadaDayMap[l.log_date] = _jornadaDayMap[l.log_date] || 0; });
+  habits.forEach(h => { _jornadaDayMap[h.log_date] = (_jornadaDayMap[h.log_date] || 0) + 1; });
 
-  const activeDays = Object.keys(dayMap).filter(d => d <= today).sort();
-  const totalDays = activeDays.length;
+  const today = new Date().toISOString().split('T')[0];
+  const activeDays = Object.keys(_jornadaDayMap).filter(d => d <= today).sort();
+  const totalDays  = activeDays.length;
 
+  // Sequência atual
   let streak = 0;
   let checkDate = new Date();
   while (true) {
     const key = checkDate.toISOString().split('T')[0];
     if (key > today) { checkDate.setDate(checkDate.getDate()-1); continue; }
-    if (dayMap[key] !== undefined) { streak++; checkDate.setDate(checkDate.getDate()-1); } else break;
+    if (_jornadaDayMap[key] !== undefined) { streak++; checkDate.setDate(checkDate.getDate()-1); } else break;
   }
 
+  // Melhor sequência
   let best = 0, cur = 0;
   activeDays.forEach((k, i) => {
     if (i === 0) { cur = 1; }
@@ -3576,7 +3609,7 @@ async function loadJornada() {
   });
 
   const avgPct = activeDays.length > 0
-    ? Math.round(activeDays.reduce((acc, d) => acc + Math.min(100, Math.round(((dayMap[d]||0)/habitsPerDay)*100)), 0) / activeDays.length)
+    ? Math.round(activeDays.reduce((acc, d) => acc + Math.min(100, Math.round(((_jornadaDayMap[d]||0)/_jornadaHabitsPerDay)*100)), 0) / activeDays.length)
     : 0;
 
   document.getElementById('jornada-stats').innerHTML = `
@@ -3586,33 +3619,67 @@ async function loadJornada() {
     <div class="jornada-stat"><div class="jornada-stat-val">${avgPct}%</div><div class="jornada-stat-label">média de hábitos</div></div>
   `;
 
-  const monthsWrap = document.getElementById('jornada-months');
-  const now2 = new Date();
-  const months = [2,1,0].map(m => new Date(now2.getFullYear(), now2.getMonth()-m, 1));
+  // Iniciar no mês atual
+  _jornadaViewYear  = new Date().getFullYear();
+  _jornadaViewMonth = new Date().getMonth();
+  renderJornadaCalendar();
+}
 
-  monthsWrap.innerHTML = months.map(month => {
-    const y = month.getFullYear(), mo = month.getMonth();
-    const label = month.toLocaleDateString('pt-BR', { month:'long', year:'numeric' });
-    const daysInMonth = new Date(y, mo+1, 0).getDate();
-    const firstDay = new Date(y, mo, 1).getDay();
-    let cells = '';
-    for (let i = 0; i < firstDay; i++) cells += '<div></div>';
-    for (let day = 1; day <= daysInMonth; day++) {
-      const dateStr = `${y}-${String(mo+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-      const isToday = dateStr === today;
-      const isFuture = dateStr > today;
-      const done = dayMap[dateStr];
-      let cls = 'jornada-day';
-      if (isFuture) cls += ' future';
-      else if (done !== undefined) {
-        const pct = Math.min(100, Math.round((done/habitsPerDay)*100));
-        cls += pct >= 70 ? ' active' : ' partial';
-      }
-      const outline = isToday ? ' style="outline:2px solid var(--gold);outline-offset:2px;"' : '';
-      cells += `<div class="${cls}"${outline}></div>`;
+function renderJornadaCalendar() {
+  const today   = new Date().toISOString().split('T')[0];
+  const nowYear = new Date().getFullYear();
+  const nowMonth= new Date().getMonth();
+  const y = _jornadaViewYear, mo = _jornadaViewMonth;
+
+  // Título do mês
+  const label = new Date(y, mo, 1).toLocaleDateString('pt-BR', { month:'long', year:'numeric' });
+  const titleEl = document.getElementById('jornada-cal-title');
+  if (titleEl) titleEl.textContent = label.charAt(0).toUpperCase() + label.slice(1);
+
+  // Esconder seta "próximo" se já estiver no mês atual
+  const nextBtn = document.getElementById('jornada-next-btn');
+  if (nextBtn) nextBtn.style.visibility = (y > nowYear || (y === nowYear && mo >= nowMonth)) ? 'hidden' : 'visible';
+
+  // Montar grade
+  const daysInMonth = new Date(y, mo+1, 0).getDate();
+  const firstDay    = new Date(y, mo, 1).getDay(); // 0=Dom
+  let cells = '';
+
+  // Células vazias antes do dia 1
+  for (let i = 0; i < firstDay; i++) cells += '<div class="jornada-day empty"></div>';
+
+  for (let day = 1; day <= daysInMonth; day++) {
+    const dateStr = `${y}-${String(mo+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+    const isToday  = dateStr === today;
+    const isFuture = dateStr > today;
+    const done = _jornadaDayMap[dateStr];
+
+    let cls = 'jornada-day';
+    if (isFuture) cls += ' future';
+    else if (done !== undefined) {
+      const pct = Math.min(100, Math.round((done/_jornadaHabitsPerDay)*100));
+      cls += pct >= 70 ? ' active' : ' partial';
     }
-    return `<div class="jornada-month"><div class="jornada-month-title">${label}</div><div class="jornada-days">${cells}</div></div>`;
-  }).join('');
+    if (isToday) cls += ' today';
+
+    cells += `<div class="${cls}">${day}</div>`;
+  }
+
+  const grid = document.getElementById('jornada-cal-grid');
+  if (grid) grid.innerHTML = cells;
+}
+
+function changeJornadaMonth(delta) {
+  _jornadaViewMonth += delta;
+  if (_jornadaViewMonth > 11) { _jornadaViewMonth = 0; _jornadaViewYear++; }
+  if (_jornadaViewMonth < 0)  { _jornadaViewMonth = 11; _jornadaViewYear--; }
+  // Não deixar avançar além do mês atual
+  const now = new Date();
+  if (_jornadaViewYear > now.getFullYear() || (_jornadaViewYear === now.getFullYear() && _jornadaViewMonth > now.getMonth())) {
+    _jornadaViewYear  = now.getFullYear();
+    _jornadaViewMonth = now.getMonth();
+  }
+  renderJornadaCalendar();
 }
 
 // ── SCREEN MANAGER ────────────────────────────────────────────
